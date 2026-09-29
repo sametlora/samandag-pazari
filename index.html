@@ -131,5 +131,196 @@
     .listings {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      ga
+      gap: 20px;
+    }
 
+    .card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 3px 10px rgba(0,0,0,.05);
+    }
+
+    .card-image {
+      height: 180px;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+    }
+
+    .card-content {
+      padding: 16px;
+    }
+
+    .card h3 {
+      margin-bottom: 8px;
+    }
+
+    .price {
+      color: #e85d04;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .location {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 60px;
+      background: #111827;
+      color: #d1d5db;
+      text-align: center;
+      padding: 25px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .header-inner {
+        flex-direction: column;
+      }
+
+      .add-btn {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">Samandağ <span>Pazarı</span></div>
+    <button class="add-btn" onclick="alert('İlan verme bölümü yakında aktif olacak.')">
+      + İlan Ver
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Samandağ Pazarı</h1>
+  <p>Samandağ'da al, sat, keşfet.</p>
+
+<input
+class="search"
+type="text"
+placeholder="Ne arıyorsunuz? Örn: araba, telefon, ev..."
+onkeyup="searchListings(this.value)"
+
+>
+
+</section>
+
+<main>
+
+  <div class="section-title">
+    <h2>Kategoriler</h2>
+  </div>
+
+  <div class="categories">
+    <div class="category">
+      <div class="category-icon">🚗</div>
+      <div>Araç</div>
+    </div>
+
+```
+<div class="category">
+  <div class="category-icon">🏠</div>
+  <div>Emlak</div>
+</div>
+
+<div class="category">
+  <div class="category-icon">📱</div>
+  <div>Elektronik</div>
+</div>
+
+<div class="category">
+  <div class="category-icon">🪑</div>
+  <div>Ev Eşyası</div>
+</div>
+
+<div class="category">
+  <div class="category-icon">💼</div>
+  <div>İş İlanları</div>
+</div>
+
+<div class="category">
+  <div class="category-icon">📦</div>
+  <div>Diğer</div>
+</div>
+```
+
+  </div>
+
+  <div class="section-title">
+    <h2>Son İlanlar</h2>
+  </div>
+
+  <div class="listings" id="listings">
+
+```
+<div class="card" data-title="iPhone Telefon">
+  <div class="card-image">📱</div>
+  <div class="card-content">
+    <h3>Telefon</h3>
+    <div class="price">İlanınızı burada yayınlayın</div>
+    <div class="location">📍 Samandağ</div>
+  </div>
+</div>
+
+<div class="card" data-title="Araba">
+  <div class="card-image">🚗</div>
+  <div class="card-content">
+    <h3>Araç İlanları</h3>
+    <div class="price">İlanınızı burada yayınlayın</div>
+    <div class="location">📍 Samandağ</div>
+  </div>
+</div>
+
+<div class="card" data-title="Ev">
+  <div class="card-image">🏠</div>
+  <div class="card-content">
+    <h3>Emlak</h3>
+    <div class="price">İlanınızı burada yayınlayın</div>
+    <div class="location">📍 Samandağ</div>
+  </div>
+</div>
+```
+
+  </div>
+
+</main>
+
+<footer>
+  © 2026 Samandağ Pazarı — Yerel Alışveriş Platformu
+</footer>
+
+<script>
+  function searchListings(value) {
+    const cards = document.querySelectorAll(".card");
+    const search = value.toLowerCase();
+
+    cards.forEach(card => {
+      const title = card.dataset.title.toLowerCase();
+
+      if (title.includes(search) || search === "") {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
