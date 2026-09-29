@@ -1,5 +1,5 @@
+```html
 <!DOCTYPE html>
-
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
@@ -20,7 +20,7 @@
     }
 
     header {
-      background: #ffffff;
+      background: #fff;
       border-bottom: 1px solid #ddd;
       padding: 16px 20px;
       position: sticky;
@@ -57,6 +57,10 @@
       cursor: pointer;
     }
 
+    .add-btn:hover {
+      background: #d94f00;
+    }
+
     .hero {
       background: linear-gradient(135deg, #111827, #374151);
       color: white;
@@ -91,9 +95,6 @@
     }
 
     .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-bottom: 20px;
     }
 
@@ -143,7 +144,7 @@
     }
 
     .card-image {
-      height: 180px;
+      height: 150px;
       background: #e5e7eb;
       display: flex;
       align-items: center;
@@ -166,9 +167,39 @@
       margin-bottom: 8px;
     }
 
+    .description {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
     .location {
       color: #6b7280;
       font-size: 14px;
+    }
+
+    .category-label {
+      display: inline-block;
+      background: #f3f4f6;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+      grid-column: 1 / -1;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #777;
+      grid-column: 1 / -1;
     }
 
     footer {
@@ -177,6 +208,103 @@
       color: #d1d5db;
       text-align: center;
       padding: 25px;
+    }
+
+    /* Form */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 100;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal-box {
+      max-width: 550px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 14px;
+      padding: 25px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-size: 24px;
+    }
+
+    .close {
+      border: none;
+      background: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      background: #e85d04;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 7px;
+      display: none;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
     @media (max-width: 600px) {
@@ -193,7 +321,6 @@
       }
     }
   </style>
-
 </head>
 
 <body>
@@ -201,7 +328,8 @@
 <header>
   <div class="header-inner">
     <div class="logo">Samandağ <span>Pazarı</span></div>
-    <button class="add-btn" onclick="alert('İlan verme bölümü yakında aktif olacak.')">
+
+    <button class="add-btn" onclick="openModal()">
       + İlan Ver
     </button>
   </div>
@@ -211,14 +339,12 @@
   <h1>Samandağ Pazarı</h1>
   <p>Samandağ'da al, sat, keşfet.</p>
 
-<input
-class="search"
-type="text"
-placeholder="Ne arıyorsunuz? Örn: araba, telefon, ev..."
-onkeyup="searchListings(this.value)"
-
->
-
+  <input
+    class="search"
+    type="text"
+    placeholder="Ne arıyorsunuz? Örn: araba, telefon, ev..."
+    onkeyup="searchListings(this.value)"
+  >
 </section>
 
 <main>
@@ -228,37 +354,36 @@ onkeyup="searchListings(this.value)"
   </div>
 
   <div class="categories">
-    <div class="category">
+
+    <div class="category" onclick="filterCategory('Araç')">
       <div class="category-icon">🚗</div>
       <div>Araç</div>
     </div>
 
-```
-<div class="category">
-  <div class="category-icon">🏠</div>
-  <div>Emlak</div>
-</div>
+    <div class="category" onclick="filterCategory('Emlak')">
+      <div class="category-icon">🏠</div>
+      <div>Emlak</div>
+    </div>
 
-<div class="category">
-  <div class="category-icon">📱</div>
-  <div>Elektronik</div>
-</div>
+    <div class="category" onclick="filterCategory('Elektronik')">
+      <div class="category-icon">📱</div>
+      <div>Elektronik</div>
+    </div>
 
-<div class="category">
-  <div class="category-icon">🪑</div>
-  <div>Ev Eşyası</div>
-</div>
+    <div class="category" onclick="filterCategory('Ev Eşyası')">
+      <div class="category-icon">🪑</div>
+      <div>Ev Eşyası</div>
+    </div>
 
-<div class="category">
-  <div class="category-icon">💼</div>
-  <div>İş İlanları</div>
-</div>
+    <div class="category" onclick="filterCategory('İş İlanları')">
+      <div class="category-icon">💼</div>
+      <div>İş İlanları</div>
+    </div>
 
-<div class="category">
-  <div class="category-icon">📦</div>
-  <div>Diğer</div>
-</div>
-```
+    <div class="category" onclick="filterCategory('Diğer')">
+      <div class="category-icon">📦</div>
+      <div>Diğer</div>
+    </div>
 
   </div>
 
@@ -267,36 +392,7 @@ onkeyup="searchListings(this.value)"
   </div>
 
   <div class="listings" id="listings">
-
-```
-<div class="card" data-title="iPhone Telefon">
-  <div class="card-image">📱</div>
-  <div class="card-content">
-    <h3>Telefon</h3>
-    <div class="price">İlanınızı burada yayınlayın</div>
-    <div class="location">📍 Samandağ</div>
-  </div>
-</div>
-
-<div class="card" data-title="Araba">
-  <div class="card-image">🚗</div>
-  <div class="card-content">
-    <h3>Araç İlanları</h3>
-    <div class="price">İlanınızı burada yayınlayın</div>
-    <div class="location">📍 Samandağ</div>
-  </div>
-</div>
-
-<div class="card" data-title="Ev">
-  <div class="card-image">🏠</div>
-  <div class="card-content">
-    <h3>Emlak</h3>
-    <div class="price">İlanınızı burada yayınlayın</div>
-    <div class="location">📍 Samandağ</div>
-  </div>
-</div>
-```
-
+    <div class="loading">İlanlar yükleniyor...</div>
   </div>
 
 </main>
@@ -305,22 +401,430 @@ onkeyup="searchListings(this.value)"
   © 2026 Samandağ Pazarı — Yerel Alışveriş Platformu
 </footer>
 
+
+<!-- İLAN VER MODALI -->
+
+<div class="modal" id="ilanModal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>İlan Ver</h2>
+
+      <button class="close" onclick="closeModal()">
+        ×
+      </button>
+    </div>
+
+    <form id="ilanForm">
+
+      <div class="form-group">
+        <label>İlan Başlığı</label>
+        <input
+          type="text"
+          id="baslik"
+          placeholder="Örn: iPhone 13"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Fiyat</label>
+        <input
+          type="number"
+          id="fiyat"
+          placeholder="Örn: 25000"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Kategori</label>
+
+        <select id="kategori" required>
+          <option value="">Kategori seçin</option>
+          <option value="Araç">🚗 Araç</option>
+          <option value="Emlak">🏠 Emlak</option>
+          <option value="Elektronik">📱 Elektronik</option>
+          <option value="Ev Eşyası">🪑 Ev Eşyası</option>
+          <option value="İş İlanları">💼 İş İlanları</option>
+          <option value="Diğer">📦 Diğer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Mahalle</label>
+
+        <input
+          type="text"
+          id="mahalle"
+          placeholder="Örn: Atatürk Mahallesi"
+          required
+        >
+      </div>
+
+      <div class="form-group">
+        <label>Açıklama</label>
+
+        <textarea
+          id="aciklama"
+          placeholder="İlanınız hakkında bilgi yazın..."
+          required
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="submit-btn"
+        id="submitBtn"
+      >
+        İlanı Yayınla
+      </button>
+
+      <div class="message" id="formMessage"></div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
+  /* ================================
+     SUPABASE AYARLARI
+     ================================ */
+
+  const SUPABASE_URL =
+    "https://hicevhodrskuymffgbdo.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_wCUwLT4hjbddEjWY_HJEJQ_oTlTeUiB";
+
+  const supabaseClient =
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+  /* ================================
+     İLANLARI GETİR
+     ================================ */
+
+  let allListings = [];
+
+  async function loadListings() {
+
+    const listingsContainer =
+      document.getElementById("listings");
+
+    listingsContainer.innerHTML =
+      '<div class="loading">İlanlar yükleniyor...</div>';
+
+    const { data, error } =
+      await supabaseClient
+        .from("ilantable")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+
+      console.error(error);
+
+      listingsContainer.innerHTML =
+        '<div class="empty">İlanlar yüklenirken bir hata oluştu.</div>';
+
+      return;
+    }
+
+    allListings = data || [];
+
+    displayListings(allListings);
+  }
+
+
+  /* ================================
+     İLANLARI EKRANA YAZ
+     ================================ */
+
+  function displayListings(listings) {
+
+    const container =
+      document.getElementById("listings");
+
+    if (!listings || listings.length === 0) {
+
+      container.innerHTML =
+        '<div class="empty">Henüz ilan bulunmuyor.<br><br>İlk ilanı siz verin!</div>';
+
+      return;
+    }
+
+    container.innerHTML = "";
+
+    listings.forEach(ilan => {
+
+      const card =
+        document.createElement("div");
+
+      card.className = "card";
+
+      const category =
+        ilan.kategori || "Diğer";
+
+      let icon = "📦";
+
+      if (category === "Araç") icon = "🚗";
+      if (category === "Emlak") icon = "🏠";
+      if (category === "Elektronik") icon = "📱";
+      if (category === "Ev Eşyası") icon = "🪑";
+      if (category === "İş İlanları") icon = "💼";
+
+      const price =
+        ilan.fiyat !== null &&
+        ilan.fiyat !== undefined
+          ? Number(ilan.fiyat).toLocaleString("tr-TR") + " TL"
+          : "Fiyat belirtilmemiş";
+
+      card.dataset.title =
+        `${ilan.baslik || ""} ${ilan.aciklama || ""} ${category}`
+          .toLowerCase();
+
+      card.innerHTML = `
+
+        <div class="card-image">
+          ${icon}
+        </div>
+
+        <div class="card-content">
+
+          <h3>
+            ${escapeHtml(ilan.baslik || "Başlıksız ilan")}
+          </h3>
+
+          <div class="price">
+            ${price}
+          </div>
+
+          <div class="description">
+            ${escapeHtml(ilan.aciklama || "")}
+          </div>
+
+          <div class="location">
+            📍 ${escapeHtml(ilan.mahalle || "Samandağ")}
+          </div>
+
+          <div class="category-label">
+            ${escapeHtml(category)}
+          </div>
+
+        </div>
+      `;
+
+      container.appendChild(card);
+
+    });
+
+  }
+
+
+  /* ================================
+     ARAMA
+     ================================ */
+
   function searchListings(value) {
-    const cards = document.querySelectorAll(".card");
-    const search = value.toLowerCase();
 
-    cards.forEach(card => {
-      const title = card.dataset.title.toLowerCase();
+    const search =
+      value.toLowerCase().trim();
 
-      if (title.includes(search) || search === "") {
-        card.style.display = "";
-      } else {
-        card.style.display = "none";
-      }
+    if (search === "") {
+
+      displayListings(allListings);
+
+      return;
+    }
+
+    const filtered =
+      allListings.filter(ilan => {
+
+        const text = `
+          ${ilan.baslik || ""}
+          ${ilan.aciklama || ""}
+          ${ilan.kategori || ""}
+          ${ilan.mahalle || ""}
+        `.toLowerCase();
+
+        return text.includes(search);
+
+      });
+
+    displayListings(filtered);
+  }
+
+
+  /* ================================
+     KATEGORİ FİLTRESİ
+     ================================ */
+
+  function filterCategory(category) {
+
+    const filtered =
+      allListings.filter(
+        ilan => ilan.kategori === category
+      );
+
+    displayListings(filtered);
+
+    window.scrollTo({
+      top: document.querySelector(".listings").offsetTop - 100,
+      behavior: "smooth"
     });
   }
+
+
+  /* ================================
+     MODAL
+     ================================ */
+
+  function openModal() {
+
+    document.getElementById("ilanModal").style.display =
+      "block";
+  }
+
+  function closeModal() {
+
+    document.getElementById("ilanModal").style.display =
+      "none";
+
+    document.getElementById("formMessage").style.display =
+      "none";
+  }
+
+
+  /* ================================
+     İLAN EKLE
+     ================================ */
+
+  document
+    .getElementById("ilanForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const submitBtn =
+        document.getElementById("submitBtn");
+
+      const message =
+        document.getElementById("formMessage");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Yayınlanıyor...";
+
+      message.style.display = "none";
+
+      const baslik =
+        document.getElementById("baslik").value.trim();
+
+      const fiyat =
+        Number(document.getElementById("fiyat").value);
+
+      const kategori =
+        document.getElementById("kategori").value;
+
+      const mahalle =
+        document.getElementById("mahalle").value.trim();
+
+      const aciklama =
+        document.getElementById("aciklama").value.trim();
+
+
+      const { error } =
+        await supabaseClient
+          .from("ilantable")
+          .insert([
+            {
+              baslik: baslik,
+              fiyat: fiyat,
+              aciklama: aciklama,
+              kategori: kategori,
+              mahalle: mahalle
+            }
+          ]);
+
+
+      if (error) {
+
+        console.error(error);
+
+        message.className =
+          "message error";
+
+        message.textContent =
+          "İlan eklenirken hata oluştu. Lütfen tekrar deneyin.";
+
+        message.style.display = "block";
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "İlanı Yayınla";
+
+        return;
+      }
+
+
+      message.className =
+        "message success";
+
+      message.textContent =
+        "İlanınız başarıyla yayınlandı!";
+
+      message.style.display = "block";
+
+      document.getElementById("ilanForm").reset();
+
+      await loadListings();
+
+      setTimeout(() => {
+
+        closeModal();
+
+      }, 1500);
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = "İlanı Yayınla";
+
+    });
+
+
+  /* ================================
+     GÜVENLİ METİN
+     ================================ */
+
+  function escapeHtml(text) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+  }
+
+
+  /* ================================
+     SAYFA AÇILINCA İLANLARI GETİR
+     ================================ */
+
+  loadListings();
+
 </script>
 
 </body>
 </html>
+```
