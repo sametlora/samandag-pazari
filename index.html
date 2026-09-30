@@ -277,14 +277,16 @@
       font-weight: bold;
     }
 
-    /* GALERİ */
+    /* ==========================================
+       GALERİ
+       ========================================== */
 
     .modal {
       display: none;
       position: fixed;
       z-index: 9999;
       inset: 0;
-      background: rgba(0,0,0,.92);
+      background: rgba(0,0,0,.94);
       padding: 20px;
     }
 
@@ -299,6 +301,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      flex-shrink: 0;
     }
 
     .modal-title {
@@ -316,6 +319,33 @@
       border-radius: 50%;
     }
 
+    /* ZOOM BUTONLARI */
+
+    .zoom-controls {
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      z-index: 20;
+      display: flex;
+      gap: 7px;
+    }
+
+    .zoom-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.92);
+      color: #111;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    }
+
+    .zoom-btn:hover {
+      background: white;
+    }
+
     .gallery-main {
       flex: 1;
       min-height: 0;
@@ -323,23 +353,46 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .gallery-image-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      touch-action: none;
     }
 
     .gallery-main img {
-  max-width: 98%;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 8px;
-  cursor: zoom-in;
-  transform: scale(1);
-  transition: transform 0.15s ease;
-  user-select: none;
-  -webkit-user-drag: none;
-}
+      max-width: 98%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
 
-.gallery-main img.zoomed {
-  cursor: grab;
-}
+      transform: translate(0px, 0px) scale(1);
+      transform-origin: center center;
+
+      transition: transform .15s ease;
+
+      cursor: zoom-in;
+      user-select: none;
+      -webkit-user-drag: none;
+
+      touch-action: none;
+    }
+
+    .gallery-main img.zoomed {
+      cursor: grab;
+    }
+
+    .gallery-main img.dragging {
+      cursor: grabbing;
+      transition: none;
+    }
 
     .gallery-arrow {
       position: absolute;
@@ -352,7 +405,11 @@
       color: #111;
       font-size: 28px;
       padding: 0;
-      z-index: 2;
+      z-index: 10;
+    }
+
+    .gallery-arrow:hover {
+      background: white;
     }
 
     .gallery-prev {
@@ -369,6 +426,7 @@
       overflow-x: auto;
       padding: 10px 0;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .thumbnail {
@@ -391,7 +449,23 @@
       object-fit: cover;
     }
 
+    .zoom-info {
+      position: absolute;
+      left: 50%;
+      bottom: 75px;
+      transform: translateX(-50%);
+      color: white;
+      background: rgba(0,0,0,.6);
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 5;
+      opacity: .9;
+    }
+
     @media (max-width: 600px) {
+
       header h1 {
         font-size: 23px;
       }
@@ -429,6 +503,36 @@
         max-width: 100%;
         max-height: 65vh;
       }
+
+      .zoom-controls {
+        top: 68px;
+        right: 10px;
+      }
+
+      .zoom-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 21px;
+      }
+
+      .gallery-arrow {
+        width: 42px;
+        height: 42px;
+        font-size: 25px;
+      }
+
+      .gallery-prev {
+        left: 5px;
+      }
+
+      .gallery-next {
+        right: 5px;
+      }
+
+      .zoom-info {
+        bottom: 72px;
+        font-size: 11px;
+      }
     }
   </style>
 </head>
@@ -446,11 +550,13 @@
 
     <!-- İLAN EKLE -->
     <div class="box">
+
       <h2>📢 İlan Ver</h2>
 
       <form id="ilanForm">
 
         <label>İlan Başlığı</label>
+
         <input
           type="text"
           id="baslik"
@@ -459,6 +565,7 @@
         >
 
         <label>Fiyat</label>
+
         <input
           type="number"
           id="fiyat"
@@ -468,6 +575,7 @@
         >
 
         <label>Açıklama</label>
+
         <textarea
           id="aciklama"
           placeholder="Ürün hakkında bilgi yazın..."
@@ -475,19 +583,49 @@
         ></textarea>
 
         <label>Kategori</label>
+
         <select id="kategori" required>
-          <option value="">Kategori seçin</option>
-          <option value="Elektronik">Elektronik</option>
-          <option value="Araç">Araç</option>
-          <option value="Ev">Ev</option>
-          <option value="Emlak">Emlak</option>
-          <option value="Giyim">Giyim</option>
-          <option value="Telefon">Telefon</option>
-          <option value="İş">İş</option>
-          <option value="Diğer">Diğer</option>
+
+          <option value="">
+            Kategori seçin
+          </option>
+
+          <option value="Elektronik">
+            Elektronik
+          </option>
+
+          <option value="Araç">
+            Araç
+          </option>
+
+          <option value="Ev">
+            Ev
+          </option>
+
+          <option value="Emlak">
+            Emlak
+          </option>
+
+          <option value="Giyim">
+            Giyim
+          </option>
+
+          <option value="Telefon">
+            Telefon
+          </option>
+
+          <option value="İş">
+            İş
+          </option>
+
+          <option value="Diğer">
+            Diğer
+          </option>
+
         </select>
 
         <label>Mahalle</label>
+
         <input
           type="text"
           id="mahalle"
@@ -496,6 +634,7 @@
         >
 
         <label>Telefon</label>
+
         <input
           type="tel"
           id="telefon"
@@ -504,6 +643,7 @@
         >
 
         <label>Fotoğraflar</label>
+
         <input
           type="file"
           id="resimler"
@@ -515,9 +655,15 @@
           En fazla 10 fotoğraf seçebilirsiniz.
         </div>
 
-        <div id="previewGrid" class="preview-grid"></div>
+        <div
+          id="previewGrid"
+          class="preview-grid"
+        ></div>
 
-        <div id="status" class="status"></div>
+        <div
+          id="status"
+          class="status"
+        ></div>
 
         <button
           type="submit"
@@ -528,10 +674,14 @@
         </button>
 
       </form>
+
     </div>
 
+
     <!-- ARAMA -->
+
     <div class="box">
+
       <h2>🔎 İlan Ara</h2>
 
       <input
@@ -542,61 +692,108 @@
       >
 
       <div class="categories">
-        <button class="category-btn active" data-category="Tümü">
+
+        <button
+          class="category-btn active"
+          data-category="Tümü"
+        >
           Tümü
         </button>
 
-        <button class="category-btn" data-category="Elektronik">
+        <button
+          class="category-btn"
+          data-category="Elektronik"
+        >
           Elektronik
         </button>
 
-        <button class="category-btn" data-category="Araç">
+        <button
+          class="category-btn"
+          data-category="Araç"
+        >
           Araç
         </button>
 
-        <button class="category-btn" data-category="Ev">
+        <button
+          class="category-btn"
+          data-category="Ev"
+        >
           Ev
         </button>
 
-        <button class="category-btn" data-category="Emlak">
+        <button
+          class="category-btn"
+          data-category="Emlak"
+        >
           Emlak
         </button>
 
-        <button class="category-btn" data-category="Giyim">
+        <button
+          class="category-btn"
+          data-category="Giyim"
+        >
           Giyim
         </button>
 
-        <button class="category-btn" data-category="Telefon">
+        <button
+          class="category-btn"
+          data-category="Telefon"
+        >
           Telefon
         </button>
 
-        <button class="category-btn" data-category="İş">
+        <button
+          class="category-btn"
+          data-category="İş"
+        >
           İş
         </button>
 
-        <button class="category-btn" data-category="Diğer">
+        <button
+          class="category-btn"
+          data-category="Diğer"
+        >
           Diğer
         </button>
+
       </div>
+
     </div>
 
   </div>
 
+
   <h2>📋 Güncel İlanlar</h2>
 
-  <div id="listings" class="listings">
-    <div class="empty">İlanlar yükleniyor...</div>
+  <div
+    id="listings"
+    class="listings"
+  >
+
+    <div class="empty">
+      İlanlar yükleniyor...
+    </div>
+
   </div>
 
 </div>
 
 
-<!-- GALERİ MODALI -->
+<!-- ==========================================
+     GALERİ MODALI
+     ========================================== -->
 
-<div id="galleryModal" class="modal">
+<div
+  id="galleryModal"
+  class="modal"
+>
 
   <div class="modal-header">
-    <div id="galleryTitle" class="modal-title">
+
+    <div
+      id="galleryTitle"
+      class="modal-title"
+    >
       Fotoğraflar
     </div>
 
@@ -607,9 +804,48 @@
     >
       ×
     </button>
+
   </div>
 
-  <div class="gallery-main">
+
+  <!-- ZOOM BUTONLARI -->
+
+  <div class="zoom-controls">
+
+    <button
+      id="zoomOut"
+      class="zoom-btn"
+      type="button"
+      title="Uzaklaştır"
+    >
+      −
+    </button>
+
+    <button
+      id="zoomReset"
+      class="zoom-btn"
+      type="button"
+      title="Zoom sıfırla"
+    >
+      ↺
+    </button>
+
+    <button
+      id="zoomIn"
+      class="zoom-btn"
+      type="button"
+      title="Yakınlaştır"
+    >
+      +
+    </button>
+
+  </div>
+
+
+  <div
+    class="gallery-main"
+    id="galleryMain"
+  >
 
     <button
       id="galleryPrev"
@@ -619,11 +855,21 @@
       ‹
     </button>
 
-    <img
-      id="galleryImage"
-      src=""
-      alt="İlan fotoğrafı"
+
+    <div
+      class="gallery-image-wrapper"
+      id="galleryImageWrapper"
     >
+
+      <img
+        id="galleryImage"
+        src=""
+        alt="İlan fotoğrafı"
+        draggable="false"
+      >
+
+    </div>
+
 
     <button
       id="galleryNext"
@@ -633,9 +879,21 @@
       ›
     </button>
 
+
+    <div
+      class="zoom-info"
+      id="zoomInfo"
+    >
+      Tekerlek ile yakınlaştır • Sürükleyerek hareket ettir
+    </div>
+
   </div>
 
-  <div id="thumbnails" class="thumbnails"></div>
+
+  <div
+    id="thumbnails"
+    class="thumbnails"
+  ></div>
 
 </div>
 
@@ -664,16 +922,42 @@
   // ==========================================
 
   let allListings = [];
+
   let selectedCategory = "Tümü";
 
   let galleryImages = [];
+
   let galleryIndex = 0;
+
+
+  // ==========================================
+  // ZOOM DEĞİŞKENLERİ
+  // ==========================================
+
   let zoomLevel = 1;
+
+  const MIN_ZOOM = 1;
+
+  const MAX_ZOOM = 5;
+
+  const ZOOM_STEP = 0.25;
+
+
+  let imageX = 0;
+
+  let imageY = 0;
+
+
   let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let translateX = 0;
-  let translateY = 0;
+
+  let dragStartX = 0;
+
+  let dragStartY = 0;
+
+  let startImageX = 0;
+
+  let startImageY = 0;
+
 
   // ==========================================
   // HTML GÜVENLİĞİ
@@ -681,16 +965,34 @@
 
   function escapeHtml(value) {
 
-    if (value === null || value === undefined) {
+    if (
+      value === null ||
+      value === undefined
+    ) {
+
       return "";
+
     }
 
     return String(value)
       .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
   }
 
 
@@ -701,28 +1003,41 @@
   function getImageUrls(resimurl) {
 
     if (!resimurl) {
+
       return [];
+
     }
 
-    // Yeni sistem: JSON array
+
     try {
 
-      const parsed = JSON.parse(resimurl);
+      const parsed =
+        JSON.parse(resimurl);
 
       if (Array.isArray(parsed)) {
+
         return parsed.filter(Boolean);
+
       }
 
     } catch (error) {
+
       // Eski tek fotoğraf sistemi olabilir
+
     }
 
-    // Eski sistem: tek URL
-    if (typeof resimurl === "string") {
+
+    if (
+      typeof resimurl === "string"
+    ) {
+
       return [resimurl];
+
     }
+
 
     return [];
+
   }
 
 
@@ -732,66 +1047,120 @@
 
   document
     .getElementById("resimler")
-    .addEventListener("change", function(event) {
+    .addEventListener(
+      "change",
+      function(event) {
 
-      const files = Array.from(event.target.files);
+        const files =
+          Array.from(
+            event.target.files
+          );
 
-      const previewGrid =
-        document.getElementById("previewGrid");
 
-      previewGrid.innerHTML = "";
+        const previewGrid =
+          document.getElementById(
+            "previewGrid"
+          );
 
-      if (files.length > 10) {
 
-        alert("En fazla 10 fotoğraf seçebilirsiniz.");
+        previewGrid.innerHTML =
+          "";
 
-        event.target.value = "";
 
-        return;
-      }
+        if (files.length > 10) {
 
-      files.forEach((file, index) => {
+          alert(
+            "En fazla 10 fotoğraf seçebilirsiniz."
+          );
 
-        if (!file.type.startsWith("image/")) {
+          event.target.value =
+            "";
+
           return;
+
         }
 
-        const reader = new FileReader();
 
-        reader.onload = function(e) {
+        files.forEach(
+          (file, index) => {
 
-          const div =
-            document.createElement("div");
+            if (
+              !file.type.startsWith(
+                "image/"
+              )
+            ) {
 
-          div.className = "preview-item";
+              return;
 
-          div.innerHTML = `
-            <img
-              src="${e.target.result}"
-              alt="Fotoğraf ${index + 1}"
-            >
+            }
 
-            <span class="preview-number">
-              ${index + 1}
-            </span>
-          `;
 
-          previewGrid.appendChild(div);
-        };
+            const reader =
+              new FileReader();
 
-        reader.readAsDataURL(file);
-      });
-    });
+
+            reader.onload =
+              function(e) {
+
+                const div =
+                  document.createElement(
+                    "div"
+                  );
+
+
+                div.className =
+                  "preview-item";
+
+
+                div.innerHTML = `
+
+                  <img
+                    src="${e.target.result}"
+                    alt="Fotoğraf ${index + 1}"
+                  >
+
+                  <span
+                    class="preview-number"
+                  >
+                    ${index + 1}
+                  </span>
+
+                `;
+
+
+                previewGrid
+                  .appendChild(div);
+
+              };
+
+
+            reader.readAsDataURL(
+              file
+            );
+
+          }
+        );
+
+      }
+    );
 
 
   // ==========================================
   // FOTOĞRAF YÜKLE
   // ==========================================
 
-  async function uploadImage(file, index, total) {
+  async function uploadImage(
+    file,
+    index,
+    total
+  ) {
 
     const extension =
-      file.name.split(".").pop().toLowerCase();
+      file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
 
     const randomName =
       Date.now() +
@@ -802,39 +1171,66 @@
       "." +
       extension;
 
+
     const filePath =
       "ilan-" +
       randomName;
 
+
     const status =
-      document.getElementById("status");
+      document.getElementById(
+        "status"
+      );
+
 
     status.textContent =
       `📤 Fotoğraf ${index} / ${total} yükleniyor...`;
+
 
     const { error } =
       await supabaseClient
         .storage
         .from("ilan-fotograflari")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false
-        });
+        .upload(
+          filePath,
+          file,
+          {
+            cacheControl:
+              "3600",
+            upsert:
+              false
+          }
+        );
+
 
     if (error) {
+
       throw error;
+
     }
+
 
     const { data } =
       supabaseClient
         .storage
-        .from("ilan-fotograflari")
-        .getPublicUrl(filePath);
+        .from(
+          "ilan-fotograflari"
+        )
+        .getPublicUrl(
+          filePath
+        );
+
 
     return {
-      url: data.publicUrl,
-      path: filePath
+
+      url:
+        data.publicUrl,
+
+      path:
+        filePath
+
     };
+
   }
 
 
@@ -844,195 +1240,270 @@
 
   document
     .getElementById("ilanForm")
-    .addEventListener("submit", async function(event) {
+    .addEventListener(
+      "submit",
+      async function(event) {
 
-      event.preventDefault();
-
-      const submitBtn =
-        document.getElementById("submitBtn");
-
-      const status =
-        document.getElementById("status");
-
-      const files =
-        Array.from(
-          document.getElementById("resimler").files
-        );
-
-      if (files.length > 10) {
-
-        alert("En fazla 10 fotoğraf yükleyebilirsiniz.");
-
-        return;
-      }
+        event.preventDefault();
 
 
-      // Her fotoğraf için maksimum 5 MB
-      for (const file of files) {
+        const submitBtn =
+          document.getElementById(
+            "submitBtn"
+          );
 
-        if (!file.type.startsWith("image/")) {
+
+        const status =
+          document.getElementById(
+            "status"
+          );
+
+
+        const files =
+          Array.from(
+            document
+              .getElementById(
+                "resimler"
+              )
+              .files
+          );
+
+
+        if (files.length > 10) {
 
           alert(
-            `"${file.name}" bir fotoğraf değil.`
+            "En fazla 10 fotoğraf yükleyebilirsiniz."
           );
 
           return;
+
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-
-          alert(
-            `"${file.name}" 5 MB'dan büyük.`
-          );
-
-          return;
-        }
-      }
-
-
-      submitBtn.disabled = true;
-
-      status.textContent =
-        "⏳ İlan hazırlanıyor...";
-
-
-      const uploadedFiles = [];
-      const imageUrls = [];
-
-
-      try {
-
-        // ====================================
-        // FOTOĞRAFLARI YÜKLE
-        // ====================================
 
         for (
-          let i = 0;
-          i < files.length;
-          i++
+          const file of files
         ) {
 
-          const result =
-            await uploadImage(
-              files[i],
-              i + 1,
-              files.length
+          if (
+            !file.type.startsWith(
+              "image/"
+            )
+          ) {
+
+            alert(
+              `"${file.name}" bir fotoğraf değil.`
             );
 
-          uploadedFiles.push(result.path);
+            return;
 
-          imageUrls.push(result.url);
+          }
+
+
+          if (
+            file.size >
+            5 * 1024 * 1024
+          ) {
+
+            alert(
+              `"${file.name}" 5 MB'dan büyük.`
+            );
+
+            return;
+
+          }
+
         }
 
 
-        // ====================================
-        // İLANI VERİTABANINA EKLE
-        // ====================================
+        submitBtn.disabled =
+          true;
+
 
         status.textContent =
-          "💾 İlan kaydediliyor...";
+          "⏳ İlan hazırlanıyor...";
 
 
-        const ilanData = {
+        const uploadedFiles =
+          [];
 
-          baslik:
-            document
-              .getElementById("baslik")
-              .value
-              .trim(),
 
-          fiyat:
-            Number(
+        const imageUrls =
+          [];
+
+
+        try {
+
+          // FOTOĞRAFLARI YÜKLE
+
+          for (
+            let i = 0;
+            i < files.length;
+            i++
+          ) {
+
+            const result =
+              await uploadImage(
+                files[i],
+                i + 1,
+                files.length
+              );
+
+
+            uploadedFiles.push(
+              result.path
+            );
+
+
+            imageUrls.push(
+              result.url
+            );
+
+          }
+
+
+          // İLANI KAYDET
+
+          status.textContent =
+            "💾 İlan kaydediliyor...";
+
+
+          const ilanData = {
+
+            baslik:
               document
-                .getElementById("fiyat")
+                .getElementById(
+                  "baslik"
+                )
                 .value
-            ),
-
-          aciklama:
-            document
-              .getElementById("aciklama")
-              .value
-              .trim(),
-
-          kategori:
-            document
-              .getElementById("kategori")
-              .value,
-
-          mahalle:
-            document
-              .getElementById("mahalle")
-              .value
-              .trim(),
-
-          telefon:
-            document
-              .getElementById("telefon")
-              .value
-              .trim(),
-
-          // 10 fotoğrafın URL'lerini JSON olarak sakla
-          resimurl:
-            imageUrls.length > 0
-              ? JSON.stringify(imageUrls)
-              : null
-        };
+                .trim(),
 
 
-        const { error } =
-          await supabaseClient
-            .from("ilantable")
-            .insert([ilanData]);
+            fiyat:
+              Number(
+                document
+                  .getElementById(
+                    "fiyat"
+                  )
+                  .value
+              ),
 
 
-        if (error) {
-          throw error;
+            aciklama:
+              document
+                .getElementById(
+                  "aciklama"
+                )
+                .value
+                .trim(),
+
+
+            kategori:
+              document
+                .getElementById(
+                  "kategori"
+                )
+                .value,
+
+
+            mahalle:
+              document
+                .getElementById(
+                  "mahalle"
+                )
+                .value
+                .trim(),
+
+
+            telefon:
+              document
+                .getElementById(
+                  "telefon"
+                )
+                .value
+                .trim(),
+
+
+            resimurl:
+              imageUrls.length > 0
+                ? JSON.stringify(
+                    imageUrls
+                  )
+                : null
+
+          };
+
+
+          const { error } =
+            await supabaseClient
+              .from(
+                "ilantable"
+              )
+              .insert([
+                ilanData
+              ]);
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          status.textContent =
+            "✅ İlanınız başarıyla yayınlandı!";
+
+
+          alert(
+            "İlan başarıyla yayınlandı! 🎉"
+          );
+
+
+          document
+            .getElementById(
+              "ilanForm"
+            )
+            .reset();
+
+
+          document
+            .getElementById(
+              "previewGrid"
+            )
+            .innerHTML =
+            "";
+
+
+          await loadListings();
+
+
+        } catch (error) {
+
+          console.error(
+            error
+          );
+
+
+          status.textContent =
+            "❌ Hata: " +
+            error.message;
+
+
+          alert(
+            "İlan eklenirken hata oluştu:\n\n" +
+            error.message
+          );
+
+
+        } finally {
+
+          submitBtn.disabled =
+            false;
+
         }
-
-
-        // ====================================
-        // BAŞARILI
-        // ====================================
-
-        status.textContent =
-          "✅ İlanınız başarıyla yayınlandı!";
-
-        alert(
-          "İlan başarıyla yayınlandı! 🎉"
-        );
-
-
-        document
-          .getElementById("ilanForm")
-          .reset();
-
-        document
-          .getElementById("previewGrid")
-          .innerHTML = "";
-
-
-        await loadListings();
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        status.textContent =
-          "❌ Hata: " + error.message;
-
-        alert(
-          "İlan eklenirken hata oluştu:\n\n" +
-          error.message
-        );
-
-      } finally {
-
-        submitBtn.disabled = false;
 
       }
-
-    });
+    );
 
 
   // ==========================================
@@ -1042,38 +1513,64 @@
   async function loadListings() {
 
     const listings =
-      document.getElementById("listings");
+      document.getElementById(
+        "listings"
+      );
+
 
     listings.innerHTML =
-      `<div class="empty">İlanlar yükleniyor...</div>`;
+      `
+        <div class="empty">
+          İlanlar yükleniyor...
+        </div>
+      `;
 
 
     const { data, error } =
       await supabaseClient
         .from("ilantable")
         .select("*")
-        .order("created_at", {
-          ascending: false
-        });
+        .order(
+          "created_at",
+          {
+            ascending:
+              false
+          }
+        );
 
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        error
+      );
+
 
       listings.innerHTML = `
+
         <div class="empty">
+
           İlanlar yüklenirken hata oluştu.
+
           <br><br>
-          ${escapeHtml(error.message)}
+
+          ${escapeHtml(
+            error.message
+          )}
+
         </div>
+
       `;
 
+
       return;
+
     }
 
 
-    allListings = data || [];
+    allListings =
+      data || [];
+
 
     displayListings();
 
@@ -1087,253 +1584,387 @@
   function displayListings() {
 
     const listings =
-      document.getElementById("listings");
+      document.getElementById(
+        "listings"
+      );
+
 
     const search =
       document
-        .getElementById("searchInput")
+        .getElementById(
+          "searchInput"
+        )
         .value
         .toLowerCase()
         .trim();
 
 
     const filtered =
-      allListings.filter(ilan => {
+      allListings.filter(
+        ilan => {
 
-        const imageText =
-          [
-            ilan.baslik,
-            ilan.aciklama,
-            ilan.kategori,
-            ilan.mahalle
-          ]
-            .join(" ")
-            .toLowerCase();
-
-
-        const searchMatch =
-          !search ||
-          imageText.includes(search);
+          const imageText =
+            [
+              ilan.baslik,
+              ilan.aciklama,
+              ilan.kategori,
+              ilan.mahalle
+            ]
+              .join(" ")
+              .toLowerCase();
 
 
-        const categoryMatch =
-          selectedCategory === "Tümü" ||
-          ilan.kategori === selectedCategory;
+          const searchMatch =
+            !search ||
+            imageText.includes(
+              search
+            );
 
 
-        return (
-          searchMatch &&
-          categoryMatch
-        );
+          const categoryMatch =
+            selectedCategory ===
+              "Tümü" ||
+            ilan.kategori ===
+              selectedCategory;
 
-      });
+
+          return (
+            searchMatch &&
+            categoryMatch
+          );
+
+        }
+      );
 
 
-    if (filtered.length === 0) {
+    if (
+      filtered.length === 0
+    ) {
 
       listings.innerHTML = `
+
         <div class="empty">
+
           Henüz ilan bulunamadı.
+
         </div>
+
       `;
 
+
       return;
+
     }
 
 
-    listings.innerHTML = "";
+    listings.innerHTML =
+      "";
 
 
-    filtered.forEach(ilan => {
+    filtered.forEach(
+      ilan => {
 
-      const urls =
-        getImageUrls(ilan.resimurl);
-
-      const card =
-        document.createElement("div");
-
-      card.className = "card";
+        const urls =
+          getImageUrls(
+            ilan.resimurl
+          );
 
 
-      // ====================================
-      // FOTOĞRAF ALANI
-      // ====================================
-
-      const imageArea =
-        document.createElement("div");
-
-      imageArea.className =
-        "card-image";
+        const card =
+          document.createElement(
+            "div"
+          );
 
 
-      if (urls.length > 0) {
-
-        const img =
-          document.createElement("img");
-
-        img.src = urls[0];
-
-        img.alt =
-          ilan.baslik || "İlan fotoğrafı";
-
-        img.loading = "lazy";
-
-        imageArea.appendChild(img);
+        card.className =
+          "card";
 
 
-        if (urls.length > 1) {
+        // FOTOĞRAF ALANI
 
-          const count =
-            document.createElement("div");
-
-          count.className =
-            "photo-count";
-
-          count.textContent =
-            `📷 ${urls.length} fotoğraf`;
-
-          imageArea.appendChild(count);
-        }
+        const imageArea =
+          document.createElement(
+            "div"
+          );
 
 
-        imageArea.addEventListener(
-          "click",
-          function() {
+        imageArea.className =
+          "card-image";
 
-            openGallery(
-              urls,
-              ilan.baslik || "İlan fotoğrafları"
+
+        if (
+          urls.length > 0
+        ) {
+
+          const img =
+            document.createElement(
+              "img"
+            );
+
+
+          img.src =
+            urls[0];
+
+
+          img.alt =
+            ilan.baslik ||
+            "İlan fotoğrafı";
+
+
+          img.loading =
+            "lazy";
+
+
+          imageArea.appendChild(
+            img
+          );
+
+
+          if (
+            urls.length > 1
+          ) {
+
+            const count =
+              document.createElement(
+                "div"
+              );
+
+
+            count.className =
+              "photo-count";
+
+
+            count.textContent =
+              `📷 ${urls.length} fotoğraf`;
+
+
+            imageArea.appendChild(
+              count
             );
 
           }
+
+
+          imageArea.addEventListener(
+            "click",
+            function() {
+
+              openGallery(
+                urls,
+                ilan.baslik ||
+                  "İlan fotoğrafları"
+              );
+
+            }
+          );
+
+        } else {
+
+          const noImage =
+            document.createElement(
+              "div"
+            );
+
+
+          noImage.className =
+            "no-image";
+
+
+          noImage.textContent =
+            "📦";
+
+
+          imageArea.appendChild(
+            noImage
+          );
+
+        }
+
+
+        // İLAN BİLGİLERİ
+
+        const body =
+          document.createElement(
+            "div"
+          );
+
+
+        body.className =
+          "card-body";
+
+
+        const title =
+          document.createElement(
+            "div"
+          );
+
+
+        title.className =
+          "card-title";
+
+
+        title.textContent =
+          ilan.baslik ||
+          "";
+
+
+        body.appendChild(
+          title
         );
 
-      } else {
 
-        const noImage =
-          document.createElement("div");
-
-        noImage.className =
-          "no-image";
-
-        noImage.textContent = "📦";
-
-        imageArea.appendChild(noImage);
-
-      }
+        const price =
+          document.createElement(
+            "div"
+          );
 
 
-      // ====================================
-      // İLAN BİLGİLERİ
-      // ====================================
-
-      const body =
-        document.createElement("div");
-
-      body.className =
-        "card-body";
+        price.className =
+          "price";
 
 
-      const title =
-        document.createElement("div");
-
-      title.className =
-        "card-title";
-
-      title.textContent =
-        ilan.baslik || "";
-
-      body.appendChild(title);
-
-
-      const price =
-        document.createElement("div");
-
-      price.className =
-        "price";
-
-      price.textContent =
-        ilan.fiyat
-          ? Number(ilan.fiyat).toLocaleString("tr-TR") + " TL"
-          : "Fiyat belirtilmedi";
-
-      body.appendChild(price);
+        price.textContent =
+          ilan.fiyat
+            ? Number(
+                ilan.fiyat
+              ).toLocaleString(
+                "tr-TR"
+              ) +
+              " TL"
+            : "Fiyat belirtilmedi";
 
 
-      const description =
-        document.createElement("div");
-
-      description.className =
-        "description";
-
-      description.textContent =
-        ilan.aciklama || "";
-
-      body.appendChild(description);
+        body.appendChild(
+          price
+        );
 
 
-      const category =
-        document.createElement("div");
-
-      category.className =
-        "info";
-
-      category.textContent =
-        "📁 " +
-        (ilan.kategori || "Diğer");
-
-      body.appendChild(category);
+        const description =
+          document.createElement(
+            "div"
+          );
 
 
-      const neighborhood =
-        document.createElement("div");
-
-      neighborhood.className =
-        "info";
-
-      neighborhood.textContent =
-        "📍 " +
-        (ilan.mahalle || "");
-
-      body.appendChild(neighborhood);
+        description.className =
+          "description";
 
 
-      if (ilan.telefon) {
+        description.textContent =
+          ilan.aciklama ||
+          "";
 
-        const phone =
-          document.createElement("a");
 
-        phone.className =
-          "phone";
+        body.appendChild(
+          description
+        );
 
-        phone.href =
-          "tel:" +
-          ilan.telefon.replace(
-            /[^0-9+]/g,
+
+        const category =
+          document.createElement(
+            "div"
+          );
+
+
+        category.className =
+          "info";
+
+
+        category.textContent =
+          "📁 " +
+          (
+            ilan.kategori ||
+            "Diğer"
+          );
+
+
+        body.appendChild(
+          category
+        );
+
+
+        const neighborhood =
+          document.createElement(
+            "div"
+          );
+
+
+        neighborhood.className =
+          "info";
+
+
+        neighborhood.textContent =
+          "📍 " +
+          (
+            ilan.mahalle ||
             ""
           );
 
-        phone.textContent =
-          "📞 " + ilan.telefon;
 
-        phone.addEventListener(
-          "click",
-          function(event) {
-            event.stopPropagation();
-          }
+        body.appendChild(
+          neighborhood
         );
 
-        body.appendChild(phone);
+
+        if (
+          ilan.telefon
+        ) {
+
+          const phone =
+            document.createElement(
+              "a"
+            );
+
+
+          phone.className =
+            "phone";
+
+
+          phone.href =
+            "tel:" +
+            ilan.telefon.replace(
+              /[^0-9+]/g,
+              ""
+            );
+
+
+          phone.textContent =
+            "📞 " +
+            ilan.telefon;
+
+
+          phone.addEventListener(
+            "click",
+            function(event) {
+
+              event.stopPropagation();
+
+            }
+          );
+
+
+          body.appendChild(
+            phone
+          );
+
+        }
+
+
+        card.appendChild(
+          imageArea
+        );
+
+
+        card.appendChild(
+          body
+        );
+
+
+        listings.appendChild(
+          card
+        );
 
       }
-
-
-      card.appendChild(imageArea);
-      card.appendChild(body);
-
-      listings.appendChild(card);
-
-    });
+    );
 
   }
 
@@ -1343,7 +1974,9 @@
   // ==========================================
 
   document
-    .getElementById("searchInput")
+    .getElementById(
+      "searchInput"
+    )
     .addEventListener(
       "input",
       displayListings
@@ -1355,58 +1988,227 @@
   // ==========================================
 
   document
-    .querySelectorAll(".category-btn")
-    .forEach(button => {
+    .querySelectorAll(
+      ".category-btn"
+    )
+    .forEach(
+      button => {
 
-      button.addEventListener(
-        "click",
-        function() {
+        button.addEventListener(
+          "click",
+          function() {
 
-          document
-            .querySelectorAll(".category-btn")
-            .forEach(btn => {
-              btn.classList.remove("active");
-            });
+            document
+              .querySelectorAll(
+                ".category-btn"
+              )
+              .forEach(
+                btn => {
+
+                  btn.classList.remove(
+                    "active"
+                  );
+
+                }
+              );
 
 
-          this.classList.add("active");
+            this.classList.add(
+              "active"
+            );
 
 
-          selectedCategory =
-            this.dataset.category;
+            selectedCategory =
+              this.dataset.category;
 
 
-          displayListings();
+            displayListings();
 
-        }
+          }
+        );
+
+      }
+    );
+
+
+  // ==========================================
+  // ZOOMU SIFIRLA
+  // ==========================================
+
+  function resetZoom() {
+
+    zoomLevel =
+      1;
+
+
+    imageX =
+      0;
+
+
+    imageY =
+      0;
+
+
+    isDragging =
+      false;
+
+
+    updateZoom();
+
+  }
+
+
+  // ==========================================
+  // ZOOMU GÜNCELLE
+  // ==========================================
+
+  function updateZoom() {
+
+    const image =
+      document.getElementById(
+        "galleryImage"
       );
 
-    });
+
+    image.style.transform =
+      `translate(${imageX}px, ${imageY}px) scale(${zoomLevel})`;
+
+
+    if (
+      zoomLevel > 1
+    ) {
+
+      image.classList.add(
+        "zoomed"
+      );
+
+    } else {
+
+      image.classList.remove(
+        "zoomed"
+      );
+
+      imageX =
+        0;
+
+      imageY =
+        0;
+
+      image.style.transform =
+        "translate(0px, 0px) scale(1)";
+
+    }
+
+  }
+
+
+  // ==========================================
+  // ZOOM DEĞİŞTİR
+  // ==========================================
+
+  function changeZoom(
+    amount
+  ) {
+
+    const oldZoom =
+      zoomLevel;
+
+
+    zoomLevel +=
+      amount;
+
+
+    if (
+      zoomLevel < MIN_ZOOM
+    ) {
+
+      zoomLevel =
+        MIN_ZOOM;
+
+    }
+
+
+    if (
+      zoomLevel > MAX_ZOOM
+    ) {
+
+      zoomLevel =
+        MAX_ZOOM;
+
+    }
+
+
+    if (
+      zoomLevel ===
+      MIN_ZOOM
+    ) {
+
+      imageX =
+        0;
+
+      imageY =
+        0;
+
+    }
+
+
+    if (
+      oldZoom !==
+      zoomLevel
+    ) {
+
+      updateZoom();
+
+    }
+
+  }
 
 
   // ==========================================
   // GALERİYİ AÇ
   // ==========================================
 
-  function openGallery(images, title) {
+  function openGallery(
+    images,
+    title
+  ) {
 
-    if (!images || images.length === 0) {
+    if (
+      !images ||
+      images.length === 0
+    ) {
+
       return;
+
     }
 
-    galleryImages = images;
 
-    galleryIndex = 0;
+    galleryImages =
+      images;
+
+
+    galleryIndex =
+      0;
 
 
     document
-      .getElementById("galleryTitle")
-      .textContent = title;
+      .getElementById(
+        "galleryTitle"
+      )
+      .textContent =
+      title;
 
 
     document
-      .getElementById("galleryModal")
-      .classList.add("active");
+      .getElementById(
+        "galleryModal"
+      )
+      .classList.add(
+        "active"
+      );
+
+
+    resetZoom();
 
 
     renderGallery();
@@ -1418,81 +2220,21 @@
   // GALERİ GÖRÜNTÜLE
   // ==========================================
 
-function renderGallery() {
+  function renderGallery() {
 
-  const image =
-    document.getElementById("galleryImage");
-
-  // Yeni fotoğrafa geçince zoom sıfırlanır
-  zoomLevel = 1;
-  translateX = 0;
-  translateY = 0;
-
-  image.src =
-    galleryImages[galleryIndex];
-
-  image.alt =
-    `Fotoğraf ${galleryIndex + 1}`;
-
-  updateZoom();
+    resetZoom();
 
 
-  const thumbnails =
-    document.getElementById("thumbnails");
-
-  thumbnails.innerHTML = "";
-
-
-  galleryImages.forEach(
-    (url, index) => {
-
-      const thumb =
-        document.createElement("div");
-
-      thumb.className =
-        "thumbnail";
-
-
-      if (index === galleryIndex) {
-        thumb.classList.add("active");
-      }
-
-
-      const img =
-        document.createElement("img");
-
-      img.src = url;
-
-      img.alt =
-        `Küçük fotoğraf ${index + 1}`;
-
-
-      thumb.appendChild(img);
-
-
-      thumb.addEventListener(
-        "click",
-        function() {
-
-          galleryIndex = index;
-
-          renderGallery();
-
-        }
+    const image =
+      document.getElementById(
+        "galleryImage"
       );
 
 
-      thumbnails.appendChild(thumb);
-
-    }
-  );
-
-}
-    const image =
-      document.getElementById("galleryImage");
-
     image.src =
-      galleryImages[galleryIndex];
+      galleryImages[
+        galleryIndex
+      ];
 
 
     image.alt =
@@ -1500,43 +2242,69 @@ function renderGallery() {
 
 
     const thumbnails =
-      document.getElementById("thumbnails");
+      document.getElementById(
+        "thumbnails"
+      );
 
-    thumbnails.innerHTML = "";
+
+    thumbnails.innerHTML =
+      "";
 
 
     galleryImages.forEach(
-      (url, index) => {
+      (
+        url,
+        index
+      ) => {
 
         const thumb =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
+
 
         thumb.className =
           "thumbnail";
 
 
-        if (index === galleryIndex) {
-          thumb.classList.add("active");
+        if (
+          index ===
+          galleryIndex
+        ) {
+
+          thumb.classList.add(
+            "active"
+          );
+
         }
 
 
         const img =
-          document.createElement("img");
+          document.createElement(
+            "img"
+          );
 
-        img.src = url;
+
+        img.src =
+          url;
+
 
         img.alt =
           `Küçük fotoğraf ${index + 1}`;
 
 
-        thumb.appendChild(img);
+        thumb.appendChild(
+          img
+        );
 
 
         thumb.addEventListener(
           "click",
           function() {
 
-            galleryIndex = index;
+            galleryIndex =
+              index;
+
 
             renderGallery();
 
@@ -1544,175 +2312,414 @@ function renderGallery() {
         );
 
 
-        thumbnails.appendChild(thumb);
+        thumbnails.appendChild(
+          thumb
+        );
 
       }
     );
 
   }
-// ==========================================
-// FOTOĞRAF ZOOM
-// ==========================================
-
-function updateZoom() {
-
-  const image =
-    document.getElementById("galleryImage");
-
-  image.style.transform =
-    `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
-
-  if (zoomLevel > 1) {
-    image.classList.add("zoomed");
-  } else {
-    image.classList.remove("zoomed");
-  }
-}
 
 
-// ==========================================
-// MOUSE TEKERLEĞİ İLE ZOOM
-// ==========================================
+  // ==========================================
+  // ZOOM BUTONLARI
+  // ==========================================
 
-document
-  .getElementById("galleryImage")
-  .addEventListener(
-    "wheel",
+  document
+    .getElementById(
+      "zoomIn"
+    )
+    .addEventListener(
+      "click",
+      function() {
+
+        changeZoom(
+          ZOOM_STEP
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "zoomOut"
+    )
+    .addEventListener(
+      "click",
+      function() {
+
+        changeZoom(
+          -ZOOM_STEP
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "zoomReset"
+    )
+    .addEventListener(
+      "click",
+      function() {
+
+        resetZoom();
+
+      }
+    );
+
+
+  // ==========================================
+  // MOUSE TEKERLEĞİ İLE ZOOM
+  // ==========================================
+
+  document
+    .getElementById(
+      "galleryImageWrapper"
+    )
+    .addEventListener(
+      "wheel",
+      function(event) {
+
+        event.preventDefault();
+
+
+        if (
+          event.deltaY < 0
+        ) {
+
+          changeZoom(
+            ZOOM_STEP
+          );
+
+        } else {
+
+          changeZoom(
+            -ZOOM_STEP
+          );
+
+        }
+
+      },
+      {
+        passive:
+          false
+      }
+    );
+
+
+  // ==========================================
+  // ÇİFT TIKLAMA İLE ZOOM
+  // ==========================================
+
+  document
+    .getElementById(
+      "galleryImage"
+    )
+    .addEventListener(
+      "dblclick",
+      function(event) {
+
+        event.preventDefault();
+
+
+        if (
+          zoomLevel === 1
+        ) {
+
+          zoomLevel =
+            2.5;
+
+        } else {
+
+          resetZoom();
+
+        }
+
+
+        updateZoom();
+
+      }
+    );
+
+
+  // ==========================================
+  // MOUSE İLE FOTOĞRAF SÜRÜKLEME
+  // ==========================================
+
+  const galleryImage =
+    document.getElementById(
+      "galleryImage"
+    );
+
+
+  galleryImage.addEventListener(
+    "mousedown",
     function(event) {
+
+      if (
+        zoomLevel <= 1
+      ) {
+
+        return;
+
+      }
+
 
       event.preventDefault();
 
-      if (event.deltaY < 0) {
-        zoomLevel += 0.25;
-      } else {
-        zoomLevel -= 0.25;
+
+      isDragging =
+        true;
+
+
+      galleryImage.classList.add(
+        "dragging"
+      );
+
+
+      dragStartX =
+        event.clientX;
+
+
+      dragStartY =
+        event.clientY;
+
+
+      startImageX =
+        imageX;
+
+
+      startImageY =
+        imageY;
+
+    }
+  );
+
+
+  document.addEventListener(
+    "mousemove",
+    function(event) {
+
+      if (
+        !isDragging
+      ) {
+
+        return;
+
       }
 
-      // Minimum 1x
-      if (zoomLevel < 1) {
-        zoomLevel = 1;
-        translateX = 0;
-        translateY = 0;
+
+      const moveX =
+        event.clientX -
+        dragStartX;
+
+
+      const moveY =
+        event.clientY -
+        dragStartY;
+
+
+      imageX =
+        startImageX +
+        moveX;
+
+
+      imageY =
+        startImageY +
+        moveY;
+
+
+      updateZoom();
+
+    }
+  );
+
+
+  document.addEventListener(
+    "mouseup",
+    function() {
+
+      if (
+        !isDragging
+      ) {
+
+        return;
+
       }
 
-      // Maksimum 5x
-      if (zoomLevel > 5) {
-        zoomLevel = 5;
+
+      isDragging =
+        false;
+
+
+      galleryImage.classList.remove(
+        "dragging"
+      );
+
+    }
+  );
+
+
+  // ==========================================
+  // DOKUNMATİK EKRAN / TELEFON
+  // ==========================================
+
+  galleryImage.addEventListener(
+    "touchstart",
+    function(event) {
+
+      if (
+        zoomLevel <= 1
+      ) {
+
+        return;
+
       }
+
+
+      if (
+        event.touches.length !== 1
+      ) {
+
+        return;
+
+      }
+
+
+      const touch =
+        event.touches[0];
+
+
+      isDragging =
+        true;
+
+
+      dragStartX =
+        touch.clientX;
+
+
+      dragStartY =
+        touch.clientY;
+
+
+      startImageX =
+        imageX;
+
+
+      startImageY =
+        imageY;
+
+
+      galleryImage.classList.add(
+        "dragging"
+      );
+
+    },
+    {
+      passive:
+        true
+    }
+  );
+
+
+  galleryImage.addEventListener(
+    "touchmove",
+    function(event) {
+
+      if (
+        !isDragging
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        event.touches.length !== 1
+      ) {
+
+        return;
+
+      }
+
+
+      const touch =
+        event.touches[0];
+
+
+      const moveX =
+        touch.clientX -
+        dragStartX;
+
+
+      const moveY =
+        touch.clientY -
+        dragStartY;
+
+
+      imageX =
+        startImageX +
+        moveX;
+
+
+      imageY =
+        startImageY +
+        moveY;
+
 
       updateZoom();
 
     },
-    { passive: false }
-  );
-
-
-// ==========================================
-// MOUSE İLE FOTOĞRAFI SÜRÜKLE
-// ==========================================
-
-document
-  .getElementById("galleryImage")
-  .addEventListener(
-    "mousedown",
-    function(event) {
-
-      if (zoomLevel <= 1) {
-        return;
-      }
-
-      isDragging = true;
-
-      startX =
-        event.clientX - translateX;
-
-      startY =
-        event.clientY - translateY;
-
-      this.style.cursor = "grabbing";
-
+    {
+      passive:
+        true
     }
   );
 
 
-document.addEventListener(
-  "mousemove",
-  function(event) {
-
-    if (!isDragging) {
-      return;
-    }
-
-    translateX =
-      event.clientX - startX;
-
-    translateY =
-      event.clientY - startY;
-
-    updateZoom();
-
-  }
-);
-
-
-document.addEventListener(
-  "mouseup",
-  function() {
-
-    isDragging = false;
-
-    const image =
-      document.getElementById("galleryImage");
-
-    if (zoomLevel > 1) {
-      image.style.cursor = "grab";
-    }
-
-  }
-);
-
-
-// ==========================================
-// ÇİFT TIKLAMA İLE ZOOM
-// ==========================================
-
-document
-  .getElementById("galleryImage")
-  .addEventListener(
-    "dblclick",
+  galleryImage.addEventListener(
+    "touchend",
     function() {
 
-      if (zoomLevel === 1) {
+      isDragging =
+        false;
 
-        zoomLevel = 2.5;
 
-      } else {
-
-        zoomLevel = 1;
-
-        translateX = 0;
-        translateY = 0;
-
-      }
-
-      updateZoom();
+      galleryImage.classList.remove(
+        "dragging"
+      );
 
     }
   );
+
 
   // ==========================================
   // GALERİ KAPAT
   // ==========================================
 
   document
-    .getElementById("closeGallery")
+    .getElementById(
+      "closeGallery"
+    )
     .addEventListener(
       "click",
       function() {
 
         document
-          .getElementById("galleryModal")
-          .classList.remove("active");
+          .getElementById(
+            "galleryModal"
+          )
+          .classList.remove(
+            "active"
+          );
+
+
+        resetZoom();
 
       }
     );
@@ -1723,21 +2730,35 @@ document
   // ==========================================
 
   document
-    .getElementById("galleryPrev")
+    .getElementById(
+      "galleryPrev"
+    )
     .addEventListener(
       "click",
       function() {
 
-        if (galleryImages.length === 0) {
+        if (
+          galleryImages.length === 0
+        ) {
+
           return;
+
         }
+
 
         galleryIndex--;
 
-        if (galleryIndex < 0) {
+
+        if (
+          galleryIndex < 0
+        ) {
+
           galleryIndex =
-            galleryImages.length - 1;
+            galleryImages.length -
+            1;
+
         }
+
 
         renderGallery();
 
@@ -1750,23 +2771,35 @@ document
   // ==========================================
 
   document
-    .getElementById("galleryNext")
+    .getElementById(
+      "galleryNext"
+    )
     .addEventListener(
       "click",
       function() {
 
-        if (galleryImages.length === 0) {
+        if (
+          galleryImages.length === 0
+        ) {
+
           return;
+
         }
 
+
         galleryIndex++;
+
 
         if (
           galleryIndex >=
           galleryImages.length
         ) {
-          galleryIndex = 0;
+
+          galleryIndex =
+            0;
+
         }
+
 
         renderGallery();
 
@@ -1783,36 +2816,97 @@ document
     function(event) {
 
       const modal =
-        document.getElementById("galleryModal");
+        document.getElementById(
+          "galleryModal"
+        );
+
 
       if (
-        !modal.classList.contains("active")
+        !modal.classList.contains(
+          "active"
+        )
       ) {
+
         return;
-      }
-
-
-      if (event.key === "Escape") {
-
-        modal.classList.remove("active");
 
       }
 
 
-      if (event.key === "ArrowLeft") {
+      if (
+        event.key ===
+        "Escape"
+      ) {
+
+        modal.classList.remove(
+          "active"
+        );
+
+
+        resetZoom();
+
+      }
+
+
+      if (
+        event.key ===
+        "ArrowLeft"
+      ) {
 
         document
-          .getElementById("galleryPrev")
+          .getElementById(
+            "galleryPrev"
+          )
           .click();
 
       }
 
 
-      if (event.key === "ArrowRight") {
+      if (
+        event.key ===
+        "ArrowRight"
+      ) {
 
         document
-          .getElementById("galleryNext")
+          .getElementById(
+            "galleryNext"
+          )
           .click();
+
+      }
+
+
+      if (
+        event.key ===
+        "+" ||
+        event.key ===
+        "="
+      ) {
+
+        changeZoom(
+          ZOOM_STEP
+        );
+
+      }
+
+
+      if (
+        event.key ===
+        "-"
+      ) {
+
+        changeZoom(
+          -ZOOM_STEP
+        );
+
+      }
+
+
+      if (
+        event.key ===
+        "0"
+      ) {
+
+        resetZoom();
 
       }
 
