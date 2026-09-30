@@ -326,11 +326,20 @@
     }
 
     .gallery-main img {
-      max-width: 98%;
-      max-height: 90vh;
-      object-fit: contain;
-      border-radius: 8px;
-    }
+  max-width: 98%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: zoom-in;
+  transform: scale(1);
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.gallery-main img.zoomed {
+  cursor: grab;
+}
 
     .gallery-arrow {
       position: absolute;
@@ -659,7 +668,12 @@
 
   let galleryImages = [];
   let galleryIndex = 0;
-
+  let zoomLevel = 1;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let translateX = 0;
+  let translateY = 0;
 
   // ==========================================
   // HTML GÜVENLİĞİ
@@ -1404,8 +1418,76 @@
   // GALERİ GÖRÜNTÜLE
   // ==========================================
 
-  function renderGallery() {
+function renderGallery() {
 
+  const image =
+    document.getElementById("galleryImage");
+
+  // Yeni fotoğrafa geçince zoom sıfırlanır
+  zoomLevel = 1;
+  translateX = 0;
+  translateY = 0;
+
+  image.src =
+    galleryImages[galleryIndex];
+
+  image.alt =
+    `Fotoğraf ${galleryIndex + 1}`;
+
+  updateZoom();
+
+
+  const thumbnails =
+    document.getElementById("thumbnails");
+
+  thumbnails.innerHTML = "";
+
+
+  galleryImages.forEach(
+    (url, index) => {
+
+      const thumb =
+        document.createElement("div");
+
+      thumb.className =
+        "thumbnail";
+
+
+      if (index === galleryIndex) {
+        thumb.classList.add("active");
+      }
+
+
+      const img =
+        document.createElement("img");
+
+      img.src = url;
+
+      img.alt =
+        `Küçük fotoğraf ${index + 1}`;
+
+
+      thumb.appendChild(img);
+
+
+      thumb.addEventListener(
+        "click",
+        function() {
+
+          galleryIndex = index;
+
+          renderGallery();
+
+        }
+      );
+
+
+      thumbnails.appendChild(thumb);
+
+    }
+  );
+
+}
     const image =
       document.getElementById("galleryImage");
 
@@ -1468,7 +1550,155 @@
     );
 
   }
+// ==========================================
+// FOTOĞRAF ZOOM
+// ==========================================
 
+function updateZoom() {
+
+  const image =
+    document.getElementById("galleryImage");
+
+  image.style.transform =
+    `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+
+  if (zoomLevel > 1) {
+    image.classList.add("zoomed");
+  } else {
+    image.classList.remove("zoomed");
+  }
+}
+
+
+// ==========================================
+// MOUSE TEKERLEĞİ İLE ZOOM
+// ==========================================
+
+document
+  .getElementById("galleryImage")
+  .addEventListener(
+    "wheel",
+    function(event) {
+
+      event.preventDefault();
+
+      if (event.deltaY < 0) {
+        zoomLevel += 0.25;
+      } else {
+        zoomLevel -= 0.25;
+      }
+
+      // Minimum 1x
+      if (zoomLevel < 1) {
+        zoomLevel = 1;
+        translateX = 0;
+        translateY = 0;
+      }
+
+      // Maksimum 5x
+      if (zoomLevel > 5) {
+        zoomLevel = 5;
+      }
+
+      updateZoom();
+
+    },
+    { passive: false }
+  );
+
+
+// ==========================================
+// MOUSE İLE FOTOĞRAFI SÜRÜKLE
+// ==========================================
+
+document
+  .getElementById("galleryImage")
+  .addEventListener(
+    "mousedown",
+    function(event) {
+
+      if (zoomLevel <= 1) {
+        return;
+      }
+
+      isDragging = true;
+
+      startX =
+        event.clientX - translateX;
+
+      startY =
+        event.clientY - translateY;
+
+      this.style.cursor = "grabbing";
+
+    }
+  );
+
+
+document.addEventListener(
+  "mousemove",
+  function(event) {
+
+    if (!isDragging) {
+      return;
+    }
+
+    translateX =
+      event.clientX - startX;
+
+    translateY =
+      event.clientY - startY;
+
+    updateZoom();
+
+  }
+);
+
+
+document.addEventListener(
+  "mouseup",
+  function() {
+
+    isDragging = false;
+
+    const image =
+      document.getElementById("galleryImage");
+
+    if (zoomLevel > 1) {
+      image.style.cursor = "grab";
+    }
+
+  }
+);
+
+
+// ==========================================
+// ÇİFT TIKLAMA İLE ZOOM
+// ==========================================
+
+document
+  .getElementById("galleryImage")
+  .addEventListener(
+    "dblclick",
+    function() {
+
+      if (zoomLevel === 1) {
+
+        zoomLevel = 2.5;
+
+      } else {
+
+        zoomLevel = 1;
+
+        translateX = 0;
+        translateY = 0;
+
+      }
+
+      updateZoom();
+
+    }
+  );
 
   // ==========================================
   // GALERİ KAPAT
