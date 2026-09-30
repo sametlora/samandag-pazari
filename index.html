@@ -86,14 +86,16 @@ button:hover{opacity:.9}
  .mobile-zoom-hint{display:block;position:absolute;left:50%;bottom:98px;transform:translateX(-50%);z-index:26;color:#fff;background:rgba(0,0,0,.55);padding:7px 11px;border-radius:20px;font-size:12px;pointer-events:none;opacity:0;transition:opacity .3s}
  .mobile-zoom-hint.show{opacity:1}
 }
+
+.site-header{background:#fff;color:#111827;border-bottom:1px solid #e5e7eb}.topbar{max-width:1200px;margin:auto;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:25px;font-weight:800}.post-btn{width:auto;margin:0;background:#111827;color:#fff;padding:11px 18px;border-radius:8px;font-size:14px}.hero{max-width:1200px;margin:auto;padding:18px 20px 22px}.hero h1{margin:0 0 5px;font-size:29px}.hero p{margin:0;color:#6b7280;font-size:14px}.container{padding-top:14px}.market-search{padding:12px;margin-bottom:10px}.market-search input{height:48px;margin:0;font-size:16px}.categories{gap:7px;margin-bottom:15px}.category-btn{padding:8px 13px;border-radius:7px;font-size:14px}#listings{grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}.card{border-radius:9px}.card-image{height:235px}.card-body{padding:11px 12px}.card-title{font-size:16px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.price{font-size:18px;margin-bottom:6px}.description{font-size:13px;line-height:1.4;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.info{font-size:12px}.contact-buttons{margin-top:9px}.contact-buttons a{padding:8px 10px;font-size:12px}.form-box{display:none;padding:16px;margin-bottom:15px}.form-box.open{display:block}.form-close{float:right;width:auto;margin:0;padding:5px 10px;background:#eee;color:#333}.section-title{font-size:21px;font-weight:800;margin:18px 0 10px}@media(max-width:600px){.topbar{padding:12px}.brand{font-size:20px}.post-btn{padding:9px 12px;font-size:12px}.hero{padding:14px 12px 16px}.hero h1{font-size:22px}.hero p{font-size:12px}.container{padding:10px}#listings{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card-image{height:170px}.card-body{padding:9px}.card-title{font-size:14px}.price{font-size:16px}.description{font-size:11px}.info{font-size:10px}.contact-buttons{flex-direction:column;gap:4px}.contact-buttons a{width:100%;padding:7px 5px;font-size:10px}.category-btn{font-size:12px;padding:7px 10px}}
 </style>
 </head>
 <body>
 
-<header>🛍️ Samandağ Pazarı</header>
+<header class="site-header"><div class="topbar"><div class="brand">🛍️ Samandağ Pazarı</div><button class="post-btn" id="showFormBtn">＋ Ücretsiz İlan Ver</button></div><div class="hero"><h1>Samandağ’da ne arıyorsunuz?</h1><p>İkinci el ürünler, araçlar, ev eşyaları ve daha fazlası</p></div></header>
 
 <div class="container">
-  <div class="form-box">
+  <div class="form-box" id="ilanForm"><button class="form-close" id="closeFormBtn">✕ Kapat</button>
     <h2>📢 İlan Ver</h2>
     <input type="text" id="baslik" placeholder="İlan Başlığı">
     <input type="number" id="fiyat" placeholder="Fiyat">
@@ -115,9 +117,11 @@ button:hover{opacity:.9}
     <button id="ilanVerBtn">📢 İlanı Yayınla</button>
   </div>
 
-  <div class="search-box">
-    <input type="text" id="searchInput" placeholder="🔎 İlan Ara">
+  <div class="search-box market-search">
+    <input type="text" id="searchInput" placeholder="🔎 Ne arıyorsunuz? Ürün, araç, telefon...">
   </div>
+
+  <div class="section-title">Son İlanlar</div>
 
   <div class="categories">
     <button class="category-btn active" data-category="Tümü">Tümü</button>
@@ -275,7 +279,8 @@ document.getElementById("ilanVerBtn").addEventListener("click",async function(){
   document.getElementById("mahalle").value="";
   document.getElementById("telefon").value="";
   document.getElementById("fotograflar").value="";
-  await loadListings();
+  await const ilanForm=document.getElementById("ilanForm");const showFormBtn=document.getElementById("showFormBtn");const closeFormBtn=document.getElementById("closeFormBtn");showFormBtn.addEventListener("click",()=>{ilanForm.classList.add("open");ilanForm.scrollIntoView({behavior:"smooth",block:"start"})});closeFormBtn.addEventListener("click",()=>ilanForm.classList.remove("open"));
+loadListings();
  }catch(error){
   console.error(error);
   alert("İlan yüklenirken hata oluştu:\n"+error.message);
@@ -600,6 +605,7 @@ galleryModal.addEventListener("click",event=>{
  if(event.target===galleryModal)closeGallery();
 });
 
+const ilanForm=document.getElementById("ilanForm");const showFormBtn=document.getElementById("showFormBtn");const closeFormBtn=document.getElementById("closeFormBtn");showFormBtn.addEventListener("click",()=>{ilanForm.classList.add("open");ilanForm.scrollIntoView({behavior:"smooth",block:"start"})});closeFormBtn.addEventListener("click",()=>ilanForm.classList.remove("open"));
 loadListings();
 </script>
 </body>
