@@ -87,15 +87,103 @@ button:hover{opacity:.9}
  .mobile-zoom-hint.show{opacity:1}
 }
 
-.site-header{background:#fff;color:#111827;border-bottom:1px solid #e5e7eb}.topbar{max-width:1200px;margin:auto;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{font-size:25px;font-weight:800}.post-btn{width:auto;margin:0;background:#111827;color:#fff;padding:11px 18px;border-radius:8px;font-size:14px}.hero{max-width:1200px;margin:auto;padding:18px 20px 22px}.hero h1{margin:0 0 5px;font-size:29px}.hero p{margin:0;color:#6b7280;font-size:14px}.container{padding-top:14px}.market-search{padding:12px;margin-bottom:10px}.market-search input{height:48px;margin:0;font-size:16px}.categories{gap:7px;margin-bottom:15px}.category-btn{padding:8px 13px;border-radius:7px;font-size:14px}#listings{grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}.card{border-radius:9px}.card-image{height:235px}.card-body{padding:11px 12px}.card-title{font-size:16px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.price{font-size:18px;margin-bottom:6px}.description{font-size:13px;line-height:1.4;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.info{font-size:12px}.contact-buttons{margin-top:9px}.contact-buttons a{padding:8px 10px;font-size:12px}.form-box{display:none;padding:16px;margin-bottom:15px}.form-box.open{display:block}.form-close{float:right;width:auto;margin:0;padding:5px 10px;background:#eee;color:#333}.section-title{font-size:21px;font-weight:800;margin:18px 0 10px}@media(max-width:600px){.topbar{padding:12px}.brand{font-size:20px}.post-btn{padding:9px 12px;font-size:12px}.hero{padding:14px 12px 16px}.hero h1{font-size:22px}.hero p{font-size:12px}.container{padding:10px}#listings{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card-image{height:170px}.card-body{padding:9px}.card-title{font-size:14px}.price{font-size:16px}.description{font-size:11px}.info{font-size:10px}.contact-buttons{flex-direction:column;gap:4px}.contact-buttons a{width:100%;padding:7px 5px;font-size:10px}.category-btn{font-size:12px;padding:7px 10px}}
+/* ===== SAMANDAĞ PAZARI PREMIUM PAZARYERİ TASARIMI ===== */
+body{font-family:Arial,Helvetica,sans-serif;background:#f3f5f7;color:#172033}
+.site-header{background:#fff;color:#172033;border-bottom:1px solid #e5e7eb}
+.topbar{max-width:1280px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{font-size:25px;font-weight:900;display:flex;align-items:center;gap:8px}
+.brand small{font-size:11px;color:#7b8494;font-weight:500;margin-left:4px}
+.top-actions{display:flex;align-items:center;gap:8px}
+.header-link{width:auto;margin:0;padding:10px 13px;background:#fff;color:#4b5563;border:1px solid #e1e5ea;border-radius:8px}
+.post-btn{width:auto;margin:0;padding:11px 17px;background:#ff6a00;color:#fff;border-radius:8px;font-weight:800}
+.hero{background:linear-gradient(135deg,#151c2d,#26364f);color:#fff}
+.hero-inner{max-width:1280px;margin:auto;padding:26px 22px 30px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.eyebrow{font-size:11px;letter-spacing:1.4px;font-weight:800;opacity:.72;margin-bottom:7px}
+.hero h1{margin:0 0 7px;font-size:31px;line-height:1.12}
+.hero p{margin:0;color:#d7dce5;font-size:14px}
+.hero-badge{padding:11px 14px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);border-radius:20px;font-size:12px;white-space:nowrap}
+.container{max-width:1280px;margin:auto;padding:18px 22px 35px}
+.form-box{display:none;background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 4px 18px rgba(20,30,50,.08);border:1px solid #e6e9ee}
+.form-box.open{display:block}
+.form-box h2{margin-top:0}
+.form-close{float:right;width:auto;margin:0;padding:6px 11px;background:#eef1f4;color:#374151}
+.market-search{background:#fff;border:1px solid #dfe4ea;border-radius:11px;padding:9px;box-shadow:0 5px 20px rgba(20,30,50,.08);margin-bottom:12px}
+.market-search input{height:52px;margin:0;border:0;outline:0;font-size:17px;background:#fff}
+.categories{background:#fff;border:1px solid #e4e8ed;padding:8px;border-radius:10px;gap:5px;margin-bottom:17px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.category-btn{padding:9px 14px;border-radius:7px;background:#fff;color:#3f4754;border:1px solid transparent;font-size:13px}
+.category-btn:hover{background:#f3f5f7}
+.category-btn.active{background:#172033;color:#fff}
+.section-bar{display:flex;align-items:center;justify-content:space-between;margin:5px 0 10px}
+.section-title{font-size:21px;font-weight:900}
+.section-count{font-size:12px;color:#7b8494}
+#listings{grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:15px}
+.card{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e3e7ec;box-shadow:0 3px 12px rgba(20,30,50,.07);transition:.2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(20,30,50,.12)}
+.card-image{height:235px;background:#edf0f3}
+.card-image img{object-fit:cover}
+.photo-count{right:8px;bottom:8px;padding:5px 8px;border-radius:6px;font-size:11px}
+.card-body{padding:11px 12px 12px}
+.card-title{font-size:15px;line-height:1.3;margin-bottom:5px}
+.price{color:#111827;font-size:18px;margin-bottom:6px}
+.description{font-size:12px;line-height:1.4;margin-bottom:7px;color:#687282;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.info{font-size:11px;color:#687282;margin-top:4px}
+.contact-buttons{margin-top:9px;gap:5px}
+.contact-buttons a{padding:8px 9px;font-size:11px;border-radius:7px}
+.contact-buttons .phone{background:#159447}
+.contact-buttons .whatsapp-btn{background:#20c968}
+.loading,.empty{border:1px solid #e3e7ec}
+@media(max-width:700px){
+ .topbar{padding:11px 12px}
+ .brand{font-size:19px}
+ .brand small,.header-link{display:none}
+ .post-btn{padding:9px 11px;font-size:12px}
+ .hero-inner{padding:20px 12px 22px;display:block}
+ .hero h1{font-size:23px}
+ .hero p{font-size:12px;max-width:340px}
+ .hero-badge{display:inline-block;margin-top:13px;font-size:11px}
+ .container{padding:10px 10px 25px}
+ .market-search{padding:7px}
+ .market-search input{height:45px;font-size:14px}
+ .categories{overflow-x:auto;flex-wrap:nowrap;white-space:nowrap;padding:6px;margin-bottom:12px}
+ .category-btn{flex:0 0 auto;font-size:11px;padding:8px 10px}
+ #listings{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .card-image{height:170px}
+ .card-body{padding:8px}
+ .card-title{font-size:13px}
+ .price{font-size:15px}
+ .description{font-size:10px}
+ .info{font-size:9px}
+ .contact-buttons{flex-direction:column;gap:4px}
+ .contact-buttons a{width:100%;font-size:10px;padding:7px 4px}
+}
+
 </style>
 </head>
 <body>
 
-<header class="site-header"><div class="topbar"><div class="brand">🛍️ Samandağ Pazarı</div><button class="post-btn" id="showFormBtn">＋ Ücretsiz İlan Ver</button></div><div class="hero"><h1>Samandağ’da ne arıyorsunuz?</h1><p>İkinci el ürünler, araçlar, ev eşyaları ve daha fazlası</p></div></header>
+<header class="site-header">
+  <div class="topbar">
+    <div class="brand">🛍️ <span>Samandağ Pazarı</span><small>Samandağ'ın yerel pazarı</small></div>
+    <div class="top-actions">
+      <button class="header-link" id="myAdsBtn">♡ Favoriler</button>
+      <button class="post-btn" id="showFormBtn">＋ Ücretsiz İlan Ver</button>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow">SAMANDAĞ'DA AL • SAT • KEŞFET</div>
+        <h1>Aradığını bul, ilanını hemen yayınla.</h1>
+        <p>Binlerce fırsatı keşfet, güvenle iletişime geç ve kendi ilanını ücretsiz yayınla.</p>
+      </div>
+      <div class="hero-badge">⚡ Hızlı • Yerel • Ücretsiz</div>
+    </div>
+  </div>
+</header>
 
 <div class="container">
-  <div class="form-box" id="ilanForm"><button class="form-close" id="closeFormBtn">✕ Kapat</button>
+  <div class="form-box" id="ilanForm">
+    <button class="form-close" id="closeFormBtn">✕ Kapat</button>
     <h2>📢 İlan Ver</h2>
     <input type="text" id="baslik" placeholder="İlan Başlığı">
     <input type="number" id="fiyat" placeholder="Fiyat">
@@ -117,11 +205,9 @@ button:hover{opacity:.9}
     <button id="ilanVerBtn">📢 İlanı Yayınla</button>
   </div>
 
-  <div class="search-box market-search">
-    <input type="text" id="searchInput" placeholder="🔎 Ne arıyorsunuz? Ürün, araç, telefon...">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="🔎 İlan Ara">
   </div>
-
-  <div class="section-title">Son İlanlar</div>
 
   <div class="categories">
     <button class="category-btn active" data-category="Tümü">Tümü</button>
@@ -135,7 +221,11 @@ button:hover{opacity:.9}
     <button class="category-btn" data-category="Diğer">Diğer</button>
   </div>
 
-  <div id="listings"><div class="loading">İlanlar yükleniyor...</div></div>
+  <div class="section-bar">
+  <div class="section-title">🔥 Son İlanlar</div>
+  <div class="section-count" id="listingCount">Yeni ilanlar burada</div>
+</div>
+<div id="listings"><div class="loading">İlanlar yükleniyor...</div></div>
 </div>
 
 <div class="modal" id="galleryModal">
@@ -279,7 +369,34 @@ document.getElementById("ilanVerBtn").addEventListener("click",async function(){
   document.getElementById("mahalle").value="";
   document.getElementById("telefon").value="";
   document.getElementById("fotograflar").value="";
-  await const ilanForm=document.getElementById("ilanForm");const showFormBtn=document.getElementById("showFormBtn");const closeFormBtn=document.getElementById("closeFormBtn");showFormBtn.addEventListener("click",()=>{ilanForm.classList.add("open");ilanForm.scrollIntoView({behavior:"smooth",block:"start"})});closeFormBtn.addEventListener("click",()=>ilanForm.classList.remove("open"));
+  await 
+const ilanForm=document.getElementById("ilanForm");
+const showFormBtn=document.getElementById("showFormBtn");
+const closeFormBtn=document.getElementById("closeFormBtn");
+const listingCount=document.getElementById("listingCount");
+
+showFormBtn.addEventListener("click",()=>{
+  ilanForm.classList.add("open");
+  ilanForm.scrollIntoView({behavior:"smooth",block:"start"});
+});
+closeFormBtn.addEventListener("click",()=>ilanForm.classList.remove("open"));
+
+const oldDisplayListings=displayListings;
+displayListings=function(){
+  oldDisplayListings();
+  const searchText=searchInput.value.trim().toLowerCase();
+  const count=allListings.filter(ilan=>{
+    const categoryMatch=selectedCategory==="Tümü"||ilan.kategori===selectedCategory;
+    const searchMatch=!searchText||
+      String(ilan.baslik||"").toLowerCase().includes(searchText)||
+      String(ilan.aciklama||"").toLowerCase().includes(searchText)||
+      String(ilan.mahalle||"").toLowerCase().includes(searchText)||
+      String(ilan.kategori||"").toLowerCase().includes(searchText);
+    return categoryMatch&&searchMatch;
+  }).length;
+  listingCount.textContent=count+" ilan";
+};
+
 loadListings();
  }catch(error){
   console.error(error);
@@ -605,7 +722,6 @@ galleryModal.addEventListener("click",event=>{
  if(event.target===galleryModal)closeGallery();
 });
 
-const ilanForm=document.getElementById("ilanForm");const showFormBtn=document.getElementById("showFormBtn");const closeFormBtn=document.getElementById("closeFormBtn");showFormBtn.addEventListener("click",()=>{ilanForm.classList.add("open");ilanForm.scrollIntoView({behavior:"smooth",block:"start"})});closeFormBtn.addEventListener("click",()=>ilanForm.classList.remove("open"));
 loadListings();
 </script>
 </body>
