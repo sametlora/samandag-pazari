@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -10,7 +9,12 @@
 
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+
+html,body{
+ margin:0;
+ padding:0
+}
+
 body{
  font-family:Arial,sans-serif;
  background:#f5f5f5;
@@ -24,41 +28,40 @@ header{
  display:flex;
  align-items:center;
  justify-content:space-between;
- gap:15px;
- font-size:25px;
- font-weight:bold;
- position:sticky;
- top:0;
- z-index:100
+ gap:10px;
+ flex-wrap:wrap;
+ font-size:26px;
+ font-weight:bold
 }
 
-.header-left{
+.header-title{
+ flex:1;
+ text-align:center
+}
+
+.header-buttons{
  display:flex;
- align-items:center;
- gap:8px
+ gap:8px;
+ align-items:center
 }
 
-.header-actions{
- display:flex;
- align-items:center;
- gap:8px
-}
-
-.header-btn{
+.header-buttons button{
  width:auto;
  margin:0;
- padding:9px 13px;
- background:#fff;
- color:#111827;
- border:0;
- border-radius:8px;
- cursor:pointer;
- font-size:13px
+ padding:10px 14px;
+ font-size:14px
 }
 
-.header-btn.orange{
- background:#ff6a00;
- color:#fff
+.login-btn{
+ background:#2563eb
+}
+
+.membership-btn{
+ background:#dc2626
+}
+
+.logout-btn{
+ background:#6b7280
 }
 
 .container{
@@ -67,7 +70,8 @@ header{
  padding:20px
 }
 
-.form-box,.search-box,.membership-box{
+.form-box,
+.search-box{
  background:#fff;
  border-radius:12px;
  box-shadow:0 2px 10px rgba(0,0,0,.08)
@@ -82,7 +86,10 @@ header{
  margin-top:0
 }
 
-input,textarea,select,button{
+input,
+textarea,
+select,
+button{
  width:100%;
  padding:12px;
  margin-top:8px;
@@ -107,10 +114,6 @@ button{
 
 button:hover{
  opacity:.9
-}
-
-#ilanVerBtn{
- background:#ff6a00
 }
 
 .search-box{
@@ -143,136 +146,6 @@ button:hover{
  color:#fff
 }
 
-/* ÜYELİK */
-.membership-box{
- display:none;
- padding:25px;
- margin-bottom:20px
-}
-
-.membership-box.open{
- display:block
-}
-
-.membership-header{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:15px;
- margin-bottom:20px
-}
-
-.membership-header h2{
- margin:0
-}
-
-.membership-close{
- width:auto;
- margin:0;
- background:#e5e7eb;
- color:#111827;
- padding:8px 13px
-}
-
-.membership-status{
- background:#f3f4f6;
- border-radius:10px;
- padding:15px;
- margin-bottom:20px;
- line-height:1.7
-}
-
-.membership-status strong{
- color:#111827
-}
-
-.trial-badge{
- display:inline-block;
- background:#dcfce7;
- color:#166534;
- padding:5px 9px;
- border-radius:20px;
- font-size:12px;
- font-weight:bold
-}
-
-.expired-badge{
- display:inline-block;
- background:#fee2e2;
- color:#991b1b;
- padding:5px 9px;
- border-radius:20px;
- font-size:12px;
- font-weight:bold
-}
-
-.packages{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:15px
-}
-
-.package{
- border:1px solid #ddd;
- border-radius:12px;
- padding:20px;
- background:#fff;
- position:relative
-}
-
-.package:hover{
- border-color:#ff6a00;
- box-shadow:0 5px 18px rgba(0,0,0,.08)
-}
-
-.package.featured{
- border:2px solid #ff6a00
-}
-
-.package-label{
- position:absolute;
- top:-11px;
- left:15px;
- background:#ff6a00;
- color:#fff;
- padding:5px 10px;
- border-radius:15px;
- font-size:11px;
- font-weight:bold
-}
-
-.package h3{
- margin:5px 0 8px;
- font-size:20px
-}
-
-.package-price{
- font-size:27px;
- font-weight:bold;
- color:#dc2626;
- margin-bottom:5px
-}
-
-.package-duration{
- color:#666;
- font-size:13px;
- margin-bottom:12px
-}
-
-.package-info{
- color:#555;
- font-size:13px;
- line-height:1.6;
- margin-bottom:15px
-}
-
-.package-btn{
- background:#ff6a00;
- color:#fff;
- margin:0
-}
-
-/* İLANLAR */
 #listings{
  display:grid;
  grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
@@ -366,4 +239,2887 @@ button:hover{
 }
 
 .contact-buttons .whatsapp-btn{
- background:#25d36
+ background:#25d366
+}
+
+.contact-buttons a:hover{
+ opacity:.88;
+ transform:translateY(-1px)
+}
+
+.loading{
+ text-align:center;
+ padding:40px;
+ color:#777
+}
+
+.empty{
+ background:#fff;
+ padding:40px;
+ text-align:center;
+ border-radius:12px;
+ color:#777
+}
+
+/* AUTH */
+
+.auth-status{
+ background:#f3f4f6;
+ border-radius:10px;
+ padding:12px;
+ margin-bottom:15px;
+ font-size:14px
+}
+
+.auth-user{
+ color:#166534;
+ font-weight:bold
+}
+
+/* ÜYELİK */
+
+.membership-content{
+ background:#fff;
+ color:#222;
+ width:100%;
+ max-width:900px;
+ border-radius:18px;
+ padding:25px;
+ position:relative;
+ max-height:90vh;
+ overflow:auto
+}
+
+.membership-title{
+ text-align:center;
+ margin:0 0 8px;
+ font-size:28px
+}
+
+.membership-subtitle{
+ text-align:center;
+ color:#666;
+ margin-bottom:20px
+}
+
+.trial-box{
+ background:#ecfdf5;
+ border:2px solid #86efac;
+ border-radius:12px;
+ padding:16px;
+ margin-bottom:20px;
+ text-align:center
+}
+
+.trial-box strong{
+ color:#166534;
+ font-size:19px
+}
+
+.plans{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:15px
+}
+
+.plan{
+ border:1px solid #ddd;
+ border-radius:14px;
+ padding:20px;
+ text-align:center;
+ position:relative
+}
+
+.plan.popular{
+ border:2px solid #111827
+}
+
+.popular-label{
+ position:absolute;
+ top:-12px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#111827;
+ color:#fff;
+ padding:5px 12px;
+ border-radius:20px;
+ font-size:12px
+}
+
+.plan h3{
+ margin-top:5px;
+ font-size:21px
+}
+
+.plan-price{
+ font-size:30px;
+ font-weight:bold;
+ color:#dc2626;
+ margin:12px 0
+}
+
+.plan-info{
+ color:#666;
+ line-height:1.7;
+ font-size:14px
+}
+
+.plan button{
+ margin-top:12px
+}
+
+.payment-note{
+ margin-top:20px;
+ padding:14px;
+ background:#f3f4f6;
+ border-radius:10px;
+ color:#555;
+ font-size:13px;
+ line-height:1.5
+}
+
+/* GENEL MODAL */
+
+.modal{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.97);
+ z-index:9999;
+ display:none;
+ flex-direction:column
+}
+
+.modal.active{
+ display:flex
+}
+
+.simple-modal{
+ align-items:center;
+ justify-content:center;
+ background:rgba(0,0,0,.75);
+ padding:15px
+}
+
+.simple-modal-content{
+ background:#fff;
+ color:#222;
+ width:100%;
+ max-width:450px;
+ border-radius:16px;
+ padding:25px;
+ position:relative;
+ max-height:90vh;
+ overflow:auto
+}
+
+.modal-close{
+ position:absolute;
+ right:15px;
+ top:15px;
+ width:auto;
+ margin:0;
+ padding:7px 12px;
+ background:#dc2626
+}
+
+/* GALERİ */
+
+.modal-header{
+ height:65px;
+ min-height:65px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:10px 15px;
+ color:#fff;
+ background:rgba(0,0,0,.75);
+ z-index:20
+}
+
+.modal-title{
+ font-size:17px;
+ font-weight:bold;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ padding-right:10px
+}
+
+.close-btn{
+ width:auto;
+ margin:0;
+ padding:8px 14px;
+ background:#dc2626;
+ color:#fff;
+ font-size:20px
+}
+
+.zoom-controls{
+ position:absolute;
+ top:75px;
+ right:15px;
+ display:flex;
+ gap:6px;
+ z-index:30
+}
+
+.zoom-btn{
+ width:42px;
+ height:42px;
+ padding:0;
+ margin:0;
+ border-radius:8px;
+ background:rgba(255,255,255,.92);
+ color:#111;
+ font-size:21px;
+ font-weight:bold
+}
+
+.gallery-main{
+ flex:1;
+ min-height:0;
+ position:relative;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden
+}
+
+.gallery-image-wrapper{
+ width:100%;
+ height:100%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+ touch-action:none
+}
+
+.gallery-main img{
+ max-width:90%;
+ max-height:78vh;
+ object-fit:contain;
+ user-select:none;
+ -webkit-user-drag:none;
+ transform:translate(0,0) scale(1);
+ transform-origin:center center;
+ transition:transform .12s ease;
+ cursor:zoom-in;
+ will-change:transform
+}
+
+.gallery-main img.zoomed{
+ cursor:grab
+}
+
+.gallery-main img.dragging{
+ cursor:grabbing;
+ transition:none
+}
+
+.gallery-arrow{
+ position:absolute;
+ top:50%;
+ transform:translateY(-50%);
+ width:52px;
+ height:70px;
+ padding:0;
+ margin:0;
+ background:rgba(255,255,255,.18);
+ color:#fff;
+ font-size:35px;
+ border-radius:8px;
+ z-index:25
+}
+
+.gallery-arrow:hover{
+ background:rgba(255,255,255,.35)
+}
+
+.gallery-prev{
+ left:15px
+}
+
+.gallery-next{
+ right:15px
+}
+
+.thumbnails{
+ height:90px;
+ min-height:90px;
+ background:rgba(0,0,0,.85);
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:8px 12px;
+ overflow-x:auto;
+ z-index:20
+}
+
+.thumbnail{
+ height:72px;
+ width:72px;
+ min-width:72px;
+ object-fit:cover;
+ border-radius:6px;
+ border:2px solid transparent;
+ cursor:pointer;
+ opacity:.65
+}
+
+.thumbnail.active{
+ border-color:#fff;
+ opacity:1
+}
+
+.mobile-zoom-hint{
+ display:none
+}
+
+@media(max-width:700px){
+
+ header{
+  font-size:20px;
+  padding:12px
+ }
+
+ .header-title{
+  width:100%;
+  flex:none
+ }
+
+ .header-buttons{
+  width:100%;
+  justify-content:center
+ }
+
+ .header-buttons button{
+  flex:1
+ }
+
+ .container{
+  padding:12px
+ }
+
+ #listings{
+  grid-template-columns:1fr;
+  gap:15px
+ }
+
+ .card-image{
+  height:220px
+ }
+
+ .card-title{
+  font-size:18px
+ }
+
+ .price{
+  font-size:18px
+ }
+
+ .contact-buttons{
+  gap:6px
+ }
+
+ .contact-buttons a{
+  flex:1 1 auto;
+  font-size:13px;
+  padding:9px 8px
+ }
+
+ .plans{
+  grid-template-columns:1fr
+ }
+
+ .membership-content{
+  padding:18px
+ }
+
+ .membership-title{
+  font-size:23px
+ }
+
+ .gallery-main img{
+  max-width:96%;
+  max-height:76vh
+ }
+
+ .gallery-arrow{
+  width:42px;
+  height:58px;
+  font-size:28px
+ }
+
+ .gallery-prev{
+  left:5px
+ }
+
+ .gallery-next{
+  right:5px
+ }
+
+ .zoom-controls{
+  display:none
+ }
+
+ .thumbnails{
+  height:78px;
+  min-height:78px
+ }
+
+ .thumbnail{
+  height:58px;
+  width:58px;
+  min-width:58px
+ }
+
+ .mobile-zoom-hint{
+  display:block;
+  position:absolute;
+  left:50%;
+  bottom:98px;
+  transform:translateX(-50%);
+  z-index:26;
+  color:#fff;
+  background:rgba(0,0,0,.55);
+  padding:7px 11px;
+  border-radius:20px;
+  font-size:12px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .3s
+ }
+
+ .mobile-zoom-hint.show{
+  opacity:1
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+ <div class="header-title">
+  🛍️ Samandağ Pazarı
+ </div>
+
+ <div class="header-buttons">
+
+  <button class="login-btn" id="authBtn">
+   👤 Giriş / Kayıt
+  </button>
+
+  <button class="membership-btn" id="uyelikBtn">
+   💳 Üyelik
+  </button>
+
+ </div>
+
+</header>
+
+
+<div class="container">
+
+ <!-- İLAN FORMU -->
+
+ <div class="form-box">
+
+  <h2>📢 İlan Ver</h2>
+
+  <div id="ilanKullaniciDurumu"
+       style="background:#f3f4f6;padding:12px;border-radius:9px;margin-bottom:15px;font-size:14px">
+   İlan vermek için giriş yapmalısınız.
+  </div>
+
+  <input type="text" id="baslik" placeholder="İlan Başlığı">
+
+  <input type="number" id="fiyat" placeholder="Fiyat">
+
+  <textarea id="aciklama" placeholder="Açıklama"></textarea>
+
+  <select id="kategori">
+   <option value="">Kategori seçin</option>
+   <option value="Elektronik">Elektronik</option>
+   <option value="Araç">Araç</option>
+   <option value="Ev">Ev</option>
+   <option value="Emlak">Emlak</option>
+   <option value="Giyim">Giyim</option>
+   <option value="Telefon">Telefon</option>
+   <option value="İş">İş</option>
+   <option value="Diğer">Diğer</option>
+  </select>
+
+  <input type="text" id="mahalle" placeholder="Mahalle">
+
+  <input type="text" id="telefon" placeholder="Telefon">
+
+  <input type="file"
+         id="fotograflar"
+         accept="image/*"
+         multiple>
+
+  <button id="ilanVerBtn">
+   📢 İlanı Yayınla
+  </button>
+
+ </div>
+
+
+ <!-- ARAMA -->
+
+ <div class="search-box">
+
+  <input type="text"
+         id="searchInput"
+         placeholder="🔎 İlan Ara">
+
+ </div>
+
+
+ <!-- KATEGORİLER -->
+
+ <div class="categories">
+
+  <button class="category-btn active" data-category="Tümü">
+   Tümü
+  </button>
+
+  <button class="category-btn" data-category="Elektronik">
+   Elektronik
+  </button>
+
+  <button class="category-btn" data-category="Araç">
+   Araç
+  </button>
+
+  <button class="category-btn" data-category="Ev">
+   Ev
+  </button>
+
+  <button class="category-btn" data-category="Emlak">
+   Emlak
+  </button>
+
+  <button class="category-btn" data-category="Giyim">
+   Giyim
+  </button>
+
+  <button class="category-btn" data-category="Telefon">
+   Telefon
+  </button>
+
+  <button class="category-btn" data-category="İş">
+   İş
+  </button>
+
+  <button class="category-btn" data-category="Diğer">
+   Diğer
+  </button>
+
+ </div>
+
+
+ <div id="listings">
+
+  <div class="loading">
+   İlanlar yükleniyor...
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- GİRİŞ / KAYIT MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="authModal">
+
+ <div class="simple-modal-content">
+
+  <button class="modal-close" id="authClose">
+   ✕
+  </button>
+
+  <h2>👤 Hesabım</h2>
+
+  <div id="authStatus" class="auth-status">
+   Giriş yapın veya yeni hesap oluşturun.
+  </div>
+
+  <input type="email"
+         id="authEmail"
+         placeholder="E-posta adresiniz">
+
+  <input type="password"
+         id="authPassword"
+         placeholder="Şifreniz">
+
+  <button id="loginBtn">
+   🔐 Giriş Yap
+  </button>
+
+  <button id="registerBtn"
+          style="background:#16a34a">
+   📝 Yeni Hesap Oluştur
+  </button>
+
+  <button id="logoutBtn"
+          style="background:#6b7280;display:none">
+   🚪 Çıkış Yap
+  </button>
+
+  <div style="font-size:12px;color:#777;margin-top:12px;line-height:1.5">
+   Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- ÜYELİK MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="uyelikModal">
+
+ <div class="membership-content">
+
+  <button class="modal-close" id="uyelikKapat">
+   ✕
+  </button>
+
+  <h2 class="membership-title">
+   💳 Üyelik Paketleri
+  </h2>
+
+  <div class="membership-subtitle">
+   Samandağ Pazarı'nda ilan vermeye devam edin.
+  </div>
+
+
+  <div class="trial-box">
+
+   <strong>
+    🎁 İlk 30 Gün Ücretsiz
+   </strong>
+
+   <div style="margin-top:7px">
+    Yeni üyeler ilk 30 gün boyunca ilanlarını ücretsiz yayınlayabilir.
+   </div>
+
+  </div>
+
+
+  <div class="plans">
+
+
+   <!-- HAFTALIK -->
+
+   <div class="plan">
+
+    <h3>
+     📅 Haftalık
+    </h3>
+
+    <div class="plan-price">
+     49 TL
+    </div>
+
+    <div class="plan-info">
+
+     7 gün üyelik<br>
+     10 ilan hakkı<br>
+     İlan yayınlama
+
+    </div>
+
+    <button class="paketBtn"
+            data-paket="haftalik"
+            data-sure="7"
+            data-hak="10"
+            data-fiyat="49">
+
+     Haftalık Paketi Seç
+
+    </button>
+
+   </div>
+
+
+   <!-- AYLIK -->
+
+   <div class="plan popular">
+
+    <div class="popular-label">
+     POPÜLER
+    </div>
+
+    <h3>
+     📆 Aylık
+    </h3>
+
+    <div class="plan-price">
+     149 TL
+    </div>
+
+    <div class="plan-info">
+
+     30 gün üyelik<br>
+     50 ilan hakkı<br>
+     İlan yayınlama
+
+    </div>
+
+    <button class="paketBtn"
+            data-paket="aylik"
+            data-sure="30"
+            data-hak="50"
+            data-fiyat="149">
+
+     Aylık Paketi Seç
+
+    </button>
+
+   </div>
+
+
+   <!-- YILLIK -->
+
+   <div class="plan">
+
+    <h3>
+     ⭐ Yıllık
+    </h3>
+
+    <div class="plan-price">
+     999 TL
+    </div>
+
+    <div class="plan-info">
+
+     365 gün üyelik<br>
+     500 ilan hakkı<br>
+     İlan yayınlama
+
+    </div>
+
+    <button class="paketBtn"
+            data-paket="yillik"
+            data-sure="365"
+            data-hak="500"
+            data-fiyat="999">
+
+     Yıllık Paketi Seç
+
+    </button>
+
+   </div>
+
+
+  </div>
+
+
+  <div class="payment-note">
+
+   <b>💳 Ödeme sistemi:</b><br><br>
+
+   Paketler ve üyelik ekranı hazırdır.
+   Gerçek para tahsilatı için ödeme sağlayıcısı bağlanması gerekir.
+   Ödeme tamamlandığında üyelik süresi ve ilan hakkı otomatik olarak hesaba tanımlanacaktır.
+
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- GALERİ -->
+<!-- ========================= -->
+
+<div class="modal" id="galleryModal">
+
+ <div class="modal-header">
+
+  <div class="modal-title" id="galleryTitle">
+   Fotoğraf
+  </div>
+
+  <button class="close-btn" id="closeGallery">
+   ✕
+  </button>
+
+ </div>
+
+
+ <div class="zoom-controls">
+
+  <button class="zoom-btn" id="zoomOut">
+   −
+  </button>
+
+  <button class="zoom-btn" id="zoomReset">
+   ↺
+  </button>
+
+  <button class="zoom-btn" id="zoomIn">
+   +
+  </button>
+
+ </div>
+
+
+ <div class="gallery-main">
+
+  <button class="gallery-arrow gallery-prev"
+          id="galleryPrev">
+   ‹
+  </button>
+
+
+  <div class="gallery-image-wrapper"
+       id="galleryImageWrapper">
+
+   <img id="galleryImage"
+        src=""
+        alt="">
+
+  </div>
+
+
+  <div class="mobile-zoom-hint"
+       id="mobileZoomHint">
+
+   🤏 İki parmakla büyüt / küçült
+
+  </div>
+
+
+  <button class="gallery-arrow gallery-next"
+          id="galleryNext">
+
+   ›
+
+  </button>
+
+ </div>
+
+
+ <div class="thumbnails"
+      id="thumbnails">
+ </div>
+
+</div>
+
+
+<script>
+
+/* ================================================= */
+/* SUPABASE */
+/* ================================================= */
+
+const SUPABASE_URL =
+"https://hicevhodrskuymffgbdo.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_wCUwLT4hjbddEjWY_HJEJQ_oTlTeUiB";
+
+const supabaseClient =
+supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
+
+
+/* ================================================= */
+/* DEĞİŞKENLER */
+/* ================================================= */
+
+let allListings=[];
+let selectedCategory="Tümü";
+
+let galleryImages=[];
+let galleryIndex=0;
+
+let zoomLevel=1;
+
+const MIN_ZOOM=1;
+const MAX_ZOOM=4;
+const ZOOM_STEP=.25;
+
+let imageX=0;
+let imageY=0;
+
+let isDragging=false;
+
+let dragStartX=0;
+let dragStartY=0;
+
+let startImageX=0;
+let startImageY=0;
+
+let pinchStartDistance=0;
+let pinchStartZoom=1;
+
+let touchStartX=0;
+let touchStartY=0;
+
+let touchImageX=0;
+let touchImageY=0;
+
+
+/* ================================================= */
+/* ELEMENTLER */
+/* ================================================= */
+
+const listingsContainer =
+document.getElementById("listings");
+
+const searchInput =
+document.getElementById("searchInput");
+
+const galleryModal =
+document.getElementById("galleryModal");
+
+const galleryImage =
+document.getElementById("galleryImage");
+
+const galleryTitle =
+document.getElementById("galleryTitle");
+
+const thumbnails =
+document.getElementById("thumbnails");
+
+const mobileZoomHint =
+document.getElementById("mobileZoomHint");
+
+const authModal =
+document.getElementById("authModal");
+
+const uyelikModal =
+document.getElementById("uyelikModal");
+
+
+/* ================================================= */
+/* HTML GÜVENLİĞİ */
+/* ================================================= */
+
+function escapeHtml(value){
+
+ return String(value??"")
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;")
+ .replace(/'/g,"&#039;");
+
+}
+
+
+/* ================================================= */
+/* RESİMLER */
+/* ================================================= */
+
+function getImageUrls(value){
+
+ if(!value)
+  return[];
+
+ if(Array.isArray(value))
+  return value;
+
+ try{
+
+  const parsed=JSON.parse(value);
+
+  if(Array.isArray(parsed))
+   return parsed;
+
+ }catch(e){}
+
+ return typeof value==="string"
+  ?[value]
+  :[];
+
+}
+
+
+/* ================================================= */
+/* WHATSAPP */
+/* ================================================= */
+
+function getWhatsAppNumber(phone){
+
+ let number=
+ String(phone||"").replace(/\D/g,"");
+
+ if(!number)
+  return"";
+
+ if(number.startsWith("0"))
+  number=number.substring(1);
+
+ if(!number.startsWith("90"))
+  number="90"+number;
+
+ return number;
+
+}
+
+
+function getWhatsAppUrl(phone,title){
+
+ const number=
+ getWhatsAppNumber(phone);
+
+ if(!number)
+  return"#";
+
+ const message=
+ `Merhaba, "${title||"ilan"}" ilanınız hakkında bilgi almak istiyorum.`;
+
+ return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+
+}
+
+
+/* ================================================= */
+/* FOTOĞRAF KONTROLÜ */
+/* ================================================= */
+
+document
+.getElementById("fotograflar")
+.addEventListener("change",function(){
+
+ const files=this.files;
+
+ if(files.length>10){
+
+  alert(
+   "En fazla 10 fotoğraf seçebilirsiniz."
+  );
+
+  this.value="";
+
+  return;
+ }
+
+
+ for(const file of files){
+
+  if(file.size>5*1024*1024){
+
+   alert(
+    "Her fotoğraf en fazla 5 MB olabilir."
+   );
+
+   this.value="";
+
+   return;
+
+  }
+
+ }
+
+});
+
+
+/* ================================================= */
+/* FOTOĞRAF YÜKLEME */
+/* ================================================= */
+
+async function uploadImage(file){
+
+ const extension=
+ file.name
+ .split(".")
+ .pop()
+ .toLowerCase();
+
+ const fileName=
+ Date.now()
+ +"_"
+ +Math.random()
+  .toString(36)
+  .substring(2)
+ +"."+extension;
+
+
+ const {error}=
+ await supabaseClient
+ .storage
+ .from("ilan-fotograflari")
+ .upload(fileName,file);
+
+
+ if(error)
+  throw error;
+
+
+ const {data}=
+ supabaseClient
+ .storage
+ .from("ilan-fotograflari")
+ .getPublicUrl(fileName);
+
+
+ return data.publicUrl;
+
+}
+
+
+/* ================================================= */
+/* AUTH DURUMU */
+/* ================================================= */
+
+async function updateAuthUI(){
+
+ const {
+  data:{user}
+ }=
+ await supabaseClient.auth.getUser();
+
+
+ const authBtn=
+ document.getElementById("authBtn");
+
+ const authStatus=
+ document.getElementById("authStatus");
+
+ const logoutBtn=
+ document.getElementById("logoutBtn");
+
+ const ilanDurum=
+ document.getElementById(
+  "ilanKullaniciDurumu"
+ );
+
+
+ if(user){
+
+  authBtn.textContent=
+   "👤 "+(user.email||"Hesabım");
+
+  authBtn.classList.remove("login-btn");
+  authBtn.classList.add("logout-btn");
+
+  authStatus.innerHTML=
+   `<div class="auth-user">
+      ✅ Giriş yapıldı
+    </div>
+    <div style="margin-top:5px">
+      ${escapeHtml(user.email||"")}
+    </div>`;
+
+  logoutBtn.style.display="block";
+
+
+  ilanDurum.innerHTML=
+   `✅ <b>${escapeHtml(user.email||"")}</b>
+    olarak giriş yaptınız.<br>
+    <span style="color:#666">
+    İlan yayınlayabilirsiniz.
+    </span>`;
+
+  ilanDurum.style.background="#ecfdf5";
+  ilanDurum.style.color="#166534";
+
+ }else{
+
+  authBtn.textContent=
+   "👤 Giriş / Kayıt";
+
+  authBtn.classList.remove("logout-btn");
+  authBtn.classList.add("login-btn");
+
+  authStatus.innerHTML=
+   "Giriş yapın veya yeni hesap oluşturun.";
+
+  logoutBtn.style.display="none";
+
+
+  ilanDurum.innerHTML=
+   "🔐 İlan vermek için önce giriş yapmalısınız.";
+
+  ilanDurum.style.background="#fef2f2";
+  ilanDurum.style.color="#991b1b";
+
+ }
+
+}
+
+
+/* ================================================= */
+/* AUTH BUTONU */
+/* ================================================= */
+
+document
+.getElementById("authBtn")
+.addEventListener("click",async()=>{
+
+ const {
+  data:{user}
+ }=
+ await supabaseClient.auth.getUser();
+
+
+ if(user){
+
+  const cevap=
+   confirm(
+    "Hesabınız açık.\n\nÇıkış yapmak ister misiniz?"
+   );
+
+  if(cevap){
+
+   await supabaseClient.auth.signOut();
+
+   await updateAuthUI();
+
+   alert("Çıkış yapıldı.");
+
+  }
+
+ }else{
+
+  authModal.classList.add("active");
+
+  document.body.style.overflow="hidden";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* AUTH KAPAT */
+/* ================================================= */
+
+document
+.getElementById("authClose")
+.addEventListener("click",()=>{
+
+ authModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+});
+
+
+/* ================================================= */
+/* GİRİŞ YAP */
+/* ================================================= */
+
+document
+.getElementById("loginBtn")
+.addEventListener("click",async()=>{
+
+ const email=
+ document.getElementById("authEmail")
+ .value
+ .trim();
+
+ const password=
+ document.getElementById("authPassword")
+ .value;
+
+
+ if(!email){
+
+  alert("E-posta adresinizi girin.");
+
+  return;
+
+ }
+
+
+ if(!password){
+
+  alert("Şifrenizi girin.");
+
+  return;
+
+ }
+
+
+ const button=
+ document.getElementById("loginBtn");
+
+ button.disabled=true;
+ button.textContent="Giriş yapılıyor...";
+
+
+ try{
+
+  const {error}=
+  await supabaseClient.auth.signInWithPassword({
+
+   email:email,
+
+   password:password
+
+  });
+
+
+  if(error)
+   throw error;
+
+
+  alert("✅ Giriş başarılı.");
+
+  authModal.classList.remove("active");
+
+  document.body.style.overflow="";
+
+  await updateAuthUI();
+
+
+ }catch(error){
+
+  alert(
+   "Giriş yapılamadı:\n"
+   +(error.message||error)
+  );
+
+ }finally{
+
+  button.disabled=false;
+
+  button.textContent="🔐 Giriş Yap";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* KAYIT OL */
+/* ================================================= */
+
+document
+.getElementById("registerBtn")
+.addEventListener("click",async()=>{
+
+ const email=
+ document.getElementById("authEmail")
+ .value
+ .trim();
+
+ const password=
+ document.getElementById("authPassword")
+ .value;
+
+
+ if(!email){
+
+  alert("E-posta adresinizi girin.");
+
+  return;
+
+ }
+
+
+ if(!password){
+
+  alert("Şifrenizi girin.");
+
+  return;
+
+ }
+
+
+ if(password.length<6){
+
+  alert(
+   "Şifre en az 6 karakter olmalıdır."
+  );
+
+  return;
+
+ }
+
+
+ const button=
+ document.getElementById("registerBtn");
+
+ button.disabled=true;
+ button.textContent="Hesap oluşturuluyor...";
+
+
+ try{
+
+  const {data,error}=
+  await supabaseClient.auth.signUp({
+
+   email:email,
+
+   password:password
+
+  });
+
+
+  if(error)
+   throw error;
+
+
+  if(data.user){
+
+   alert(
+    "✅ Hesabınız oluşturuldu.\n\n"+
+    "İlk 30 gün ücretsiz deneme süreniz başladı."
+   );
+
+  }
+
+
+  await updateAuthUI();
+
+
+ }catch(error){
+
+  alert(
+   "Kayıt oluşturulamadı:\n"
+   +(error.message||error)
+  );
+
+ }finally{
+
+  button.disabled=false;
+
+  button.textContent=
+   "📝 Yeni Hesap Oluştur";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* ÇIKIŞ */
+/* ================================================= */
+
+document
+.getElementById("logoutBtn")
+.addEventListener("click",async()=>{
+
+ const {error}=
+ await supabaseClient.auth.signOut();
+
+ if(error){
+
+  alert(error.message);
+
+  return;
+
+ }
+
+ authModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+ await updateAuthUI();
+
+ alert("Çıkış yapıldı.");
+
+});
+
+
+/* ================================================= */
+/* AUTH DEĞİŞİKLİĞİ */
+/* ================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+ async(event,session)=>{
+
+  await updateAuthUI();
+
+ }
+);
+
+
+/* ================================================= */
+/* İLAN VERME */
+/* ================================================= */
+
+document
+.getElementById("ilanVerBtn")
+.addEventListener("click",async function(){
+
+ const button=this;
+
+ const baslik=
+ document.getElementById("baslik")
+ .value
+ .trim();
+
+ const fiyat=
+ document.getElementById("fiyat")
+ .value;
+
+ const aciklama=
+ document.getElementById("aciklama")
+ .value
+ .trim();
+
+ const kategori=
+ document.getElementById("kategori")
+ .value;
+
+ const mahalle=
+ document.getElementById("mahalle")
+ .value
+ .trim();
+
+ const telefon=
+ document.getElementById("telefon")
+ .value
+ .trim();
+
+ const files=
+ document.getElementById("fotograflar")
+ .files;
+
+
+ if(!baslik){
+
+  alert("İlan başlığı girin.");
+
+  return;
+
+ }
+
+
+ if(!kategori){
+
+  alert("Kategori seçin.");
+
+  return;
+
+ }
+
+
+ if(!telefon){
+
+  alert("Telefon numarası girin.");
+
+  return;
+
+ }
+
+
+ button.disabled=true;
+
+ button.textContent=
+  "Hesap kontrol ediliyor...";
+
+
+ try{
+
+  /* KULLANICI */
+
+  const {
+   data:{user},
+   error:userError
+  }=
+  await supabaseClient.auth.getUser();
+
+
+  if(userError)
+   throw userError;
+
+
+  if(!user){
+
+   authModal.classList.add("active");
+
+   document.body.style.overflow="hidden";
+
+   alert(
+    "İlan vermek için önce giriş yapmalısınız."
+   );
+
+   return;
+
+  }
+
+
+  /* İLAN HAKKI */
+
+  button.textContent=
+   "İlan hakkı kontrol ediliyor...";
+
+
+  const {
+   data:hakVar,
+   error:hakError
+  }=
+  await supabaseClient
+  .rpc(
+   "kullanici_ilan_hakki_var_mi",
+   {
+    p_user_id:user.id
+   }
+  );
+
+
+  if(hakError)
+   throw hakError;
+
+
+  if(hakVar!==true){
+
+   uyelikModal.classList.add("active");
+
+   document.body.style.overflow="hidden";
+
+   alert(
+    "Ücretsiz deneme süreniz veya ilan hakkınız bitmiş.\n\n"+
+    "Devam etmek için bir üyelik paketi seçin."
+   );
+
+   return;
+
+  }
+
+
+  /* FOTOĞRAFLAR */
+
+  button.textContent=
+   "Fotoğraflar yükleniyor...";
+
+
+  const imageUrls=[];
+
+
+  for(const file of files){
+
+   imageUrls.push(
+    await uploadImage(file)
+   );
+
+  }
+
+
+  /* İLAN */
+
+  button.textContent=
+   "İlan yayınlanıyor...";
+
+
+  const {error}=
+  await supabaseClient
+  .from("ilantable")
+  .insert([{
+
+   user_id:user.id,
+
+   baslik:baslik,
+
+   fiyat:
+    fiyat
+     ?Number(fiyat)
+     :null,
+
+   aciklama:aciklama,
+
+   kategori:kategori,
+
+   mahalle:mahalle,
+
+   telefon:telefon,
+
+   resimurl:
+    JSON.stringify(imageUrls)
+
+  }]);
+
+
+  if(error)
+   throw error;
+
+
+  alert(
+   "✅ İlan başarıyla yayınlandı."
+  );
+
+
+  document.getElementById("baslik").value="";
+  document.getElementById("fiyat").value="";
+  document.getElementById("aciklama").value="";
+  document.getElementById("kategori").value="";
+  document.getElementById("mahalle").value="";
+  document.getElementById("telefon").value="";
+  document.getElementById("fotograflar").value="";
+
+
+  await loadListings();
+
+
+ }catch(error){
+
+  console.error(
+   "İlan yayınlama hatası:",
+   error
+  );
+
+
+  alert(
+   "İlan yayınlanırken hata oluştu:\n"+
+   (error.message||error)
+  );
+
+
+ }finally{
+
+  button.disabled=false;
+
+  button.textContent=
+   "📢 İlanı Yayınla";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* ÜYELİK AÇ */
+/* ================================================= */
+
+document
+.getElementById("uyelikBtn")
+.addEventListener("click",()=>{
+
+ uyelikModal.classList.add("active");
+
+ document.body.style.overflow="hidden";
+
+});
+
+
+/* ================================================= */
+/* ÜYELİK KAPAT */
+/* ================================================= */
+
+document
+.getElementById("uyelikKapat")
+.addEventListener("click",()=>{
+
+ uyelikModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+});
+
+
+uyelikModal.addEventListener("click",event=>{
+
+ if(event.target===uyelikModal){
+
+  uyelikModal.classList.remove("active");
+
+  document.body.style.overflow="";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* PAKET SEÇİMİ */
+/* ================================================= */
+
+document
+.querySelectorAll(".paketBtn")
+.forEach(button=>{
+
+ button.addEventListener("click",async()=>{
+
+  const paket=
+   button.dataset.paket;
+
+  const sure=
+   button.dataset.sure;
+
+  const hak=
+   button.dataset.hak;
+
+  const fiyat=
+   button.dataset.fiyat;
+
+
+  const {
+   data:{user},
+   error
+  }=
+  await supabaseClient.auth.getUser();
+
+
+  if(error){
+
+   alert(error.message);
+
+   return;
+
+  }
+
+
+  if(!user){
+
+   uyelikModal.classList.remove("active");
+
+   authModal.classList.add("active");
+
+   document.body.style.overflow="hidden";
+
+   alert(
+    "Üyelik satın almak için önce giriş yapmalısınız."
+   );
+
+   return;
+
+  }
+
+
+  alert(
+   "📦 Seçilen paket:\n\n"+
+   "Paket: "+paket+"\n"+
+   "Süre: "+sure+" gün\n"+
+   "İlan hakkı: "+hak+"\n"+
+   "Fiyat: "+fiyat+" TL\n\n"+
+   "💳 Ödeme sistemi henüz bağlanmadı.\n\n"+
+   "Ödeme sistemi bağlandığında buradan ödeme yapabileceksiniz."
+  );
+
+ });
+
+});
+
+
+/* ================================================= */
+/* İLANLARI YÜKLE */
+/* ================================================= */
+
+async function loadListings(){
+
+ listingsContainer.innerHTML=
+  '<div class="loading">İlanlar yükleniyor...</div>';
+
+
+ const {
+  data,
+  error
+ }=
+ await supabaseClient
+ .from("ilantable")
+ .select("*")
+ .order(
+  "created_at",
+  {ascending:false}
+ );
+
+
+ if(error){
+
+  console.error(error);
+
+  listingsContainer.innerHTML=
+   '<div class="empty">İlanlar yüklenirken hata oluştu.</div>';
+
+  return;
+
+ }
+
+
+ allListings=data||[];
+
+ displayListings();
+
+}
+
+
+/* ================================================= */
+/* İLANLARI GÖSTER */
+/* ================================================= */
+
+function displayListings(){
+
+ const searchText=
+ searchInput
+ .value
+ .trim()
+ .toLowerCase();
+
+
+ const filtered=
+ allListings.filter(ilan=>{
+
+  const categoryMatch=
+   selectedCategory==="Tümü"
+   ||
+   ilan.kategori===selectedCategory;
+
+
+  const searchMatch=
+   !searchText
+   ||
+   String(ilan.baslik||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.aciklama||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.mahalle||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.kategori||"")
+    .toLowerCase()
+    .includes(searchText);
+
+
+  return categoryMatch&&searchMatch;
+
+ });
+
+
+ listingsContainer.innerHTML="";
+
+
+ if(!filtered.length){
+
+  listingsContainer.innerHTML=
+   '<div class="empty">İlan bulunamadı.</div>';
+
+  return;
+
+ }
+
+
+ filtered.forEach(ilan=>{
+
+  const card=
+  document.createElement("div");
+
+  card.className="card";
+
+
+  const imageUrls=
+   getImageUrls(ilan.resimurl);
+
+
+  const imageBox=
+   document.createElement("div");
+
+  imageBox.className=
+   "card-image";
+
+
+  if(imageUrls.length){
+
+   const image=
+   document.createElement("img");
+
+   image.src=imageUrls[0];
+
+   image.alt=
+    ilan.baslik||
+    "İlan fotoğrafı";
+
+
+   imageBox.appendChild(image);
+
+
+   if(imageUrls.length>1){
+
+    const count=
+    document.createElement("div");
+
+    count.className=
+     "photo-count";
+
+    count.textContent=
+     "📷 "
+     +imageUrls.length
+     +" fotoğraf";
+
+    imageBox.appendChild(count);
+
+   }
+
+
+   imageBox.addEventListener(
+    "click",
+    ()=>{
+     openGallery(
+      imageUrls,
+      ilan.baslik||"Fotoğraf"
+     );
+    }
+   );
+
+
+  }else{
+
+   imageBox.innerHTML=
+   '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:40px">📷</div>';
+
+  }
+
+
+  const body=
+  document.createElement("div");
+
+  body.className="card-body";
+
+
+  const title=
+  document.createElement("div");
+
+  title.className=
+   "card-title";
+
+  title.textContent=
+   ilan.baslik||"";
+
+
+  const price=
+  document.createElement("div");
+
+  price.className="price";
+
+
+  price.textContent=
+   (
+    ilan.fiyat!==null
+    &&
+    ilan.fiyat!==undefined
+    &&
+    ilan.fiyat!==""
+   )
+   ?
+   Number(ilan.fiyat)
+    .toLocaleString("tr-TR")
+    +" TL"
+   :
+   "Fiyat belirtilmemiş";
+
+
+  const description=
+  document.createElement("div");
+
+  description.className=
+   "description";
+
+  description.textContent=
+   ilan.aciklama||"";
+
+
+  body.appendChild(title);
+
+  body.appendChild(price);
+
+  body.appendChild(description);
+
+
+  if(ilan.kategori){
+
+   const info=
+   document.createElement("div");
+
+   info.className="info";
+
+   info.innerHTML=
+    "📂 <b>Kategori:</b> "
+    +escapeHtml(ilan.kategori);
+
+   body.appendChild(info);
+
+  }
+
+
+  if(ilan.mahalle){
+
+   const info=
+   document.createElement("div");
+
+   info.className="info";
+
+   info.innerHTML=
+    "📍 <b>Mahalle:</b> "
+    +escapeHtml(ilan.mahalle);
+
+   body.appendChild(info);
+
+  }
+
+
+  if(ilan.telefon){
+
+   const contactBox=
+   document.createElement("div");
+
+   contactBox.className=
+    "contact-buttons";
+
+
+   const whatsappUrl=
+    getWhatsAppUrl(
+     ilan.telefon,
+     ilan.baslik
+    );
+
+
+   const phone=
+   document.createElement("a");
+
+   phone.className="phone";
+
+   phone.href=
+    "tel:"+ilan.telefon;
+
+   phone.textContent=
+    "📞 "+ilan.telefon;
+
+   phone.addEventListener(
+    "click",
+    e=>e.stopPropagation()
+   );
+
+
+   const whatsapp=
+   document.createElement("a");
+
+   whatsapp.className=
+    "whatsapp-btn";
+
+   whatsapp.href=
+    whatsappUrl;
+
+   whatsapp.target="_blank";
+
+   whatsapp.rel=
+    "noopener noreferrer";
+
+   whatsapp.textContent=
+    "💬 WhatsApp";
+
+   whatsapp.addEventListener(
+    "click",
+    e=>e.stopPropagation()
+   );
+
+
+   contactBox.appendChild(phone);
+
+   contactBox.appendChild(whatsapp);
+
+   body.appendChild(contactBox);
+
+  }
+
+
+  card.appendChild(imageBox);
+
+  card.appendChild(body);
+
+  listingsContainer.appendChild(card);
+
+ });
+
+}
+
+
+/* ================================================= */
+/* ARAMA */
+/* ================================================= */
+
+searchInput.addEventListener(
+ "input",
+ displayListings
+);
+
+
+/* ================================================= */
+/* KATEGORİ */
+/* ================================================= */
+
+document
+.querySelectorAll(".category-btn")
+.forEach(button=>{
+
+ button.addEventListener("click",()=>{
+
+  document
+  .querySelectorAll(".category-btn")
+  .forEach(btn=>
+   btn.classList.remove("active")
+  );
+
+
+  button.classList.add("active");
+
+
+  selectedCategory=
+   button.dataset.category;
+
+
+  displayListings();
+
+ });
+
+});
+
+
+/* ================================================= */
+/* GALERİ ZOOM */
+/* ================================================= */
+
+function resetZoom(){
+
+ zoomLevel=1;
+
+ imageX=0;
+
+ imageY=0;
+
+ updateZoom();
+
+}
+
+
+function updateZoom(){
+
+ galleryImage.style.transform=
+  `translate(${imageX}px,${imageY}px) scale(${zoomLevel})`;
+
+
+ galleryImage.classList.toggle(
+  "zoomed",
+  zoomLevel>1
+ );
+
+
+ if(zoomLevel<=1){
+
+  imageX=0;
+
+  imageY=0;
+
+  galleryImage.style.transform=
+   "translate(0px,0px) scale(1)";
+
+  galleryImage.classList.remove(
+   "zoomed"
+  );
+
+ }
+
+}
+
+
+function changeZoom(amount){
+
+ zoomLevel=
+ Math.max(
+  MIN_ZOOM,
+  Math.min(
+   MAX_ZOOM,
+   zoomLevel+amount
+  )
+ );
+
+
+ if(zoomLevel===1){
+
+  imageX=0;
+
+  imageY=0;
+
+ }
+
+
+ updateZoom();
+
+}
+
+
+/* ================================================= */
+/* GALERİ AÇ */
+/* ================================================= */
+
+function openGallery(images,title){
+
+ galleryImages=
+  images||[];
+
+ galleryIndex=0;
+
+ galleryTitle.textContent=
+  title||"Fotoğraf";
+
+ resetZoom();
+
+ galleryModal.classList.add(
+  "active"
+ );
+
+ document.body.style.overflow=
+  "hidden";
+
+ renderGallery();
+
+
+ if(window.innerWidth<=600){
+
+  mobileZoomHint.classList.add(
+   "show"
+  );
+
+  clearTimeout(
+   window.zoomHintTimer
+  );
+
+  window.zoomHintTimer=
+   setTimeout(
+    ()=>{
+     mobileZoomHint.classList.remove(
+      "show"
+     );
+    },
+    2200
+   );
+
+ }
+
+}
+
+
+/* ================================================= */
+/* GALERİ GÖSTER */
+/* ================================================= */
+
+function renderGallery(){
+
+ if(!galleryImages.length)
+  return;
+
+
+ resetZoom();
+
+
+ galleryImage.src=
+  galleryImages[galleryIndex];
+
+
+ galleryImage.alt=
+  galleryTitle.textContent;
+
+
+ thumbnails.innerHTML="";
+
+
+ galleryImages.forEach(
+ (src,index)=>{
+
+  const thumbnail=
+   document.createElement("img");
+
+  thumbnail.className=
+   "thumbnail"
+   +
+   (
+    index===galleryIndex
+    ?" active"
+    :""
+   );
+
+
+  thumbnail.src=src;
+
+
+  thumbnail.addEventListener(
+   "click",
+   ()=>{
+
+    galleryIndex=index;
+
+    renderGallery();
+
+   }
+  );
+
+
+  thumbnails.appendChild(
+   thumbnail
+  );
+
+ });
+
+}
+
+
+/* ================================================= */
+/* ZOOM BUTONLARI */
+/* ================================================= */
+
+document
+.getElementById("zoomIn")
+.addEventListener(
+ "click",
+ ()=>changeZoom(ZOOM_STEP)
+);
+
+
+document
+.getElementById("zoomOut")
+.addEventListener(
+ "click",
+ ()=>changeZoom(-ZOOM_STEP)
+);
+
+
+document
+.getElementById("zoomReset")
+.addEventListener(
+ "click",
+ resetZoom
+);
+
+
+/* ================================================= */
+/* MOUSE ZOOM */
+/* ================================================= */
+
+galleryImage.addEventListener(
+ "wheel",
+ event=>{
+
+  event.preventDefault();
+
+  changeZoom(
+   event.deltaY<0
+    ?ZOOM_STEP
+    :-ZOOM_STEP
+  );
+
+ },
+ {passive:false}
+);
+
+
+galleryImage.addEventListener(
+ "dblclick",
+ ()=>{
+
+  zoomLevel=
+   zoomLevel===1
+   ?2.5
+   :1;
+
+  updateZoom();
+
+ }
+);
+
+
+/* ================================================= */
+/* MOUSE SÜRÜKLEME */
+/* ================================================= */
+
+galleryImage.addEventListener(
+ "mousedown",
+ event=>{
+
+  if(zoomLevel<=1)
+   return;
+
+
+  isDragging=true;
+
+  galleryImage.classList.add(
+   "dragging"
+  );
+
+
+  dragStartX=
+   event.clientX;
+
+  dragStartY=
+   event.clientY;
+
+
+  startImageX=
+   imageX;
+
+  startImageY=
+   imageY;
+
+
+  event.preventDefault();
+
+ }
+);
+
+
+window.addEventListener(
+ "mousemove",
+ event=>{
+
+  if(!isDragging)
+   return;
+
+
+  imageX=
+   startImageX
+   +(event.clientX-dragStartX);
+
+
+  imageY=
+   startImageY
+   +(event.clientY-dragStartY);
+
+
+  updateZoom();
+
+ }
+);
+
+
+window.addEventListener(
+ "mouseup",
+ ()=>{
+
+  isDragging=false;
+
+  galleryImage.classList.remove(
+   "dragging"
+  );
+
+ }
+);
+
+
+/* ================================================= */
+/* TELEFON PINCH ZOOM */
+/* ================================================= */
+
+function getTouchDistance(touches){
+
+ const dx=
+  touches[0].clientX
+  -touches[1].clientX;
+
+ const dy=
+  touches[0].clientY
+  -touches[1].clientY;
+
+
+ return Math.sqrt(
+  dx*dx+dy*dy
+ );
+
+}
+
+
+galleryImage.addEventListener(
+ "touchstart",
+ event=>{
+
+  if(event.touches.length===2){
+
+   pinchStartDistance=
+    getTouchDistance(
+     event.touches
+    );
+
+   pinchStartZoom=
+    zoomLevel;
+
+   return;
+
+  }
+
+
+  if(
+   event.touches.length===1
+   &&
+   zoomLevel>1
+  ){
+
+   const touch=
+    event.touches[0];
+
+
+   touchStartX=
+    touch.clientX;
+
+   touchStartY=
+    touch.clientY;
+
+
+   touchImageX=
+    imageX;
+
+   touchImageY=
+    imageY;
+
+  }
+
+ },
+ {passive:true}
+);
+
+
+galleryImage.addEventListener(
+ "touchmove",
+ event=>{
+
+  if(event.touches.length===2){
+
+   const currentDistance=
+    getTouchDistance(
+     event.touches
+    );
+
+
+   if(pinchStartDistance<=0)
+    return;
+
+
+   const scale=
+    currentDistance/
+    pinchStartDistance;
+
+
+   zoomLevel=
+    Math.max(
+     MIN_ZOOM,
+     Math.min(
+      MAX_ZOOM,
+      pinchStartZoom*scale
+     )
+    );
+
+
+   updateZoom();
+
+   event.preventDefault();
+
+   return;
+
+  }
+
+
+  if(
+   event.touches.length===1
+   &&
+   zoomLevel>1
+  ){
+
+   const touch=
+    event.touches[0];
+
+
+   imageX=
+    touchImageX
+    +(touch.clientX-touchStartX);
+
+
+   imageY=
+    touchImageY
+    +(touch.clientY-touchStartY);
+
+
+   updateZoom();
+
+   event.preventDefault();
+
+  }
+
+ },
+ {passive:false}
+);
+
+
+galleryImage.addEventListener(
+ "touchend",
+ event=>{
+
+  if(event.touches.length<2)
+   pinchStartDistance=0;
+
+ }
+);
+
+
+/* ================================================= */
+/* GALERİ KAPAT */
+/* ================================================= */
+
+function closeGallery(){
+
+ galleryModal.classList.remove(
+  "active"
+ );
+
+ document.body.style.overflow="";
+
+ resetZoom();
+
+}
+
+
+document
+.getElementById("closeGallery")
+.addEventListener(
+ "click",
+ closeGallery
+);
+
+
+/* ================================================= */
+/* ÖNCEKİ FOTOĞRAF */
+/* ================================================= */
+
+document
+.getElementById("galleryPrev")
+.addEventListener(
+ "click",
+ ()=>{
+
+  if(!galleryImages.length)
+   return;
+
+
+  galleryIndex--;
+
+
+  if(galleryIndex<0)
+   galleryIndex=
+    galleryImages.length-1;
+
+
+  renderGallery();
+
+ }
+);
+
+
+/* ================================================= */
+/* SONRAKİ FOTOĞRAF */
+/* ================================================= */
+
+document
+.getElementById("galleryNext")
+.addEventListener(
+ "click",
+ ()=>{
+
+  if(!galleryImages.length)
+   return;
+
+
+  galleryIndex++;
+
+
+  if(
+   galleryIndex>=
+   galleryImages.length
+  )
+   galleryIndex=0;
+
+
+  renderGallery();
+
+ }
+);
+
+
+/* ================================================= */
+/* KLAVYE */
+/* ================================================= */
+
+document.addEventListener(
+ "keydown",
+ event=>{
+
+  if(
+   !galleryModal.classList.contains(
+    "active"
+   )
+  )
+   return;
+
+
+  if(event.key==="Escape")
+   closeGallery();
+
+
+  if(event.key==="ArrowLeft")
+   document
+   .getElementById("galleryPrev")
+   .click();
+
+
+  if(event.key==="ArrowRight")
+   document
+   .getElementById("galleryNext")
+   .click();
+
+
+  if(
+   event.key==="+"||
+   event.key==="="
+  )
+   changeZoom(ZOOM_STEP);
+
+
+  if(event.key==="-")
+   changeZoom(-ZOOM_STEP);
+
+
+  if(event.key==="0")
+   resetZoom();
+
+ });
+
+
+/* ================================================= */
+/* GALERİ DIŞINA TIKLAMA */
+/* ================================================= */
+
+galleryModal.addEventListener(
+ "click",
+ event=>{
+
+  if(event.target===galleryModal)
+   closeGallery();
+
+ });
+
+
+/* ================================================= */
+/* BAŞLANGIÇ */
+/* ================================================= */
+
+(async function(){
+
+ await updateAuthUI();
+
+ await loadListings();
+
+})();
+
+</script>
+
+</body>
+</html>
