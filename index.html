@@ -665,9 +665,195 @@ button:hover {
   </div>
 
 
-  <div class="zoom-info" id="zoomInfo">
-    Zoom: 100%
-  </div>
+  /* TELEFON - İKİ PARMAKLA PINCH ZOOM */
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+let touchImageX = 0;
+let touchImageY = 0;
+
+let pinchStartDistance = 0;
+let pinchStartZoom = 1;
+
+
+/* İKİ PARMAK ARASINDAKİ MESAFE */
+
+function getTouchDistance(touches) {
+
+  const dx =
+    touches[0].clientX -
+    touches[1].clientX;
+
+  const dy =
+    touches[0].clientY -
+    touches[1].clientY;
+
+  return Math.sqrt(
+    dx * dx + dy * dy
+  );
+}
+
+
+/* TOUCH BAŞLADI */
+
+galleryImage.addEventListener(
+  "touchstart",
+  function (event) {
+
+    /* İKİ PARMAK */
+
+    if (event.touches.length === 2) {
+
+      pinchStartDistance =
+        getTouchDistance(
+          event.touches
+        );
+
+      pinchStartZoom =
+        zoomLevel;
+
+      return;
+    }
+
+
+    /* TEK PARMAK */
+
+    if (
+      event.touches.length === 1 &&
+      zoomLevel > 1
+    ) {
+
+      const touch =
+        event.touches[0];
+
+      touchStartX =
+        touch.clientX;
+
+      touchStartY =
+        touch.clientY;
+
+      touchImageX =
+        imageX;
+
+      touchImageY =
+        imageY;
+
+    }
+
+  },
+  {
+    passive: true
+  }
+);
+
+
+/* TOUCH HAREKET */
+
+galleryImage.addEventListener(
+  "touchmove",
+  function (event) {
+
+    /* =========================
+       İKİ PARMAK = ZOOM
+       ========================= */
+
+    if (event.touches.length === 2) {
+
+      const currentDistance =
+        getTouchDistance(
+          event.touches
+        );
+
+      if (pinchStartDistance <= 0) {
+        return;
+      }
+
+
+      const scale =
+        currentDistance /
+        pinchStartDistance;
+
+
+      zoomLevel =
+        pinchStartZoom *
+        scale;
+
+
+      zoomLevel =
+        Math.max(
+          MIN_ZOOM,
+          Math.min(
+            MAX_ZOOM,
+            zoomLevel
+          )
+        );
+
+
+      updateZoom();
+
+      event.preventDefault();
+
+      return;
+    }
+
+
+    /* =========================
+       TEK PARMAK = FOTOĞRAFI TAŞI
+       ========================= */
+
+    if (
+      event.touches.length === 1 &&
+      zoomLevel > 1
+    ) {
+
+      const touch =
+        event.touches[0];
+
+
+      imageX =
+        touchImageX +
+        (
+          touch.clientX -
+          touchStartX
+        );
+
+
+      imageY =
+        touchImageY +
+        (
+          touch.clientY -
+          touchStartY
+        );
+
+
+      updateZoom();
+
+      event.preventDefault();
+
+    }
+
+  },
+  {
+    passive: false
+  }
+);
+
+
+/* TOUCH BİTTİ */
+
+galleryImage.addEventListener(
+  "touchend",
+  function (event) {
+
+    if (event.touches.length < 2) {
+
+      pinchStartDistance = 0;
+
+    }
+
+  }
+);
 
 
   <div class="zoom-controls">
