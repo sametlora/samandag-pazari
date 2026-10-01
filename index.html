@@ -2098,6 +2098,9 @@ document
 
 async function loadListings(){
 
+ const {data:{user:viewer}}=await supabaseClient.auth.getUser();
+ currentUser=viewer||null;
+
  listingsContainer.innerHTML=
   '<div class="loading">İlanlar yükleniyor...</div>';
 
