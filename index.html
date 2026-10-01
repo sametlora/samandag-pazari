@@ -1,10 +1,8 @@
-```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>Samandağ Pazarı</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -88,10 +86,6 @@ header{
  margin-top:0
 }
 
-.edit-mode-title{
- color:#2563eb
-}
-
 input,
 textarea,
 select,
@@ -120,11 +114,6 @@ button{
 
 button:hover{
  opacity:.9
-}
-
-button:disabled{
- opacity:.6;
- cursor:not-allowed
 }
 
 .search-box{
@@ -587,47 +576,6 @@ button:disabled{
  display:none
 }
 
-/* İLAN SAHİBİ */
-
-.owner-actions{
- display:flex;
- gap:8px;
- margin-top:14px
-}
-
-.owner-actions button{
- width:50%;
- margin:0
-}
-
-.edit-listing-btn{
- background:#2563eb
-}
-
-.delete-listing-btn{
- background:#dc2626
-}
-
-.cancel-edit-btn{
- background:#6b7280;
- display:none
-}
-
-.editing-info{
- display:none;
- background:#eff6ff;
- color:#1d4ed8;
- border:1px solid #93c5fd;
- padding:12px;
- border-radius:9px;
- margin-bottom:15px;
- font-size:14px
-}
-
-.editing-info.active{
- display:block
-}
-
 @media(max-width:700px){
 
  header{
@@ -746,17 +694,16 @@ button:disabled{
  .mobile-zoom-hint.show{
   opacity:1
  }
-
- .owner-actions{
-  gap:6px
- }
-
- .owner-actions button{
-  font-size:13px;
-  padding:10px 5px
- }
-
 }
+
+/* İLAN SAHİBİ İŞLEMLERİ */
+.owner-actions{display:flex;gap:8px;margin-top:14px}
+.owner-actions button{flex:1;padding:10px;border:0;border-radius:8px;color:#fff;font-weight:700;cursor:pointer}
+.edit-listing-btn{background:#2563eb}
+.delete-listing-btn{background:#dc2626}
+.cancel-edit-btn{background:#6b7280!important;margin-top:8px}
+.edit-mode-title{display:none;margin:0 0 12px;color:#2563eb;font-size:18px;font-weight:700}
+
 </style>
 </head>
 
@@ -789,116 +736,43 @@ button:disabled{
 
  <div class="form-box">
 
-  <h2 id="ilanFormBaslik">
-   📢 İlan Ver
-  </h2>
+  <h2>📢 İlan Ver</h2>
+  <div id="editModeTitle" class="edit-mode-title">✏️ İlan Düzenleniyor</div>
 
-  <div
-   id="ilanKullaniciDurumu"
-   style="background:#f3f4f6;padding:12px;border-radius:9px;margin-bottom:15px;font-size:14px">
-
+  <div id="ilanKullaniciDurumu"
+       style="background:#f3f4f6;padding:12px;border-radius:9px;margin-bottom:15px;font-size:14px">
    İlan vermek için giriş yapmalısınız.
-
   </div>
 
+  <input type="text" id="baslik" placeholder="İlan Başlığı">
 
-  <div id="editingInfo" class="editing-info">
+  <input type="number" id="fiyat" placeholder="Fiyat">
 
-   ✏️ Şu anda ilanınızı düzenliyorsunuz.
-   Değişiklikleri yaptıktan sonra
-   <b>İlanı Güncelle</b> butonuna basın.
-
-  </div>
-
-
-  <input
-   type="text"
-   id="baslik"
-   placeholder="İlan Başlığı">
-
-
-  <input
-   type="number"
-   id="fiyat"
-   placeholder="Fiyat">
-
-
-  <textarea
-   id="aciklama"
-   placeholder="Açıklama"></textarea>
-
+  <textarea id="aciklama" placeholder="Açıklama"></textarea>
 
   <select id="kategori">
-
-   <option value="">
-    Kategori seçin
-   </option>
-
-   <option value="Elektronik">
-    Elektronik
-   </option>
-
-   <option value="Araç">
-    Araç
-   </option>
-
-   <option value="Ev">
-    Ev
-   </option>
-
-   <option value="Emlak">
-    Emlak
-   </option>
-
-   <option value="Giyim">
-    Giyim
-   </option>
-
-   <option value="Telefon">
-    Telefon
-   </option>
-
-   <option value="İş">
-    İş
-   </option>
-
-   <option value="Diğer">
-    Diğer
-   </option>
-
+   <option value="">Kategori seçin</option>
+   <option value="Elektronik">Elektronik</option>
+   <option value="Araç">Araç</option>
+   <option value="Ev">Ev</option>
+   <option value="Emlak">Emlak</option>
+   <option value="Giyim">Giyim</option>
+   <option value="Telefon">Telefon</option>
+   <option value="İş">İş</option>
+   <option value="Diğer">Diğer</option>
   </select>
 
+  <input type="text" id="mahalle" placeholder="Mahalle">
 
-  <input
-   type="text"
-   id="mahalle"
-   placeholder="Mahalle">
+  <input type="text" id="telefon" placeholder="Telefon">
 
-
-  <input
-   type="text"
-   id="telefon"
-   placeholder="Telefon">
-
-
-  <input
-   type="file"
-   id="fotograflar"
-   accept="image/*"
-   multiple>
-
+  <input type="file"
+         id="fotograflar"
+         accept="image/*"
+         multiple>
 
   <button id="ilanVerBtn">
    📢 İlanı Yayınla
-  </button>
-
-
-  <button
-   id="cancelEditBtn"
-   class="cancel-edit-btn">
-
-   ❌ Düzenlemeyi İptal Et
-
   </button>
 
  </div>
@@ -908,10 +782,9 @@ button:disabled{
 
  <div class="search-box">
 
-  <input
-   type="text"
-   id="searchInput"
-   placeholder="🔎 İlan Ara">
+  <input type="text"
+         id="searchInput"
+         placeholder="🔎 İlan Ara">
 
  </div>
 
@@ -920,57 +793,39 @@ button:disabled{
 
  <div class="categories">
 
-  <button
-   class="category-btn active"
-   data-category="Tümü">
+  <button class="category-btn active" data-category="Tümü">
    Tümü
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Elektronik">
+  <button class="category-btn" data-category="Elektronik">
    Elektronik
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Araç">
+  <button class="category-btn" data-category="Araç">
    Araç
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Ev">
+  <button class="category-btn" data-category="Ev">
    Ev
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Emlak">
+  <button class="category-btn" data-category="Emlak">
    Emlak
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Giyim">
+  <button class="category-btn" data-category="Giyim">
    Giyim
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Telefon">
+  <button class="category-btn" data-category="Telefon">
    Telefon
   </button>
 
-  <button
-   class="category-btn"
-   data-category="İş">
+  <button class="category-btn" data-category="İş">
    İş
   </button>
 
-  <button
-   class="category-btn"
-   data-category="Diğer">
+  <button class="category-btn" data-category="Diğer">
    Diğer
   </button>
 
@@ -988,69 +843,48 @@ button:disabled{
 </div>
 
 
+<!-- ========================= -->
 <!-- GİRİŞ / KAYIT MODALI -->
+<!-- ========================= -->
 
 <div class="modal simple-modal" id="authModal">
 
  <div class="simple-modal-content">
 
-  <button
-   class="modal-close"
-   id="authClose">
+  <button class="modal-close" id="authClose">
    ✕
   </button>
 
   <h2>👤 Hesabım</h2>
 
-  <div
-   id="authStatus"
-   class="auth-status">
-
+  <div id="authStatus" class="auth-status">
    Giriş yapın veya yeni hesap oluşturun.
-
   </div>
 
+  <input type="email"
+         id="authEmail"
+         placeholder="E-posta adresiniz">
 
-  <input
-   type="email"
-   id="authEmail"
-   placeholder="E-posta adresiniz">
-
-
-  <input
-   type="password"
-   id="authPassword"
-   placeholder="Şifreniz">
-
+  <input type="password"
+         id="authPassword"
+         placeholder="Şifreniz">
 
   <button id="loginBtn">
    🔐 Giriş Yap
   </button>
 
-
-  <button
-   id="registerBtn"
-   style="background:#16a34a">
-
+  <button id="registerBtn"
+          style="background:#16a34a">
    📝 Yeni Hesap Oluştur
-
   </button>
 
-
-  <button
-   id="logoutBtn"
-   style="background:#6b7280;display:none">
-
+  <button id="logoutBtn"
+          style="background:#6b7280;display:none">
    🚪 Çıkış Yap
-
   </button>
 
-
-  <div
-   style="font-size:12px;color:#777;margin-top:12px;line-height:1.5">
-
+  <div style="font-size:12px;color:#777;margin-top:12px;line-height:1.5">
    Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.
-
   </div>
 
  </div>
@@ -1058,23 +892,21 @@ button:disabled{
 </div>
 
 
-<!-- ÜYELİK -->
+<!-- ========================= -->
+<!-- ÜYELİK MODALI -->
+<!-- ========================= -->
 
 <div class="modal simple-modal" id="uyelikModal">
 
  <div class="membership-content">
 
-  <button
-   class="modal-close"
-   id="uyelikKapat">
+  <button class="modal-close" id="uyelikKapat">
    ✕
   </button>
-
 
   <h2 class="membership-title">
    💳 Üyelik Paketleri
   </h2>
-
 
   <div class="membership-subtitle">
    Samandağ Pazarı'nda ilan vermeye devam edin.
@@ -1088,10 +920,7 @@ button:disabled{
    </strong>
 
    <div style="margin-top:7px">
-
-    Yeni üyeler ilk 30 gün boyunca
-    ilanlarını ücretsiz yayınlayabilir.
-
+    Yeni üyeler ilk 30 gün boyunca ilanlarını ücretsiz yayınlayabilir.
    </div>
 
   </div>
@@ -1100,9 +929,13 @@ button:disabled{
   <div class="plans">
 
 
+   <!-- HAFTALIK -->
+
    <div class="plan">
 
-    <h3>📅 Haftalık</h3>
+    <h3>
+     📅 Haftalık
+    </h3>
 
     <div class="plan-price">
      49 TL
@@ -1116,12 +949,11 @@ button:disabled{
 
     </div>
 
-    <button
-     class="paketBtn"
-     data-paket="haftalik"
-     data-sure="7"
-     data-hak="10"
-     data-fiyat="49">
+    <button class="paketBtn"
+            data-paket="haftalik"
+            data-sure="7"
+            data-hak="10"
+            data-fiyat="49">
 
      Haftalık Paketi Seç
 
@@ -1130,13 +962,17 @@ button:disabled{
    </div>
 
 
+   <!-- AYLIK -->
+
    <div class="plan popular">
 
     <div class="popular-label">
      POPÜLER
     </div>
 
-    <h3>📆 Aylık</h3>
+    <h3>
+     📆 Aylık
+    </h3>
 
     <div class="plan-price">
      149 TL
@@ -1150,12 +986,11 @@ button:disabled{
 
     </div>
 
-    <button
-     class="paketBtn"
-     data-paket="aylik"
-     data-sure="30"
-     data-hak="50"
-     data-fiyat="149">
+    <button class="paketBtn"
+            data-paket="aylik"
+            data-sure="30"
+            data-hak="50"
+            data-fiyat="149">
 
      Aylık Paketi Seç
 
@@ -1164,9 +999,13 @@ button:disabled{
    </div>
 
 
+   <!-- YILLIK -->
+
    <div class="plan">
 
-    <h3>⭐ Yıllık</h3>
+    <h3>
+     ⭐ Yıllık
+    </h3>
 
     <div class="plan-price">
      999 TL
@@ -1180,18 +1019,18 @@ button:disabled{
 
     </div>
 
-    <button
-     class="paketBtn"
-     data-paket="yillik"
-     data-sure="365"
-     data-hak="500"
-     data-fiyat="999">
+    <button class="paketBtn"
+            data-paket="yillik"
+            data-sure="365"
+            data-hak="500"
+            data-fiyat="999">
 
      Yıllık Paketi Seç
 
     </button>
 
    </div>
+
 
   </div>
 
@@ -1201,8 +1040,8 @@ button:disabled{
    <b>💳 Ödeme sistemi:</b><br><br>
 
    Paketler ve üyelik ekranı hazırdır.
-   Gerçek para tahsilatı için ödeme sağlayıcısı
-   bağlanması gerekir.
+   Gerçek para tahsilatı için ödeme sağlayıcısı bağlanması gerekir.
+   Ödeme tamamlandığında üyelik süresi ve ilan hakkı otomatik olarak hesaba tanımlanacaktır.
 
   </div>
 
@@ -1211,27 +1050,20 @@ button:disabled{
 </div>
 
 
+<!-- ========================= -->
 <!-- GALERİ -->
+<!-- ========================= -->
 
 <div class="modal" id="galleryModal">
 
  <div class="modal-header">
 
-  <div
-   class="modal-title"
-   id="galleryTitle">
-
+  <div class="modal-title" id="galleryTitle">
    Fotoğraf
-
   </div>
 
-
-  <button
-   class="close-btn"
-   id="closeGallery">
-
+  <button class="close-btn" id="closeGallery">
    ✕
-
   </button>
 
  </div>
@@ -1239,21 +1071,15 @@ button:disabled{
 
  <div class="zoom-controls">
 
-  <button
-   class="zoom-btn"
-   id="zoomOut">
+  <button class="zoom-btn" id="zoomOut">
    −
   </button>
 
-  <button
-   class="zoom-btn"
-   id="zoomReset">
+  <button class="zoom-btn" id="zoomReset">
    ↺
   </button>
 
-  <button
-   class="zoom-btn"
-   id="zoomIn">
+  <button class="zoom-btn" id="zoomIn">
    +
   </button>
 
@@ -1262,37 +1088,32 @@ button:disabled{
 
  <div class="gallery-main">
 
-  <button
-   class="gallery-arrow gallery-prev"
-   id="galleryPrev">
+  <button class="gallery-arrow gallery-prev"
+          id="galleryPrev">
    ‹
   </button>
 
 
-  <div
-   class="gallery-image-wrapper"
-   id="galleryImageWrapper">
+  <div class="gallery-image-wrapper"
+       id="galleryImageWrapper">
 
-   <img
-    id="galleryImage"
-    src=""
-    alt="">
+   <img id="galleryImage"
+        src=""
+        alt="">
 
   </div>
 
 
-  <div
-   class="mobile-zoom-hint"
-   id="mobileZoomHint">
+  <div class="mobile-zoom-hint"
+       id="mobileZoomHint">
 
    🤏 İki parmakla büyüt / küçült
 
   </div>
 
 
-  <button
-   class="gallery-arrow gallery-next"
-   id="galleryNext">
+  <button class="gallery-arrow gallery-next"
+          id="galleryNext">
 
    ›
 
@@ -1301,9 +1122,8 @@ button:disabled{
  </div>
 
 
- <div
-  class="thumbnails"
-  id="thumbnails">
+ <div class="thumbnails"
+      id="thumbnails">
  </div>
 
 </div>
@@ -1311,9 +1131,9 @@ button:disabled{
 
 <script>
 
-/* =========================================================
-   SUPABASE
-========================================================= */
+/* ================================================= */
+/* SUPABASE */
+/* ================================================= */
 
 const SUPABASE_URL =
 "https://hicevhodrskuymffgbdo.supabase.co";
@@ -1328,106 +1148,80 @@ supabase.createClient(
 );
 
 
-/* =========================================================
-   DEĞİŞKENLER
-========================================================= */
+/* ================================================= */
+/* DEĞİŞKENLER */
+/* ================================================= */
 
 let allListings=[];
-
 let selectedCategory="Tümü";
-
 let currentUser=null;
-
 let editingListingId=null;
 
-let editingListingOldImages=[];
-
 let galleryImages=[];
-
 let galleryIndex=0;
 
 let zoomLevel=1;
 
 const MIN_ZOOM=1;
-
 const MAX_ZOOM=4;
-
 const ZOOM_STEP=.25;
 
 let imageX=0;
-
 let imageY=0;
 
 let isDragging=false;
 
 let dragStartX=0;
-
 let dragStartY=0;
 
 let startImageX=0;
-
 let startImageY=0;
 
 let pinchStartDistance=0;
-
 let pinchStartZoom=1;
 
 let touchStartX=0;
-
 let touchStartY=0;
 
 let touchImageX=0;
-
 let touchImageY=0;
 
 
-/* =========================================================
-   ELEMENTLER
-========================================================= */
+/* ================================================= */
+/* ELEMENTLER */
+/* ================================================= */
 
-const listingsContainer=
+const listingsContainer =
 document.getElementById("listings");
 
-const searchInput=
+const searchInput =
 document.getElementById("searchInput");
 
-const galleryModal=
+const galleryModal =
 document.getElementById("galleryModal");
 
-const galleryImage=
+const galleryImage =
 document.getElementById("galleryImage");
 
-const galleryTitle=
+const galleryTitle =
 document.getElementById("galleryTitle");
 
-const thumbnails=
+const thumbnails =
 document.getElementById("thumbnails");
 
-const mobileZoomHint=
+const mobileZoomHint =
 document.getElementById("mobileZoomHint");
 
-const authModal=
+const authModal =
 document.getElementById("authModal");
 
-const uyelikModal=
+const uyelikModal =
 document.getElementById("uyelikModal");
 
-const ilanVerBtn=
-document.getElementById("ilanVerBtn");
 
-const cancelEditBtn=
-document.getElementById("cancelEditBtn");
-
-const ilanFormBaslik=
-document.getElementById("ilanFormBaslik");
-
-const editingInfo=
-document.getElementById("editingInfo");
-
-
-/* =========================================================
-   HTML GÜVENLİĞİ
-========================================================= */
+/* ================================================= */
+/* HTML GÜVENLİĞİ */
+/* ================================================= */
 
 function escapeHtml(value){
 
@@ -1441,9 +1235,9 @@ function escapeHtml(value){
 }
 
 
-/* =========================================================
-   RESİM URL
-========================================================= */
+/* ================================================= */
+/* RESİMLER */
+/* ================================================= */
 
 function getImageUrls(value){
 
@@ -1455,8 +1249,7 @@ function getImageUrls(value){
 
  try{
 
-  const parsed=
-   JSON.parse(value);
+  const parsed=JSON.parse(value);
 
   if(Array.isArray(parsed))
    return parsed;
@@ -1470,15 +1263,14 @@ function getImageUrls(value){
 }
 
 
-/* =========================================================
-   WHATSAPP
-========================================================= */
+/* ================================================= */
+/* WHATSAPP */
+/* ================================================= */
 
 function getWhatsAppNumber(phone){
 
  let number=
- String(phone||"")
- .replace(/\D/g,"");
+ String(phone||"").replace(/\D/g,"");
 
  if(!number)
   return"";
@@ -1497,89 +1289,47 @@ function getWhatsAppNumber(phone){
 function getWhatsAppUrl(phone,title){
 
  const number=
-  getWhatsAppNumber(phone);
+ getWhatsAppNumber(phone);
 
  if(!number)
   return"#";
 
  const message=
-  `Merhaba, "${title||"ilan"}" ilanınız hakkında bilgi almak istiyorum.`;
+ `Merhaba, "${title||"ilan"}" ilanınız hakkında bilgi almak istiyorum.`;
 
- return
-  `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
-
-}
-
-
-/* =========================================================
-   FORM TEMİZLE
-========================================================= */
-
-function clearListingForm(){
-
- document.getElementById("baslik").value="";
-
- document.getElementById("fiyat").value="";
-
- document.getElementById("aciklama").value="";
-
- document.getElementById("kategori").value="";
-
- document.getElementById("mahalle").value="";
-
- document.getElementById("telefon").value="";
-
- document.getElementById("fotograflar").value="";
+ return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 
 }
 
 
-/* =========================================================
-   YENİ İLAN MODU
-========================================================= */
-
-function setNewListingMode(){
-
- editingListingId=null;
-
- editingListingOldImages=[];
-
- ilanFormBaslik.textContent=
-  "📢 İlan Ver";
-
- ilanFormBaslik.classList.remove(
-  "edit-mode-title"
- );
-
- ilanVerBtn.textContent=
-  "📢 İlanı Yayınla";
-
- cancelEditBtn.style.display=
-  "none";
-
- editingInfo.classList.remove(
-  "active"
- );
-
-}
-
-
-/* =========================================================
-   FOTOĞRAF KONTROL
-========================================================= */
+/* ================================================= */
+/* FOTOĞRAF KONTROLÜ */
+/* ================================================= */
 
 document
 .getElementById("fotograflar")
-.addEventListener(
- "change",
- function(){
+.addEventListener("change",function(){
 
-  const files=this.files;
+ const files=this.files;
 
-  if(files.length>10){
+ if(files.length>10){
+
+  alert(
+   "En fazla 10 fotoğraf seçebilirsiniz."
+  );
+
+  this.value="";
+
+  return;
+ }
+
+
+ for(const file of files){
+
+  if(file.size>5*1024*1024){
 
    alert(
-    "En fazla 10 fotoğraf seçebilirsiniz."
+    "Her fotoğraf en fazla 5 MB olabilir."
    );
 
    this.value="";
@@ -1588,83 +1338,44 @@ document
 
   }
 
+ }
 
-  for(const file of files){
-
-   if(file.size>5*1024*1024){
-
-    alert(
-     "Her fotoğraf en fazla 5 MB olabilir."
-    );
-
-    this.value="";
-
-    return;
-
-   }
-
-   if(!file.type.startsWith("image/")){
-
-    alert(
-     "Sadece fotoğraf dosyaları seçebilirsiniz."
-    );
-
-    this.value="";
-
-    return;
-
-   }
-
-  }
-
- });
+});
 
 
-/* =========================================================
-   FOTOĞRAF YÜKLEME
-========================================================= */
+/* ================================================= */
+/* FOTOĞRAF YÜKLEME */
+/* ================================================= */
 
 async function uploadImage(file){
 
  const extension=
-  file.name
-  .split(".")
-  .pop()
-  .toLowerCase();
-
+ file.name
+ .split(".")
+ .pop()
+ .toLowerCase();
 
  const fileName=
-  Date.now()
-  +"_"
-  +Math.random()
-   .toString(36)
-   .substring(2)
-  +"."+extension;
+ Date.now()
+ +"_"
+ +Math.random()
+  .toString(36)
+  .substring(2)
+ +"."+extension;
 
 
- const {
-  error
- }=
+ const {error}=
  await supabaseClient
  .storage
  .from("ilan-fotograflari")
- .upload(
-  fileName,
-  file,
-  {
-   cacheControl:"3600",
-   upsert:false
-  }
- );
+ .upload(fileName,file);
 
 
  if(error)
   throw error;
 
 
- const {
-  data
- }=
+ const {data}=
  supabaseClient
  .storage
  .from("ilan-fotograflari")
@@ -1676,9 +1387,9 @@ async function uploadImage(file){
 }
 
 
-/* =========================================================
-   AUTH UI
-========================================================= */
+/* ================================================= */
+/* AUTH DURUMU */
+/* ================================================= */
 
 async function updateAuthUI(){
 
@@ -1710,14 +1421,8 @@ async function updateAuthUI(){
   authBtn.textContent=
    "👤 "+(user.email||"Hesabım");
 
-  authBtn.classList.remove(
-   "login-btn"
-  );
-
-  authBtn.classList.add(
-   "logout-btn"
-  );
-
+  authBtn.classList.remove("login-btn");
+  authBtn.classList.add("logout-btn");
 
   authStatus.innerHTML=
    `<div class="auth-user">
@@ -1727,9 +1432,7 @@ async function updateAuthUI(){
       ${escapeHtml(user.email||"")}
     </div>`;
 
-
-  logoutBtn.style.display=
-   "block";
+  logoutBtn.style.display="block";
 
 
   ilanDurum.innerHTML=
@@ -1739,393 +1442,620 @@ async function updateAuthUI(){
     İlan yayınlayabilirsiniz.
     </span>`;
 
-
-  ilanDurum.style.background=
-   "#ecfdf5";
-
-  ilanDurum.style.color=
-   "#166534";
+  ilanDurum.style.background="#ecfdf5";
+  ilanDurum.style.color="#166534";
 
  }else{
 
   authBtn.textContent=
    "👤 Giriş / Kayıt";
 
-  authBtn.classList.remove(
-   "logout-btn"
-  );
-
-  authBtn.classList.add(
-   "login-btn"
-  );
-
+  authBtn.classList.remove("logout-btn");
+  authBtn.classList.add("login-btn");
 
   authStatus.innerHTML=
    "Giriş yapın veya yeni hesap oluşturun.";
 
-
-  logoutBtn.style.display=
-   "none";
+  logoutBtn.style.display="none";
 
 
   ilanDurum.innerHTML=
    "🔐 İlan vermek için önce giriş yapmalısınız.";
 
-  ilanDurum.style.background=
-   "#fef2f2";
-
-  ilanDurum.style.color=
-   "#991b1b";
+  ilanDurum.style.background="#fef2f2";
+  ilanDurum.style.color="#991b1b";
 
  }
 
 }
 
 
-/* =========================================================
-   AUTH BUTONU
-========================================================= */
+/* ================================================= */
+/* AUTH BUTONU */
+/* ================================================= */
 
 document
 .getElementById("authBtn")
-.addEventListener(
- "click",
- async()=>{
+.addEventListener("click",async()=>{
 
-  const {
-   data:{user}
-  }=
-  await supabaseClient.auth.getUser();
+ const {
+  data:{user}
+ }=
+ await supabaseClient.auth.getUser();
 
 
-  if(user){
+ if(user){
 
-   const cevap=
-    confirm(
-     "Hesabınız açık.\n\nÇıkış yapmak ister misiniz?"
-    );
-
-
-   if(cevap){
-
-    const {
-     error
-    }=
-    await supabaseClient.auth.signOut();
-
-
-    if(error){
-
-     alert(error.message);
-
-     return;
-
-    }
-
-
-    setNewListingMode();
-
-    clearListingForm();
-
-    await updateAuthUI();
-
-    await loadListings();
-
-    alert("Çıkış yapıldı.");
-
-   }
-
-  }else{
-
-   authModal.classList.add(
-    "active"
+  const cevap=
+   confirm(
+    "Hesabınız açık.\n\nÇıkış yapmak ister misiniz?"
    );
 
-   document.body.style.overflow=
-    "hidden";
+  if(cevap){
+
+   await supabaseClient.auth.signOut();
+
+   await updateAuthUI();
+
+   alert("Çıkış yapıldı.");
 
   }
 
- });
+ }else{
+
+  authModal.classList.add("active");
+
+  document.body.style.overflow="hidden";
+
+ }
+
+});
 
 
-/* =========================================================
-   AUTH KAPAT
-========================================================= */
+/* ================================================= */
+/* AUTH KAPAT */
+/* ================================================= */
 
 document
 .getElementById("authClose")
-.addEventListener(
- "click",
- ()=>{
+.addEventListener("click",()=>{
 
-  authModal.classList.remove(
-   "active"
-  );
+ authModal.classList.remove("active");
 
-  document.body.style.overflow="";
+ document.body.style.overflow="";
 
- });
+});
 
 
-/* =========================================================
-   GİRİŞ
-========================================================= */
+/* ================================================= */
+/* GİRİŞ YAP */
+/* ================================================= */
 
 document
 .getElementById("loginBtn")
-.addEventListener(
- "click",
- async()=>{
+.addEventListener("click",async()=>{
 
-  const email=
-   document
-   .getElementById("authEmail")
-   .value
-   .trim();
+ const email=
+ document.getElementById("authEmail")
+ .value
+ .trim();
 
-  const password=
-   document
-   .getElementById("authPassword")
-   .value;
+ const password=
+ document.getElementById("authPassword")
+ .value;
 
 
-  if(!email){
+ if(!email){
 
-   alert(
-    "E-posta adresinizi girin."
-   );
+  alert("E-posta adresinizi girin.");
 
-   return;
+  return;
 
-  }
+ }
 
 
-  if(!password){
+ if(!password){
 
-   alert(
-    "Şifrenizi girin."
-   );
+  alert("Şifrenizi girin.");
 
-   return;
+  return;
 
-  }
+ }
 
 
-  const button=
-   document.getElementById("loginBtn");
+ const button=
+ document.getElementById("loginBtn");
+
+ button.disabled=true;
+ button.textContent="Giriş yapılıyor...";
 
 
-  button.disabled=true;
+ try{
 
-  button.textContent=
-   "Giriş yapılıyor...";
+  const {error}=
+  await supabaseClient.auth.signInWithPassword({
 
+   email:email,
 
-  try{
+   password:password
 
-   const {
-    error
-   }=
-   await supabaseClient.auth
-   .signInWithPassword({
-
-    email:email,
-
-    password:password
-
-   });
+  });
 
 
-   if(error)
-    throw error;
+  if(error)
+   throw error;
 
 
-   authModal.classList.remove(
-    "active"
-   );
+  alert("✅ Giriş başarılı.");
 
-   document.body.style.overflow="";
+  authModal.classList.remove("active");
 
-   await updateAuthUI();
+  document.body.style.overflow="";
 
-   await loadListings();
-
-   alert(
-    "✅ Giriş başarılı."
-   );
+  await updateAuthUI();
+  await loadListings();
 
 
-  }catch(error){
+ }catch(error){
 
-   alert(
-    "Giriş yapılamadı:\n"+
-    (error.message||error)
-   );
+  alert(
+   "Giriş yapılamadı:\n"
+   +(error.message||error)
+  );
 
-  }finally{
+ }finally{
 
-   button.disabled=false;
+  button.disabled=false;
 
-   button.textContent=
-    "🔐 Giriş Yap";
+  button.textContent="🔐 Giriş Yap";
 
-  }
+ }
 
- });
+});
 
 
-/* =========================================================
-   KAYIT
-========================================================= */
+/* ================================================= */
+/* KAYIT OL */
+/* ================================================= */
 
 document
 .getElementById("registerBtn")
-.addEventListener(
- "click",
- async()=>{
+.addEventListener("click",async()=>{
 
-  const email=
-   document
-   .getElementById("authEmail")
-   .value
-   .trim();
+ const email=
+ document.getElementById("authEmail")
+ .value
+ .trim();
 
-  const password=
-   document
-   .getElementById("authPassword")
-   .value;
+ const password=
+ document.getElementById("authPassword")
+ .value;
 
 
-  if(!email){
+ if(!email){
+
+  alert("E-posta adresinizi girin.");
+
+  return;
+
+ }
+
+
+ if(!password){
+
+  alert("Şifrenizi girin.");
+
+  return;
+
+ }
+
+
+ if(password.length<6){
+
+  alert(
+   "Şifre en az 6 karakter olmalıdır."
+  );
+
+  return;
+
+ }
+
+
+ const button=
+ document.getElementById("registerBtn");
+
+ button.disabled=true;
+ button.textContent="Hesap oluşturuluyor...";
+
+
+ try{
+
+  const {data,error}=
+  await supabaseClient.auth.signUp({
+
+   email:email,
+
+   password:password
+
+  });
+
+
+  if(error)
+   throw error;
+
+
+  if(data.user){
 
    alert(
-    "E-posta adresinizi girin."
+    "✅ Hesabınız oluşturuldu.\n\n"+
+    "İlk 30 gün ücretsiz deneme süreniz başladı."
    );
-
-   return;
 
   }
 
 
-  if(!password){
-
-   alert(
-    "Şifrenizi girin."
-   );
-
-   return;
-
-  }
+  await updateAuthUI();
+  await loadListings();
 
 
-  if(password.length<6){
+ }catch(error){
 
-   alert(
-    "Şifre en az 6 karakter olmalıdır."
-   );
+  alert(
+   "Kayıt oluşturulamadı:\n"
+   +(error.message||error)
+  );
 
-   return;
+ }finally{
 
-  }
-
-
-  const button=
-   document.getElementById(
-    "registerBtn"
-   );
-
-
-  button.disabled=true;
+  button.disabled=false;
 
   button.textContent=
-   "Hesap oluşturuluyor...";
+   "📝 Yeni Hesap Oluştur";
+
+ }
+
+});
 
 
-  try{
-
-   const {
-    data,
-    error
-   }=
-   await supabaseClient.auth
-   .signUp({
-
-    email:email,
-
-    password:password
-
-   });
-
-
-   if(error)
-    throw error;
-
-
-   if(data.user){
-
-    if(data.session){
-
-     alert(
-      "✅ Hesabınız oluşturuldu.\n\n"+
-      "İlk 30 gün ücretsiz deneme süreniz başladı."
-     );
-
-     authModal.classList.remove(
-      "active"
-     );
-
-     document.body.style.overflow="";
-
-    }else{
-
-     alert(
-      "✅ Hesabınız oluşturuldu.\n\n"+
-      "E-posta adresinize doğrulama bağlantısı gönderildi. "+
-      "E-postanızı doğruladıktan sonra giriş yapabilirsiniz."
-     );
-
-    }
-
-   }
-
-
-   await updateAuthUI();
-
-
-  }catch(error){
-
-   alert(
-    "Kayıt oluşturulamadı:\n"+
-    (error.message||error)
-   );
-
-  }finally{
-
-   button.disabled=false;
-
-   button.textContent=
-    "📝 Yeni Hesap Oluştur";
-
-  }
-
- });
-
-
-/* =========================================================
-   ÇIKIŞ
-========================================================= */
+/* ================================================= */
+/* ÇIKIŞ */
+/* ================================================= */
 
 document
 .getElementById("logoutBtn")
-.addEventListener(
- "click",
- async()=>{
+.addEventListener("click",async()=>{
+
+ const {error}=
+ await supabaseClient.auth.signOut();
+
+ if(error){
+
+  alert(error.message);
+
+  return;
+
+ }
+
+ authModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+ await updateAuthUI();
+
+ alert("Çıkış yapıldı.");
+
+});
+
+
+/* ================================================= */
+/* AUTH DEĞİŞİKLİĞİ */
+/* ================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+ (event,session)=>{
+
+  currentUser=session?.user||null;
+
+  setTimeout(async()=>{
+
+   await updateAuthUI();
+   await loadListings();
+
+  },0);
+
+ }
+);
+
+
+/* ================================================= */
+/* İLAN VERME / GÜNCELLEME */
+/* ================================================= */
+
+function resetListingForm(){
+
+ editingListingId=null;
+
+ document.getElementById("baslik").value="";
+ document.getElementById("fiyat").value="";
+ document.getElementById("aciklama").value="";
+ document.getElementById("kategori").value="";
+ document.getElementById("mahalle").value="";
+ document.getElementById("telefon").value="";
+ document.getElementById("fotograflar").value="";
+
+ document.getElementById("ilanVerBtn").textContent="📢 İlanı Yayınla";
+
+ const title=document.getElementById("editModeTitle");
+ if(title) title.style.display="none";
+
+ const cancel=document.getElementById("cancelEditBtn");
+ if(cancel) cancel.remove();
+}
+
+function startEditListing(ilan){
+
+ if(!currentUser || currentUser.id!==ilan.user_id){
+  alert("Bu ilanı düzenleme yetkiniz yok.");
+  return;
+ }
+
+ editingListingId=ilan.id;
+
+ document.getElementById("baslik").value=ilan.baslik||"";
+ document.getElementById("fiyat").value=ilan.fiyat??"";
+ document.getElementById("aciklama").value=ilan.aciklama||"";
+ document.getElementById("kategori").value=ilan.kategori||"";
+ document.getElementById("mahalle").value=ilan.mahalle||"";
+ document.getElementById("telefon").value=ilan.telefon||"";
+ document.getElementById("fotograflar").value="";
+
+ document.getElementById("ilanVerBtn").textContent="💾 İlanı Güncelle";
+
+ const title=document.getElementById("editModeTitle");
+ if(title) title.style.display="block";
+
+ let cancel=document.getElementById("cancelEditBtn");
+ if(!cancel){
+  cancel=document.createElement("button");
+  cancel.id="cancelEditBtn";
+  cancel.type="button";
+  cancel.className="cancel-edit-btn";
+  cancel.textContent="✖ Düzenlemeyi İptal Et";
+  cancel.addEventListener("click",resetListingForm);
+  document.getElementById("ilanVerBtn").insertAdjacentElement("afterend",cancel);
+ }
+
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteListing(ilan){
+
+ if(!currentUser || currentUser.id!==ilan.user_id){
+  alert("Bu ilanı silme yetkiniz yok.");
+  return;
+ }
+
+ const confirmed=confirm("Bu ilanı silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.");
+ if(!confirmed) return;
+
+ try{
+
+  const {data:deletedRows,error}=await supabaseClient
+   .from("ilantable")
+   .delete()
+   .eq("id",ilan.id)
+   .eq("user_id",currentUser.id)
+   .select("id");
+
+  if(error) throw error;
+
+  if(!deletedRows || deletedRows.length===0){
+   throw new Error("İlan silinemedi. Supabase DELETE yetkisini veya ilan sahibinin user_id değerini kontrol edin.");
+  }
+
+  if(editingListingId===ilan.id) resetListingForm();
+
+  alert("✅ İlan başarıyla silindi.");
+  await loadListings();
+
+ }catch(error){
+  console.error("İlan silme hatası:",error);
+  alert("İlan silinirken hata oluştu:\n"+(error.message||error));
+ }
+}
+
+document.getElementById("ilanVerBtn").addEventListener("click",async function(){
+
+ const button=this;
+
+ const baslik=document.getElementById("baslik").value.trim();
+ const fiyat=document.getElementById("fiyat").value;
+ const aciklama=document.getElementById("aciklama").value.trim();
+ const kategori=document.getElementById("kategori").value;
+ const mahalle=document.getElementById("mahalle").value.trim();
+ const telefon=document.getElementById("telefon").value.trim();
+ const files=document.getElementById("fotograflar").files;
+
+ if(!baslik){alert("İlan başlığı girin.");return;}
+ if(!kategori){alert("Kategori seçin.");return;}
+ if(!telefon){alert("Telefon numarası girin.");return;}
+
+ button.disabled=true;
+
+ try{
+
+  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
+  if(userError) throw userError;
+  if(!user){
+   alert("İlan vermek için önce giriş yapmalısınız.");
+   authModal.classList.add("active");
+   document.body.style.overflow="hidden";
+   return;
+  }
+
+  currentUser=user;
+
+  /* MEVCUT İLANI GÜNCELLE */
+  if(editingListingId){
+
+   button.textContent="İlan güncelleniyor...";
+
+   const updateData={
+    baslik:baslik,
+    fiyat:fiyat?Number(fiyat):null,
+    aciklama:aciklama,
+    kategori:kategori,
+    mahalle:mahalle,
+    telefon:telefon
+   };
+
+   if(files && files.length){
+    const imageUrls=[];
+    for(const file of files) imageUrls.push(await uploadImage(file));
+    updateData.resimurl=JSON.stringify(imageUrls);
+   }
+
+   const {data:updateResult,error:updateError}=await supabaseClient
+    .from("ilantable")
+    .update(updateData)
+    .eq("id",editingListingId)
+    .eq("user_id",user.id)
+    .select()
+    .single();
+
+   if(updateError) throw updateError;
+   if(!updateResult) throw new Error("İlan güncellenemedi.");
+
+   alert("✅ İlan başarıyla güncellendi.");
+   resetListingForm();
+   await loadListings();
+   return;
+  }
+
+  /* YENİ İLAN */
+  button.textContent="İlan hakkı kontrol ediliyor...";
+
+  const {data:hakVar,error:hakError}=await supabaseClient.rpc(
+   "kullanici_ilan_hakki_var_mi",
+   {p_user_id:user.id}
+  );
+
+  if(hakError) throw hakError;
+
+  if(hakVar!==true){
+   uyelikModal.classList.add("active");
+   document.body.style.overflow="hidden";
+   alert("Ücretsiz deneme süreniz veya ilan hakkınız bitmiş.\n\nDevam etmek için bir üyelik paketi seçin.");
+   return;
+  }
+
+  button.textContent="Fotoğraflar yükleniyor...";
+
+  const imageUrls=[];
+  for(const file of files) imageUrls.push(await uploadImage(file));
+
+  button.textContent="İlan yayınlanıyor...";
+
+  const {error}=await supabaseClient.from("ilantable").insert([{
+   user_id:user.id,
+   baslik:baslik,
+   fiyat:fiyat?Number(fiyat):null,
+   aciklama:aciklama,
+   kategori:kategori,
+   mahalle:mahalle,
+   telefon:telefon,
+   resimurl:JSON.stringify(imageUrls)
+  }]);
+
+  if(error) throw error;
+
+  alert("✅ İlan başarıyla yayınlandı.");
+  resetListingForm();
+  await loadListings();
+
+ }catch(error){
+  console.error("İlan işlem hatası:",error);
+  alert("İlan işleminde hata oluştu:\n"+(error.message||error));
+ }finally{
+  button.disabled=false;
+  if(editingListingId) button.textContent="💾 İlanı Güncelle";
+  else button.textContent="📢 İlanı Yayınla";
+ }
+
+});
+
+
+/* ================================================= */
+/* ÜYELİK AÇ */
+/* ================================================= */
+
+document
+.getElementById("uyelikBtn")
+.addEventListener("click",()=>{
+
+ uyelikModal.classList.add("active");
+
+ document.body.style.overflow="hidden";
+
+});
+
+
+/* ================================================= */
+/* ÜYELİK KAPAT */
+/* ================================================= */
+
+document
+.getElementById("uyelikKapat")
+.addEventListener("click",()=>{
+
+ uyelikModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+});
+
+
+uyelikModal.addEventListener("click",event=>{
+
+ if(event.target===uyelikModal){
+
+  uyelikModal.classList.remove("active");
+
+  document.body.style.overflow="";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* PAKET SEÇİMİ */
+/* ================================================= */
+
+document
+.querySelectorAll(".paketBtn")
+.forEach(button=>{
+
+ button.addEventListener("click",async()=>{
+
+  const paket=
+   button.dataset.paket;
+
+  const sure=
+   button.dataset.sure;
+
+  const hak=
+   button.dataset.hak;
+
+  const fiyat=
+   button.dataset.fiyat;
+
 
   const {
+   data:{user},
    error
   }=
-  await supabaseClient.auth.signOut();
+  await supabaseClient.auth.getUser();
 
 
   if(error){
@@ -2137,708 +2067,46 @@ document
   }
 
 
-  authModal.classList.remove(
-   "active"
-  );
+  if(!user){
 
-  document.body.style.overflow="";
+   uyelikModal.classList.remove("active");
 
+   authModal.classList.add("active");
 
-  setNewListingMode();
+   document.body.style.overflow="hidden";
 
-  clearListingForm();
+   alert(
+    "Üyelik satın almak için önce giriş yapmalısınız."
+   );
 
+   return;
 
-  await updateAuthUI();
+  }
 
-  await loadListings();
 
   alert(
-   "Çıkış yapıldı."
+   "📦 Seçilen paket:\n\n"+
+   "Paket: "+paket+"\n"+
+   "Süre: "+sure+" gün\n"+
+   "İlan hakkı: "+hak+"\n"+
+   "Fiyat: "+fiyat+" TL\n\n"+
+   "💳 Ödeme sistemi henüz bağlanmadı.\n\n"+
+   "Ödeme sistemi bağlandığında buradan ödeme yapabileceksiniz."
   );
 
  });
 
+});
 
-/* =========================================================
-   AUTH DEĞİŞİKLİĞİ
-========================================================= */
 
-supabaseClient.auth.onAuthStateChange(
- (event,session)=>{
-
-  currentUser=
-   session?.user||null;
-
-  setTimeout(
-   async()=>{
-
-    await updateAuthUI();
-
-    await loadListings();
-
-   },
-   0
-  );
-
- });
-
-
-/* =========================================================
-   İLAN VER / GÜNCELLE
-========================================================= */
-
-ilanVerBtn.addEventListener(
- "click",
- async function(){
-
-  const button=this;
-
-
-  const baslik=
-   document
-   .getElementById("baslik")
-   .value
-   .trim();
-
-
-  const fiyat=
-   document
-   .getElementById("fiyat")
-   .value;
-
-
-  const aciklama=
-   document
-   .getElementById("aciklama")
-   .value
-   .trim();
-
-
-  const kategori=
-   document
-   .getElementById("kategori")
-   .value;
-
-
-  const mahalle=
-   document
-   .getElementById("mahalle")
-   .value
-   .trim();
-
-
-  const telefon=
-   document
-   .getElementById("telefon")
-   .value
-   .trim();
-
-
-  const files=
-   document
-   .getElementById("fotograflar")
-   .files;
-
-
-  /* ZORUNLU ALANLAR */
-
-  if(!baslik){
-
-   alert(
-    "İlan başlığı girin."
-   );
-
-   return;
-
-  }
-
-
-  if(!kategori){
-
-   alert(
-    "Kategori seçin."
-   );
-
-   return;
-
-  }
-
-
-  if(!telefon){
-
-   alert(
-    "Telefon numarası girin."
-   );
-
-   return;
-
-  }
-
-
-  button.disabled=true;
-
-
-  try{
-
-   /* =====================================================
-      KULLANICIYI KONTROL ET
-   ===================================================== */
-
-   const {
-    data:{user},
-    error:userError
-   }=
-   await supabaseClient.auth.getUser();
-
-
-   if(userError)
-    throw userError;
-
-
-   if(!user){
-
-    authModal.classList.add(
-     "active"
-    );
-
-    document.body.style.overflow=
-     "hidden";
-
-
-    alert(
-     "İlan vermek için önce giriş yapmalısınız."
-    );
-
-    return;
-
-   }
-
-
-   currentUser=user;
-
-
-   /* =====================================================
-      İLAN DÜZENLEME
-   ===================================================== */
-
-   if(editingListingId){
-
-    button.textContent=
-     "İlan kontrol ediliyor...";
-
-
-    /*
-      Güvenlik için ilanı tekrar Supabase'den çekiyoruz.
-      Böylece kullanıcı başka bir ilanın ID'sini
-      değiştirmeye çalışsa bile işlem yapılmaz.
-    */
-
-    const {
-     data:existingListing,
-     error:existingError
-    }=
-    await supabaseClient
-    .from("ilantable")
-    .select("*")
-    .eq("id",editingListingId)
-    .eq("user_id",user.id)
-    .maybeSingle();
-
-
-    if(existingError)
-     throw existingError;
-
-
-    if(!existingListing){
-
-     throw new Error(
-      "İlan bulunamadı veya bu ilanı düzenleme yetkiniz yok."
-     );
-
-    }
-
-
-    const oldImages=
-     getImageUrls(
-      existingListing.resimurl
-     );
-
-
-    let finalImages=
-     [...oldImages];
-
-
-    /* ===================================================
-       YENİ FOTOĞRAFLAR EKLE
-    =================================================== */
-
-    if(files && files.length){
-
-     if(
-      oldImages.length+files.length>10
-     ){
-
-      throw new Error(
-       "Toplam fotoğraf sayısı 10'u geçemez."
-      );
-
-     }
-
-
-     button.textContent=
-      "Yeni fotoğraflar yükleniyor...";
-
-
-     for(const file of files){
-
-      const newUrl=
-       await uploadImage(file);
-
-      finalImages.push(
-       newUrl
-      );
-
-     }
-
-    }
-
-
-    const updateData={
-
-     baslik:baslik,
-
-     fiyat:
-      fiyat
-      ?Number(fiyat)
-      :null,
-
-     aciklama:aciklama,
-
-     kategori:kategori,
-
-     mahalle:mahalle,
-
-     telefon:telefon
-
-    };
-
-
-    /*
-      Fotoğraf varsa güncel fotoğraf listesini kaydet.
-    */
-
-    if(
-     finalImages.length
-    ){
-
-     updateData.resimurl=
-      JSON.stringify(
-       finalImages
-      );
-
-    }else{
-
-     updateData.resimurl=
-      JSON.stringify([]);
-
-    }
-
-
-    button.textContent=
-     "İlan güncelleniyor...";
-
-
-    /*
-      EN ÖNEMLİ KISIM:
-
-      id + user_id birlikte kullanılıyor.
-      Supabase RLS de ayrıca kullanıcıyı kontrol ediyor.
-    */
-
-    const {
-     data:updateResult,
-     error:updateError
-    }=
-    await supabaseClient
-    .from("ilantable")
-    .update(updateData)
-    .eq("id",editingListingId)
-    .eq("user_id",user.id)
-    .select("*")
-    .maybeSingle();
-
-
-    if(updateError){
-
-     console.error(
-      "Güncelleme Supabase hatası:",
-      updateError
-     );
-
-     throw updateError;
-
-    }
-
-
-    if(!updateResult){
-
-     throw new Error(
-      "İlan güncellenemedi. Supabase RLS politikalarını kontrol edin."
-     );
-
-    }
-
-
-    alert(
-     "✅ İlan başarıyla güncellendi."
-    );
-
-
-    clearListingForm();
-
-    setNewListingMode();
-
-    await loadListings();
-
-    return;
-
-   }
-
-
-   /* =====================================================
-      YENİ İLAN
-   ===================================================== */
-
-   button.textContent=
-    "İlan hakkı kontrol ediliyor...";
-
-
-   const {
-    data:hakVar,
-    error:hakError
-   }=
-   await supabaseClient
-   .rpc(
-    "kullanici_ilan_hakki_var_mi",
-    {
-     p_user_id:user.id
-    }
-   );
-
-
-   if(hakError)
-    throw hakError;
-
-
-   if(hakVar!==true){
-
-    uyelikModal.classList.add(
-     "active"
-    );
-
-    document.body.style.overflow=
-     "hidden";
-
-
-    alert(
-     "Ücretsiz deneme süreniz veya ilan hakkınız bitmiş.\n\n"+
-     "Devam etmek için bir üyelik paketi seçin."
-    );
-
-    return;
-
-   }
-
-
-   /* =====================================================
-      FOTOĞRAFLAR
-   ===================================================== */
-
-   const imageUrls=[];
-
-
-   if(files && files.length){
-
-    button.textContent=
-     "Fotoğraflar yükleniyor...";
-
-
-    for(const file of files){
-
-     imageUrls.push(
-      await uploadImage(file)
-     );
-
-    }
-
-   }
-
-
-   /* =====================================================
-      İLANI EKLE
-   ===================================================== */
-
-   button.textContent=
-    "İlan yayınlanıyor...";
-
-
-   const {
-    error:insertError
-   }=
-   await supabaseClient
-   .from("ilantable")
-   .insert([{
-
-    user_id:user.id,
-
-    baslik:baslik,
-
-    fiyat:
-     fiyat
-     ?Number(fiyat)
-     :null,
-
-    aciklama:aciklama,
-
-    kategori:kategori,
-
-    mahalle:mahalle,
-
-    telefon:telefon,
-
-    resimurl:
-     JSON.stringify(
-      imageUrls
-     )
-
-   }]);
-
-
-   if(insertError)
-    throw insertError;
-
-
-   alert(
-    "✅ İlan başarıyla yayınlandı."
-   );
-
-
-   clearListingForm();
-
-   setNewListingMode();
-
-   await loadListings();
-
-
-  }catch(error){
-
-   console.error(
-    "İlan işlemi hatası:",
-    error
-   );
-
-
-   alert(
-    "İlan işlemi sırasında hata oluştu:\n\n"+
-    (error.message||error)
-   );
-
-
-  }finally{
-
-   button.disabled=false;
-
-
-   if(editingListingId){
-
-    button.textContent=
-     "💾 İlanı Güncelle";
-
-   }else{
-
-    button.textContent=
-     "📢 İlanı Yayınla";
-
-   }
-
-  }
-
- });
-
-
-/* =========================================================
-   DÜZENLEMEYİ İPTAL
-========================================================= */
-
-cancelEditBtn.addEventListener(
- "click",
- ()=>{
-
-  const confirmed=
-   confirm(
-    "İlan düzenlemesini iptal etmek istiyor musunuz?"
-   );
-
-
-  if(!confirmed)
-   return;
-
-
-  clearListingForm();
-
-  setNewListingMode();
-
-  window.scrollTo({
-   top:0,
-   behavior:"smooth"
-  });
-
- });
-
-
-/* =========================================================
-   ÜYELİK AÇ
-========================================================= */
-
-document
-.getElementById("uyelikBtn")
-.addEventListener(
- "click",
- ()=>{
-
-  uyelikModal.classList.add(
-   "active"
-  );
-
-  document.body.style.overflow=
-   "hidden";
-
- });
-
-
-/* =========================================================
-   ÜYELİK KAPAT
-========================================================= */
-
-document
-.getElementById("uyelikKapat")
-.addEventListener(
- "click",
- ()=>{
-
-  uyelikModal.classList.remove(
-   "active"
-  );
-
-  document.body.style.overflow="";
-
- });
-
-
-uyelikModal.addEventListener(
- "click",
- event=>{
-
-  if(event.target===uyelikModal){
-
-   uyelikModal.classList.remove(
-    "active"
-   );
-
-   document.body.style.overflow="";
-
-  }
-
- });
-
-
-/* =========================================================
-   PAKET SEÇİMİ
-========================================================= */
-
-document
-.querySelectorAll(".paketBtn")
-.forEach(
- button=>{
-
-  button.addEventListener(
-   "click",
-   async()=>{
-
-    const paket=
-     button.dataset.paket;
-
-    const sure=
-     button.dataset.sure;
-
-    const hak=
-     button.dataset.hak;
-
-    const fiyat=
-     button.dataset.fiyat;
-
-
-    const {
-     data:{user},
-     error
-    }=
-    await supabaseClient.auth
-    .getUser();
-
-
-    if(error){
-
-     alert(error.message);
-
-     return;
-
-    }
-
-
-    if(!user){
-
-     uyelikModal.classList.remove(
-      "active"
-     );
-
-     authModal.classList.add(
-      "active"
-     );
-
-     document.body.style.overflow=
-      "hidden";
-
-
-     alert(
-      "Üyelik satın almak için önce giriş yapmalısınız."
-     );
-
-     return;
-
-    }
-
-
-    alert(
-     "📦 Seçilen paket:\n\n"+
-     "Paket: "+paket+"\n"+
-     "Süre: "+sure+" gün\n"+
-     "İlan hakkı: "+hak+"\n"+
-     "Fiyat: "+fiyat+" TL\n\n"+
-     "💳 Ödeme sistemi henüz bağlanmadı."
-    );
-
-   }
-  );
-
- });
-
-
-/* =========================================================
-   İLANLARI YÜKLE
-========================================================= */
+/* ================================================= */
+/* İLANLARI YÜKLE */
+/* ================================================= */
 
 async function loadListings(){
+
+ const {data:{user:viewer}}=await supabaseClient.auth.getUser();
+ currentUser=viewer||null;
 
  listingsContainer.innerHTML=
   '<div class="loading">İlanlar yükleniyor...</div>';
@@ -2853,19 +2121,13 @@ async function loadListings(){
  .select("*")
  .order(
   "created_at",
-  {
-   ascending:false
-  }
+  {ascending:false}
  );
 
 
  if(error){
 
-  console.error(
-   "İlan yükleme hatası:",
-   error
-  );
-
+  console.error(error);
 
   listingsContainer.innerHTML=
    '<div class="empty">İlanlar yüklenirken hata oluştu.</div>';
@@ -2875,269 +2137,58 @@ async function loadListings(){
  }
 
 
- allListings=
-  data||[];
-
+ allListings=data||[];
 
  displayListings();
 
 }
 
 
-/* =========================================================
-   İLAN DÜZENLEME BAŞLAT
-========================================================= */
-
-function startEditListing(ilan){
-
- if(
-  !currentUser
-  ||
-  currentUser.id!==ilan.user_id
- ){
-
-  alert(
-   "Bu ilanı düzenleme yetkiniz yok."
-  );
-
-  return;
-
- }
-
-
- editingListingId=
-  ilan.id;
-
-
- editingListingOldImages=
-  getImageUrls(
-   ilan.resimurl
-  );
-
-
- document.getElementById("baslik").value=
-  ilan.baslik||"";
-
-
- document.getElementById("fiyat").value=
-  ilan.fiyat??"";
-
-
- document.getElementById("aciklama").value=
-  ilan.aciklama||"";
-
-
- document.getElementById("kategori").value=
-  ilan.kategori||"";
-
-
- document.getElementById("mahalle").value=
-  ilan.mahalle||"";
-
-
- document.getElementById("telefon").value=
-  ilan.telefon||"";
-
-
- document.getElementById("fotograflar").value=
-  "";
-
-
- ilanFormBaslik.textContent=
-  "✏️ İlan Düzenle";
-
-
- ilanFormBaslik.classList.add(
-  "edit-mode-title"
- );
-
-
- editingInfo.classList.add(
-  "active"
- );
-
-
- ilanVerBtn.textContent=
-  "💾 İlanı Güncelle";
-
-
- cancelEditBtn.style.display=
-  "block";
-
-
- window.scrollTo({
-  top:0,
-  behavior:"smooth"
- });
-
-}
-
-
-/* =========================================================
-   İLAN SİL
-========================================================= */
-
-async function deleteListing(ilan){
-
- if(
-  !currentUser
-  ||
-  currentUser.id!==ilan.user_id
- ){
-
-  alert(
-   "Bu ilanı silme yetkiniz yok."
-  );
-
-  return;
-
- }
-
-
- const confirmed=
-  confirm(
-   "Bu ilanı silmek istediğinize emin misiniz?\n\n"+
-   "Bu işlem geri alınamaz."
-  );
-
-
- if(!confirmed)
-  return;
-
-
- try{
-
-  const {
-   data:deletedRows,
-   error
-  }=
-  await supabaseClient
-  .from("ilantable")
-  .delete()
-  .eq("id",ilan.id)
-  .eq("user_id",currentUser.id)
-  .select("id");
-
-
-  if(error)
-   throw error;
-
-
-  if(
-   !deletedRows
-   ||
-   deletedRows.length===0
-  ){
-
-   throw new Error(
-    "İlan silinemedi. RLS politikalarını kontrol edin."
-   );
-
-  }
-
-
-  if(
-   editingListingId===ilan.id
-  ){
-
-   clearListingForm();
-
-   setNewListingMode();
-
-  }
-
-
-  alert(
-   "✅ İlan silindi."
-  );
-
-
-  await loadListings();
-
-
- }catch(error){
-
-  console.error(
-   "İlan silme hatası:",
-   error
-  );
-
-
-  alert(
-   "İlan silinirken hata oluştu:\n"+
-   (error.message||error)
-  );
-
- }
-
-}
-
-
-/* =========================================================
-   İLANLARI GÖSTER
-========================================================= */
+/* ================================================= */
+/* İLANLARI GÖSTER */
+/* ================================================= */
 
 function displayListings(){
 
  const searchText=
-  searchInput
-  .value
-  .trim()
-  .toLowerCase();
+ searchInput
+ .value
+ .trim()
+ .toLowerCase();
 
 
  const filtered=
-  allListings.filter(
-   ilan=>{
+ allListings.filter(ilan=>{
 
-    const categoryMatch=
-     selectedCategory==="Tümü"
-     ||
-     ilan.kategori===
-      selectedCategory;
+  const categoryMatch=
+   selectedCategory==="Tümü"
+   ||
+   ilan.kategori===selectedCategory;
 
 
-    const searchMatch=
-     !searchText
-     ||
-     String(
-      ilan.baslik||""
-     )
-     .toLowerCase()
-     .includes(searchText)
-
-     ||
-
-     String(
-      ilan.aciklama||""
-     )
-     .toLowerCase()
-     .includes(searchText)
-
-     ||
-
-     String(
-      ilan.mahalle||""
-     )
-     .toLowerCase()
-     .includes(searchText)
-
-     ||
-
-     String(
-      ilan.kategori||""
-     )
-     .toLowerCase()
-     .includes(searchText);
+  const searchMatch=
+   !searchText
+   ||
+   String(ilan.baslik||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.aciklama||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.mahalle||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.kategori||"")
+    .toLowerCase()
+    .includes(searchText);
 
 
-    return
-     categoryMatch
-     &&
-     searchMatch;
+  return categoryMatch&&searchMatch;
 
-   }
-  );
+ });
 
 
  listingsContainer.innerHTML="";
@@ -3153,428 +2204,269 @@ function displayListings(){
  }
 
 
- filtered.forEach(
-  ilan=>{
+ filtered.forEach(ilan=>{
 
-   const card=
-    document.createElement(
-     "div"
-    );
+  const card=
+  document.createElement("div");
 
-   card.className=
-    "card";
+  card.className="card";
 
 
-   const imageUrls=
-    getImageUrls(
-     ilan.resimurl
-    );
+  const imageUrls=
+   getImageUrls(ilan.resimurl);
 
 
-   const imageBox=
-    document.createElement(
-     "div"
-    );
+  const imageBox=
+   document.createElement("div");
 
-   imageBox.className=
-    "card-image";
+  imageBox.className=
+   "card-image";
 
 
-   if(imageUrls.length){
+  if(imageUrls.length){
 
-    const image=
-     document.createElement(
-      "img"
+   const image=
+   document.createElement("img");
+
+   image.src=imageUrls[0];
+
+   image.alt=
+    ilan.baslik||
+    "İlan fotoğrafı";
+
+
+   imageBox.appendChild(image);
+
+
+   if(imageUrls.length>1){
+
+    const count=
+    document.createElement("div");
+
+    count.className=
+     "photo-count";
+
+    count.textContent=
+     "📷 "
+     +imageUrls.length
+     +" fotoğraf";
+
+    imageBox.appendChild(count);
+
+   }
+
+
+   imageBox.addEventListener(
+    "click",
+    ()=>{
+     openGallery(
+      imageUrls,
+      ilan.baslik||"Fotoğraf"
      );
-
-
-    image.src=
-     imageUrls[0];
-
-
-    image.alt=
-     ilan.baslik||
-     "İlan fotoğrafı";
-
-
-    imageBox.appendChild(
-     image
-    );
-
-
-    if(imageUrls.length>1){
-
-     const count=
-      document.createElement(
-       "div"
-      );
-
-
-     count.className=
-      "photo-count";
-
-
-     count.textContent=
-      "📷 "
-      +
-      imageUrls.length
-      +
-      " fotoğraf";
-
-
-     imageBox.appendChild(
-      count
-     );
-
     }
-
-
-    imageBox.addEventListener(
-     "click",
-     ()=>{
-
-      openGallery(
-       imageUrls,
-       ilan.baslik||
-       "Fotoğraf"
-      );
-
-     }
-    );
-
-   }else{
-
-    imageBox.innerHTML=
-     '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:40px">📷</div>';
-
-   }
-
-
-   const body=
-    document.createElement(
-     "div"
-    );
-
-   body.className=
-    "card-body";
-
-
-   const title=
-    document.createElement(
-     "div"
-    );
-
-   title.className=
-    "card-title";
-
-   title.textContent=
-    ilan.baslik||"";
-
-
-   const price=
-    document.createElement(
-     "div"
-    );
-
-   price.className=
-    "price";
-
-
-   price.textContent=
-    (
-     ilan.fiyat!==null
-     &&
-     ilan.fiyat!==undefined
-     &&
-     ilan.fiyat!==""
-    )
-
-    ?
-
-    Number(
-     ilan.fiyat
-    )
-    .toLocaleString(
-     "tr-TR"
-    )
-    +
-    " TL"
-
-    :
-
-    "Fiyat belirtilmemiş";
-
-
-   const description=
-    document.createElement(
-     "div"
-    );
-
-   description.className=
-    "description";
-
-   description.textContent=
-    ilan.aciklama||"";
-
-
-   body.appendChild(
-    title
-   );
-
-   body.appendChild(
-    price
-   );
-
-   body.appendChild(
-    description
    );
 
 
-   if(ilan.kategori){
+  }else{
 
-    const info=
-     document.createElement(
-      "div"
-     );
-
-    info.className=
-     "info";
-
-
-    info.innerHTML=
-     "📂 <b>Kategori:</b> "
-     +
-     escapeHtml(
-      ilan.kategori
-     );
-
-
-    body.appendChild(
-     info
-    );
-
-   }
-
-
-   if(ilan.mahalle){
-
-    const info=
-     document.createElement(
-      "div"
-     );
-
-    info.className=
-     "info";
-
-
-    info.innerHTML=
-     "📍 <b>Mahalle:</b> "
-     +
-     escapeHtml(
-      ilan.mahalle
-     );
-
-
-    body.appendChild(
-     info
-    );
-
-   }
-
-
-   if(ilan.telefon){
-
-    const contactBox=
-     document.createElement(
-      "div"
-     );
-
-    contactBox.className=
-     "contact-buttons";
-
-
-    const whatsappUrl=
-     getWhatsAppUrl(
-      ilan.telefon,
-      ilan.baslik
-     );
-
-
-    const phone=
-     document.createElement(
-      "a"
-     );
-
-    phone.className=
-     "phone";
-
-    phone.href=
-     "tel:"+ilan.telefon;
-
-    phone.textContent=
-     "📞 "+ilan.telefon;
-
-
-    phone.addEventListener(
-     "click",
-     e=>
-      e.stopPropagation()
-    );
-
-
-    const whatsapp=
-     document.createElement(
-      "a"
-     );
-
-    whatsapp.className=
-     "whatsapp-btn";
-
-    whatsapp.href=
-     whatsappUrl;
-
-    whatsapp.target=
-     "_blank";
-
-    whatsapp.rel=
-     "noopener noreferrer";
-
-    whatsapp.textContent=
-     "💬 WhatsApp";
-
-
-    whatsapp.addEventListener(
-     "click",
-     e=>
-      e.stopPropagation()
-    );
-
-
-    contactBox.appendChild(
-     phone
-    );
-
-    contactBox.appendChild(
-     whatsapp
-    );
-
-    body.appendChild(
-     contactBox
-    );
-
-   }
-
-
-   /* ======================================================
-      SAHİP BUTONLARI
-   ====================================================== */
-
-   if(
-    currentUser
-    &&
-    currentUser.id===
-     ilan.user_id
-   ){
-
-    const ownerActions=
-     document.createElement(
-      "div"
-     );
-
-    ownerActions.className=
-     "owner-actions";
-
-
-    const editButton=
-     document.createElement(
-      "button"
-     );
-
-    editButton.className=
-     "edit-listing-btn";
-
-    editButton.textContent=
-     "✏️ Düzenle";
-
-
-    editButton.addEventListener(
-     "click",
-     event=>{
-
-      event.stopPropagation();
-
-      startEditListing(
-       ilan
-      );
-
-     }
-    );
-
-
-    const deleteButton=
-     document.createElement(
-      "button"
-     );
-
-    deleteButton.className=
-     "delete-listing-btn";
-
-    deleteButton.textContent=
-     "🗑️ Sil";
-
-
-    deleteButton.addEventListener(
-     "click",
-     event=>{
-
-      event.stopPropagation();
-
-      deleteListing(
-       ilan
-      );
-
-     }
-    );
-
-
-    ownerActions.appendChild(
-     editButton
-    );
-
-    ownerActions.appendChild(
-     deleteButton
-    );
-
-
-    body.appendChild(
-     ownerActions
-    );
-
-   }
-
-
-   card.appendChild(
-    imageBox
-   );
-
-   card.appendChild(
-    body
-   );
-
-
-   listingsContainer.appendChild(
-    card
-   );
+   imageBox.innerHTML=
+   '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:40px">📷</div>';
 
   }
- );
+
+
+  const body=
+  document.createElement("div");
+
+  body.className="card-body";
+
+
+  const title=
+  document.createElement("div");
+
+  title.className=
+   "card-title";
+
+  title.textContent=
+   ilan.baslik||"";
+
+
+  const price=
+  document.createElement("div");
+
+  price.className="price";
+
+
+  price.textContent=
+   (
+    ilan.fiyat!==null
+    &&
+    ilan.fiyat!==undefined
+    &&
+    ilan.fiyat!==""
+   )
+   ?
+   Number(ilan.fiyat)
+    .toLocaleString("tr-TR")
+    +" TL"
+   :
+   "Fiyat belirtilmemiş";
+
+
+  const description=
+  document.createElement("div");
+
+  description.className=
+   "description";
+
+  description.textContent=
+   ilan.aciklama||"";
+
+
+  body.appendChild(title);
+
+  body.appendChild(price);
+
+  body.appendChild(description);
+
+
+  if(ilan.kategori){
+
+   const info=
+   document.createElement("div");
+
+   info.className="info";
+
+   info.innerHTML=
+    "📂 <b>Kategori:</b> "
+    +escapeHtml(ilan.kategori);
+
+   body.appendChild(info);
+
+  }
+
+
+  if(ilan.mahalle){
+
+   const info=
+   document.createElement("div");
+
+   info.className="info";
+
+   info.innerHTML=
+    "📍 <b>Mahalle:</b> "
+    +escapeHtml(ilan.mahalle);
+
+   body.appendChild(info);
+
+  }
+
+
+  if(ilan.telefon){
+
+   const contactBox=
+   document.createElement("div");
+
+   contactBox.className=
+    "contact-buttons";
+
+
+   const whatsappUrl=
+    getWhatsAppUrl(
+     ilan.telefon,
+     ilan.baslik
+    );
+
+
+   const phone=
+   document.createElement("a");
+
+   phone.className="phone";
+
+   phone.href=
+    "tel:"+ilan.telefon;
+
+   phone.textContent=
+    "📞 "+ilan.telefon;
+
+   phone.addEventListener(
+    "click",
+    e=>e.stopPropagation()
+   );
+
+
+   const whatsapp=
+   document.createElement("a");
+
+   whatsapp.className=
+    "whatsapp-btn";
+
+   whatsapp.href=
+    whatsappUrl;
+
+   whatsapp.target="_blank";
+
+   whatsapp.rel=
+    "noopener noreferrer";
+
+   whatsapp.textContent=
+    "💬 WhatsApp";
+
+   whatsapp.addEventListener(
+    "click",
+    e=>e.stopPropagation()
+   );
+
+
+   contactBox.appendChild(phone);
+
+   contactBox.appendChild(whatsapp);
+
+   body.appendChild(contactBox);
+
+  }
+
+
+  if(currentUser && String(currentUser.id)===String(ilan.user_id)){
+
+   const ownerActions=document.createElement("div");
+   ownerActions.className="owner-actions";
+
+   const editButton=document.createElement("button");
+   editButton.type="button";
+   editButton.className="edit-listing-btn";
+   editButton.textContent="✏️ Düzenle";
+   editButton.addEventListener("click",event=>{
+    event.stopPropagation();
+    startEditListing(ilan);
+   });
+
+   const deleteButton=document.createElement("button");
+   deleteButton.type="button";
+   deleteButton.className="delete-listing-btn";
+   deleteButton.textContent="🗑️ Sil";
+   deleteButton.addEventListener("click",event=>{
+    event.stopPropagation();
+    deleteListing(ilan);
+   });
+
+   ownerActions.appendChild(editButton);
+   ownerActions.appendChild(deleteButton);
+   body.appendChild(ownerActions);
+  }
+
+  card.appendChild(imageBox);
+  card.appendChild(body);
+  listingsContainer.appendChild(card);
+
+ });
 
 }
 
 
-/* =========================================================
-   ARAMA
-========================================================= */
+/* ================================================= */
+/* ARAMA */
+/* ================================================= */
 
 searchInput.addEventListener(
  "input",
@@ -3582,51 +2474,40 @@ searchInput.addEventListener(
 );
 
 
-/* =========================================================
-   KATEGORİ
-========================================================= */
+/* ================================================= */
+/* KATEGORİ */
+/* ================================================= */
 
 document
 .querySelectorAll(".category-btn")
-.forEach(
- button=>{
+.forEach(button=>{
 
-  button.addEventListener(
-   "click",
-   ()=>{
+ button.addEventListener("click",()=>{
 
-    document
-    .querySelectorAll(
-     ".category-btn"
-    )
-    .forEach(
-     btn=>
-      btn.classList.remove(
-       "active"
-      )
-    );
-
-
-    button.classList.add(
-     "active"
-    );
-
-
-    selectedCategory=
-     button.dataset.category;
-
-
-    displayListings();
-
-   }
+  document
+  .querySelectorAll(".category-btn")
+  .forEach(btn=>
+   btn.classList.remove("active")
   );
+
+
+  button.classList.add("active");
+
+
+  selectedCategory=
+   button.dataset.category;
+
+
+  displayListings();
 
  });
 
+});
 
-/* =========================================================
-   GALERİ ZOOM
-========================================================= */
+
+/* ================================================= */
+/* GALERİ ZOOM */
+/* ================================================= */
 
 function resetZoom(){
 
@@ -3674,13 +2555,13 @@ function updateZoom(){
 function changeZoom(amount){
 
  zoomLevel=
-  Math.max(
-   MIN_ZOOM,
-   Math.min(
-    MAX_ZOOM,
-    zoomLevel+amount
-   )
-  );
+ Math.max(
+  MIN_ZOOM,
+  Math.min(
+   MAX_ZOOM,
+   zoomLevel+amount
+  )
+ );
 
 
  if(zoomLevel===1){
@@ -3697,14 +2578,11 @@ function changeZoom(amount){
 }
 
 
-/* =========================================================
-   GALERİ AÇ
-========================================================= */
+/* ================================================= */
+/* GALERİ AÇ */
+/* ================================================= */
 
-function openGallery(
- images,
- title
-){
+function openGallery(images,title){
 
  galleryImages=
   images||[];
@@ -3732,20 +2610,16 @@ function openGallery(
    "show"
   );
 
-
   clearTimeout(
    window.zoomHintTimer
   );
 
-
   window.zoomHintTimer=
    setTimeout(
     ()=>{
-
      mobileZoomHint.classList.remove(
       "show"
      );
-
     },
     2200
    );
@@ -3755,9 +2629,9 @@ function openGallery(
 }
 
 
-/* =========================================================
-   GALERİ GÖSTER
-========================================================= */
+/* ================================================= */
+/* GALERİ GÖSTER */
+/* ================================================= */
 
 function renderGallery(){
 
@@ -3769,9 +2643,7 @@ function renderGallery(){
 
 
  galleryImage.src=
-  galleryImages[
-   galleryIndex
-  ];
+  galleryImages[galleryIndex];
 
 
  galleryImage.alt=
@@ -3782,62 +2654,54 @@ function renderGallery(){
 
 
  galleryImages.forEach(
-  (src,index)=>{
+ (src,index)=>{
 
-   const thumbnail=
-    document.createElement(
-     "img"
-    );
+  const thumbnail=
+   document.createElement("img");
 
-
-   thumbnail.className=
-    "thumbnail"
-    +
-    (
-     index===galleryIndex
-     ?" active"
-     :""
-    );
-
-
-   thumbnail.src=
-    src;
-
-
-   thumbnail.addEventListener(
-    "click",
-    ()=>{
-
-     galleryIndex=
-      index;
-
-     renderGallery();
-
-    }
+  thumbnail.className=
+   "thumbnail"
+   +
+   (
+    index===galleryIndex
+    ?" active"
+    :""
    );
 
 
-   thumbnails.appendChild(
-    thumbnail
-   );
+  thumbnail.src=src;
 
-  }
- );
+
+  thumbnail.addEventListener(
+   "click",
+   ()=>{
+
+    galleryIndex=index;
+
+    renderGallery();
+
+   }
+  );
+
+
+  thumbnails.appendChild(
+   thumbnail
+  );
+
+ });
 
 }
 
 
-/* =========================================================
-   ZOOM BUTONLARI
-========================================================= */
+/* ================================================= */
+/* ZOOM BUTONLARI */
+/* ================================================= */
 
 document
 .getElementById("zoomIn")
 .addEventListener(
  "click",
- ()=>changeZoom(
-  ZOOM_STEP
- )
+ ()=>changeZoom(ZOOM_STEP)
 );
 
 
@@ -3845,9 +2709,7 @@ document
 .getElementById("zoomOut")
 .addEventListener(
  "click",
- ()=>changeZoom(
-  -ZOOM_STEP
- )
+ ()=>changeZoom(-ZOOM_STEP)
 );
 
 
@@ -3859,16 +2721,15 @@ document
 );
 
 
-/* =========================================================
-   MOUSE ZOOM
-========================================================= */
+/* ================================================= */
+/* MOUSE ZOOM */
+/* ================================================= */
 
 galleryImage.addEventListener(
  "wheel",
  event=>{
 
   event.preventDefault();
-
 
   changeZoom(
    event.deltaY<0
@@ -3877,9 +2738,7 @@ galleryImage.addEventListener(
   );
 
  },
- {
-  passive:false
- }
+ {passive:false}
 );
 
 
@@ -3898,9 +2757,9 @@ galleryImage.addEventListener(
 );
 
 
-/* =========================================================
-   MOUSE SÜRÜKLEME
-========================================================= */
+/* ================================================= */
+/* MOUSE SÜRÜKLEME */
+/* ================================================= */
 
 galleryImage.addEventListener(
  "mousedown",
@@ -3911,7 +2770,6 @@ galleryImage.addEventListener(
 
 
   isDragging=true;
-
 
   galleryImage.classList.add(
    "dragging"
@@ -3934,7 +2792,8 @@ galleryImage.addEventListener(
 
   event.preventDefault();
 
- });
+ }
+);
 
 
 window.addEventListener(
@@ -3947,25 +2806,18 @@ window.addEventListener(
 
   imageX=
    startImageX
-   +
-   (
-    event.clientX-
-    dragStartX
-   );
+   +(event.clientX-dragStartX);
 
 
   imageY=
    startImageY
-   +
-   (
-    event.clientY-
-    dragStartY
-   );
+   +(event.clientY-dragStartY);
 
 
   updateZoom();
 
- });
+ }
+);
 
 
 window.addEventListener(
@@ -3978,30 +2830,27 @@ window.addEventListener(
    "dragging"
   );
 
- });
+ }
+);
 
 
-/* =========================================================
-   TELEFON PINCH
-========================================================= */
+/* ================================================= */
+/* TELEFON PINCH ZOOM */
+/* ================================================= */
 
-function getTouchDistance(
- touches
-){
+function getTouchDistance(touches){
 
  const dx=
-  touches[0].clientX-
-  touches[1].clientX;
-
+  touches[0].clientX
+  -touches[1].clientX;
 
  const dy=
-  touches[0].clientY-
-  touches[1].clientY;
+  touches[0].clientY
+  -touches[1].clientY;
 
 
  return Math.sqrt(
-  dx*dx+
-  dy*dy
+  dx*dx+dy*dy
  );
 
 }
@@ -4011,19 +2860,15 @@ galleryImage.addEventListener(
  "touchstart",
  event=>{
 
-  if(
-   event.touches.length===2
-  ){
+  if(event.touches.length===2){
 
    pinchStartDistance=
     getTouchDistance(
      event.touches
     );
 
-
    pinchStartZoom=
     zoomLevel;
-
 
    return;
 
@@ -4056,9 +2901,7 @@ galleryImage.addEventListener(
   }
 
  },
- {
-  passive:true
- }
+ {passive:true}
 );
 
 
@@ -4066,9 +2909,7 @@ galleryImage.addEventListener(
  "touchmove",
  event=>{
 
-  if(
-   event.touches.length===2
-  ){
+  if(event.touches.length===2){
 
    const currentDistance=
     getTouchDistance(
@@ -4076,9 +2917,7 @@ galleryImage.addEventListener(
     );
 
 
-   if(
-    pinchStartDistance<=0
-   )
+   if(pinchStartDistance<=0)
     return;
 
 
@@ -4092,8 +2931,7 @@ galleryImage.addEventListener(
      MIN_ZOOM,
      Math.min(
       MAX_ZOOM,
-      pinchStartZoom*
-      scale
+      pinchStartZoom*scale
      )
     );
 
@@ -4119,20 +2957,12 @@ galleryImage.addEventListener(
 
    imageX=
     touchImageX
-    +
-    (
-     touch.clientX-
-     touchStartX
-    );
+    +(touch.clientX-touchStartX);
 
 
    imageY=
     touchImageY
-    +
-    (
-     touch.clientY-
-     touchStartY
-    );
+    +(touch.clientY-touchStartY);
 
 
    updateZoom();
@@ -4142,9 +2972,7 @@ galleryImage.addEventListener(
   }
 
  },
- {
-  passive:false
- }
+ {passive:false}
 );
 
 
@@ -4152,20 +2980,16 @@ galleryImage.addEventListener(
  "touchend",
  event=>{
 
-  if(
-   event.touches.length<2
-  ){
-
+  if(event.touches.length<2)
    pinchStartDistance=0;
 
-  }
+ }
+);
 
- });
 
-
-/* =========================================================
-   GALERİ KAPAT
-========================================================= */
+/* ================================================= */
+/* GALERİ KAPAT */
+/* ================================================= */
 
 function closeGallery(){
 
@@ -4188,9 +3012,9 @@ document
 );
 
 
-/* =========================================================
-   ÖNCEKİ
-========================================================= */
+/* ================================================= */
+/* ÖNCEKİ FOTOĞRAF */
+/* ================================================= */
 
 document
 .getElementById("galleryPrev")
@@ -4198,18 +3022,14 @@ document
  "click",
  ()=>{
 
-  if(
-   !galleryImages.length
-  )
+  if(!galleryImages.length)
    return;
 
 
   galleryIndex--;
 
 
-  if(
-   galleryIndex<0
-  )
+  if(galleryIndex<0)
    galleryIndex=
     galleryImages.length-1;
 
@@ -4220,9 +3040,9 @@ document
 );
 
 
-/* =========================================================
-   SONRAKİ
-========================================================= */
+/* ================================================= */
+/* SONRAKİ FOTOĞRAF */
+/* ================================================= */
 
 document
 .getElementById("galleryNext")
@@ -4230,9 +3050,7 @@ document
  "click",
  ()=>{
 
-  if(
-   !galleryImages.length
-  )
+  if(!galleryImages.length)
    return;
 
 
@@ -4252,9 +3070,9 @@ document
 );
 
 
-/* =========================================================
-   KLAVYE
-========================================================= */
+/* ================================================= */
+/* KLAVYE */
+/* ================================================= */
 
 document.addEventListener(
  "keydown",
@@ -4274,17 +3092,13 @@ document.addEventListener(
 
   if(event.key==="ArrowLeft")
    document
-   .getElementById(
-    "galleryPrev"
-   )
+   .getElementById("galleryPrev")
    .click();
 
 
   if(event.key==="ArrowRight")
    document
-   .getElementById(
-    "galleryNext"
-   )
+   .getElementById("galleryNext")
    .click();
 
 
@@ -4292,15 +3106,11 @@ document.addEventListener(
    event.key==="+"||
    event.key==="="
   )
-   changeZoom(
-    ZOOM_STEP
-   );
+   changeZoom(ZOOM_STEP);
 
 
   if(event.key==="-")
-   changeZoom(
-    -ZOOM_STEP
-   );
+   changeZoom(-ZOOM_STEP);
 
 
   if(event.key==="0")
@@ -4309,50 +3119,33 @@ document.addEventListener(
  });
 
 
-/* =========================================================
-   GALERİ DIŞINA TIKLAMA
-========================================================= */
+/* ================================================= */
+/* GALERİ DIŞINA TIKLAMA */
+/* ================================================= */
 
 galleryModal.addEventListener(
  "click",
  event=>{
 
-  if(
-   event.target===
-   galleryModal
-  ){
-
+  if(event.target===galleryModal)
    closeGallery();
-
-  }
 
  });
 
 
-/* =========================================================
-   BAŞLANGIÇ
-========================================================= */
+/* ================================================= */
+/* BAŞLANGIÇ */
+/* ================================================= */
 
 (async function(){
 
- try{
+ await updateAuthUI();
 
-  await updateAuthUI();
-
-  await loadListings();
-
- }catch(error){
-
-  console.error(
-   "Başlangıç hatası:",
-   error
-  );
-
- }
+ await loadListings();
 
 })();
+
 </script>
 
 </body>
 </html>
-```
