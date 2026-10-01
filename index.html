@@ -576,26 +576,6 @@ button:hover{
  display:none
 }
 
-/* İLAN SAHİBİ İŞLEMLERİ */
-.owner-actions{
- display:flex;
- gap:8px;
- margin-top:14px;
-}
-
-.owner-actions button{
- width:50%;
- margin:0;
-}
-
-.edit-listing-btn{
- background:#2563eb;
-}
-
-.delete-listing-btn{
- background:#dc2626;
-}
-
 @media(max-width:700px){
 
  header{
@@ -715,6 +695,15 @@ button:hover{
   opacity:1
  }
 }
+
+/* İLAN SAHİBİ İŞLEMLERİ */
+.owner-actions{display:flex;gap:8px;margin-top:14px}
+.owner-actions button{flex:1;padding:10px;border:0;border-radius:8px;color:#fff;font-weight:700;cursor:pointer}
+.edit-listing-btn{background:#2563eb}
+.delete-listing-btn{background:#dc2626}
+.cancel-edit-btn{background:#6b7280!important;margin-top:8px}
+.edit-mode-title{display:none;margin:0 0 12px;color:#2563eb;font-size:18px;font-weight:700}
+
 </style>
 </head>
 
@@ -748,6 +737,7 @@ button:hover{
  <div class="form-box">
 
   <h2>📢 İlan Ver</h2>
+  <div id="editModeTitle" class="edit-mode-title">✏️ İlan Düzenleniyor</div>
 
   <div id="ilanKullaniciDurumu"
        style="background:#f3f4f6;padding:12px;border-radius:9px;margin-bottom:15px;font-size:14px">
@@ -1164,8 +1154,6 @@ supabase.createClient(
 
 let allListings=[];
 let selectedCategory="Tümü";
-
-/* İLAN DÜZENLEME DURUMU */
 let currentUser=null;
 let editingListingId=null;
 
@@ -1411,6 +1399,7 @@ async function updateAuthUI(){
  await supabaseClient.auth.getUser();
 
  currentUser=user||null;
+
 
  const authBtn=
  document.getElementById("authBtn");
@@ -1772,196 +1761,198 @@ supabaseClient.auth.onAuthStateChange(
 
 
 /* ================================================= */
-/* İLAN VERME */
+/* İLAN VERME / GÜNCELLEME */
 /* ================================================= */
 
-document
-.getElementById("ilanVerBtn")
-.addEventListener("click",async function(){
+function resetListingForm(){
+
+ editingListingId=null;
+
+ document.getElementById("baslik").value="";
+ document.getElementById("fiyat").value="";
+ document.getElementById("aciklama").value="";
+ document.getElementById("kategori").value="";
+ document.getElementById("mahalle").value="";
+ document.getElementById("telefon").value="";
+ document.getElementById("fotograflar").value="";
+
+ document.getElementById("ilanVerBtn").textContent="📢 İlanı Yayınla";
+
+ const title=document.getElementById("editModeTitle");
+ if(title) title.style.display="none";
+
+ const cancel=document.getElementById("cancelEditBtn");
+ if(cancel) cancel.remove();
+}
+
+function startEditListing(ilan){
+
+ if(!currentUser || currentUser.id!==ilan.user_id){
+  alert("Bu ilanı düzenleme yetkiniz yok.");
+  return;
+ }
+
+ editingListingId=ilan.id;
+
+ document.getElementById("baslik").value=ilan.baslik||"";
+ document.getElementById("fiyat").value=ilan.fiyat??"";
+ document.getElementById("aciklama").value=ilan.aciklama||"";
+ document.getElementById("kategori").value=ilan.kategori||"";
+ document.getElementById("mahalle").value=ilan.mahalle||"";
+ document.getElementById("telefon").value=ilan.telefon||"";
+ document.getElementById("fotograflar").value="";
+
+ document.getElementById("ilanVerBtn").textContent="💾 İlanı Güncelle";
+
+ const title=document.getElementById("editModeTitle");
+ if(title) title.style.display="block";
+
+ let cancel=document.getElementById("cancelEditBtn");
+ if(!cancel){
+  cancel=document.createElement("button");
+  cancel.id="cancelEditBtn";
+  cancel.type="button";
+  cancel.className="cancel-edit-btn";
+  cancel.textContent="✖ Düzenlemeyi İptal Et";
+  cancel.addEventListener("click",resetListingForm);
+  document.getElementById("ilanVerBtn").insertAdjacentElement("afterend",cancel);
+ }
+
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function deleteListing(ilan){
+
+ if(!currentUser || currentUser.id!==ilan.user_id){
+  alert("Bu ilanı silme yetkiniz yok.");
+  return;
+ }
+
+ const confirmed=confirm("Bu ilanı silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.");
+ if(!confirmed) return;
+
+ try{
+
+  const {data:deletedRows,error}=await supabaseClient
+   .from("ilantable")
+   .delete()
+   .eq("id",ilan.id)
+   .eq("user_id",currentUser.id)
+   .select("id");
+
+  if(error) throw error;
+
+  if(!deletedRows || deletedRows.length===0){
+   throw new Error("İlan silinemedi. Supabase DELETE yetkisini veya ilan sahibinin user_id değerini kontrol edin.");
+  }
+
+  if(editingListingId===ilan.id) resetListingForm();
+
+  alert("✅ İlan başarıyla silindi.");
+  await loadListings();
+
+ }catch(error){
+  console.error("İlan silme hatası:",error);
+  alert("İlan silinirken hata oluştu:\n"+(error.message||error));
+ }
+}
+
+document.getElementById("ilanVerBtn").addEventListener("click",async function(){
 
  const button=this;
 
- const baslik=
- document.getElementById("baslik")
- .value
- .trim();
+ const baslik=document.getElementById("baslik").value.trim();
+ const fiyat=document.getElementById("fiyat").value;
+ const aciklama=document.getElementById("aciklama").value.trim();
+ const kategori=document.getElementById("kategori").value;
+ const mahalle=document.getElementById("mahalle").value.trim();
+ const telefon=document.getElementById("telefon").value.trim();
+ const files=document.getElementById("fotograflar").files;
 
- const fiyat=
- document.getElementById("fiyat")
- .value;
-
- const aciklama=
- document.getElementById("aciklama")
- .value
- .trim();
-
- const kategori=
- document.getElementById("kategori")
- .value;
-
- const mahalle=
- document.getElementById("mahalle")
- .value
- .trim();
-
- const telefon=
- document.getElementById("telefon")
- .value
- .trim();
-
- const files=
- document.getElementById("fotograflar")
- .files;
-
- if(!baslik){
-  alert("İlan başlığı girin.");
-  return;
- }
-
- if(!kategori){
-  alert("Kategori seçin.");
-  return;
- }
-
- if(!telefon){
-  alert("Telefon numarası girin.");
-  return;
- }
+ if(!baslik){alert("İlan başlığı girin.");return;}
+ if(!kategori){alert("Kategori seçin.");return;}
+ if(!telefon){alert("Telefon numarası girin.");return;}
 
  button.disabled=true;
 
  try{
 
-  const {
-   data:{user},
-   error:userError
-  }=
-  await supabaseClient.auth.getUser();
-
-  if(userError)
-   throw userError;
-
+  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
+  if(userError) throw userError;
   if(!user){
+   alert("İlan vermek için önce giriş yapmalısınız.");
    authModal.classList.add("active");
    document.body.style.overflow="hidden";
-   alert("İlan vermek için önce giriş yapmalısınız.");
    return;
   }
 
   currentUser=user;
 
-  /* ================================================= */
-  /* MEVCUT İLANI DÜZENLE */
-  /* ================================================= */
-
+  /* MEVCUT İLANI GÜNCELLE */
   if(editingListingId){
 
    button.textContent="İlan güncelleniyor...";
 
    const updateData={
     baslik:baslik,
-    fiyat:fiyat ? Number(fiyat) : null,
+    fiyat:fiyat?Number(fiyat):null,
     aciklama:aciklama,
     kategori:kategori,
     mahalle:mahalle,
     telefon:telefon
    };
 
-   /* Yeni fotoğraf seçildiyse eskiler yerine yenilerini kaydet */
    if(files && files.length){
-
-    button.textContent="Fotoğraflar yükleniyor...";
-
     const imageUrls=[];
-
-    for(const file of files){
-     imageUrls.push(await uploadImage(file));
-    }
-
+    for(const file of files) imageUrls.push(await uploadImage(file));
     updateData.resimurl=JSON.stringify(imageUrls);
    }
 
-   button.textContent="İlan güncelleniyor...";
+   const {data:updateResult,error:updateError}=await supabaseClient
+    .from("ilantable")
+    .update(updateData)
+    .eq("id",editingListingId)
+    .eq("user_id",user.id)
+    .select()
+    .single();
 
-   const {
-    data:updateResult,
-    error:updateError
-   }=
-   await supabaseClient
-   .from("ilantable")
-   .update(updateData)
-   .eq("id",editingListingId)
-   .eq("user_id",user.id)
-   .select()
-   .single();
-
-   if(updateError)
-    throw updateError;
-
-   if(!updateResult){
-    throw new Error("İlan güncellenemedi.");
-   }
-
-   editingListingId=null;
+   if(updateError) throw updateError;
+   if(!updateResult) throw new Error("İlan güncellenemedi.");
 
    alert("✅ İlan başarıyla güncellendi.");
-
-   document.getElementById("baslik").value="";
-   document.getElementById("fiyat").value="";
-   document.getElementById("aciklama").value="";
-   document.getElementById("kategori").value="";
-   document.getElementById("mahalle").value="";
-   document.getElementById("telefon").value="";
-   document.getElementById("fotograflar").value="";
-
-   button.textContent="📢 İlanı Yayınla";
-
+   resetListingForm();
    await loadListings();
    return;
   }
 
-  /* ================================================= */
   /* YENİ İLAN */
-  /* ================================================= */
-
   button.textContent="İlan hakkı kontrol ediliyor...";
 
-  const {
-   data:hakVar,
-   error:hakError
-  }=
-  await supabaseClient
-  .rpc("kullanici_ilan_hakki_var_mi",{p_user_id:user.id});
+  const {data:hakVar,error:hakError}=await supabaseClient.rpc(
+   "kullanici_ilan_hakki_var_mi",
+   {p_user_id:user.id}
+  );
 
-  if(hakError)
-   throw hakError;
+  if(hakError) throw hakError;
 
   if(hakVar!==true){
    uyelikModal.classList.add("active");
    document.body.style.overflow="hidden";
-   alert(
-    "Ücretsiz deneme süreniz veya ilan hakkınız bitmiş.\n\n"+
-    "Devam etmek için bir üyelik paketi seçin."
-   );
+   alert("Ücretsiz deneme süreniz veya ilan hakkınız bitmiş.\n\nDevam etmek için bir üyelik paketi seçin.");
    return;
   }
 
   button.textContent="Fotoğraflar yükleniyor...";
 
   const imageUrls=[];
-
-  for(const file of files){
-   imageUrls.push(await uploadImage(file));
-  }
+  for(const file of files) imageUrls.push(await uploadImage(file));
 
   button.textContent="İlan yayınlanıyor...";
 
-  const {error}=await supabaseClient
-  .from("ilantable")
-  .insert([{
+  const {error}=await supabaseClient.from("ilantable").insert([{
    user_id:user.id,
    baslik:baslik,
-   fiyat:fiyat ? Number(fiyat) : null,
+   fiyat:fiyat?Number(fiyat):null,
    aciklama:aciklama,
    kategori:kategori,
    mahalle:mahalle,
@@ -1969,40 +1960,23 @@ document
    resimurl:JSON.stringify(imageUrls)
   }]);
 
-  if(error)
-   throw error;
+  if(error) throw error;
 
   alert("✅ İlan başarıyla yayınlandı.");
-
-  document.getElementById("baslik").value="";
-  document.getElementById("fiyat").value="";
-  document.getElementById("aciklama").value="";
-  document.getElementById("kategori").value="";
-  document.getElementById("mahalle").value="";
-  document.getElementById("telefon").value="";
-  document.getElementById("fotograflar").value="";
-
+  resetListingForm();
   await loadListings();
 
  }catch(error){
-
-  console.error("İlan işlemi hatası:",error);
-
-  alert(
-   "İlan işlemi sırasında hata oluştu:\n"+
-   (error.message||error)
-  );
-
+  console.error("İlan işlem hatası:",error);
+  alert("İlan işleminde hata oluştu:\n"+(error.message||error));
  }finally{
-
   button.disabled=false;
-
-  if(!editingListingId)
-   button.textContent="📢 İlanı Yayınla";
-
+  if(editingListingId) button.textContent="💾 İlanı Güncelle";
+  else button.textContent="📢 İlanı Yayınla";
  }
 
 });
+
 
 /* ================================================= */
 /* ÜYELİK AÇ */
@@ -2156,87 +2130,6 @@ async function loadListings(){
  allListings=data||[];
 
  displayListings();
-
-}
-
-
-/* ================================================= */
-/* İLAN DÜZENLEME */
-/* ================================================= */
-
-function startEditListing(ilan){
-
- if(!currentUser || currentUser.id!==ilan.user_id){
-  alert("Bu ilanı düzenleme yetkiniz yok.");
-  return;
- }
-
- editingListingId=ilan.id;
-
- document.getElementById("baslik").value=ilan.baslik||"";
- document.getElementById("fiyat").value=ilan.fiyat??"";
- document.getElementById("aciklama").value=ilan.aciklama||"";
- document.getElementById("kategori").value=ilan.kategori||"";
- document.getElementById("mahalle").value=ilan.mahalle||"";
- document.getElementById("telefon").value=ilan.telefon||"";
- document.getElementById("fotograflar").value="";
-
- document.getElementById("ilanVerBtn").textContent="💾 İlanı Güncelle";
-
- window.scrollTo({top:0,behavior:"smooth"});
-
-}
-
-
-/* ================================================= */
-/* İLAN SİLME */
-/* ================================================= */
-
-async function deleteListing(ilan){
-
- if(!currentUser || currentUser.id!==ilan.user_id){
-  alert("Bu ilanı silme yetkiniz yok.");
-  return;
- }
-
- const confirmed=confirm(
-  "Bu ilanı silmek istediğinize emin misiniz?\n\n"+
-  "Bu işlem geri alınamaz."
- );
-
- if(!confirmed)
-  return;
-
- try{
-
-  const {
-   error
-  }=await supabaseClient
-  .from("ilantable")
-  .delete()
-  .eq("id",ilan.id)
-  .eq("user_id",currentUser.id);
-
-  if(error)
-   throw error;
-
-  if(editingListingId===ilan.id)
-   editingListingId=null;
-
-  alert("✅ İlan silindi.");
-
-  await loadListings();
-
- }catch(error){
-
-  console.error("İlan silme hatası:",error);
-
-  alert(
-   "İlan silinirken hata oluştu:\n"+
-   (error.message||error)
-  );
-
- }
 
 }
 
@@ -2524,28 +2417,24 @@ function displayListings(){
   }
 
 
-  /* ================================================= */
-  /* İLAN SAHİBİ BUTONLARI */
-  /* ================================================= */
-
-  if(currentUser && currentUser.id===ilan.user_id){
+  if(currentUser && String(currentUser.id)===String(ilan.user_id)){
 
    const ownerActions=document.createElement("div");
    ownerActions.className="owner-actions";
 
    const editButton=document.createElement("button");
+   editButton.type="button";
    editButton.className="edit-listing-btn";
    editButton.textContent="✏️ Düzenle";
-
    editButton.addEventListener("click",event=>{
     event.stopPropagation();
     startEditListing(ilan);
    });
 
    const deleteButton=document.createElement("button");
+   deleteButton.type="button";
    deleteButton.className="delete-listing-btn";
    deleteButton.textContent="🗑️ Sil";
-
    deleteButton.addEventListener("click",event=>{
     event.stopPropagation();
     deleteListing(ilan);
@@ -2557,9 +2446,7 @@ function displayListings(){
   }
 
   card.appendChild(imageBox);
-
   card.appendChild(body);
-
   listingsContainer.appendChild(card);
 
  });
