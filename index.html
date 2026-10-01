@@ -1593,6 +1593,7 @@ document
   document.body.style.overflow="";
 
   await updateAuthUI();
+  await loadListings();
 
 
  }catch(error){
@@ -1694,6 +1695,7 @@ document
 
 
   await updateAuthUI();
+  await loadListings();
 
 
  }catch(error){
@@ -1750,11 +1752,16 @@ document
 /* ================================================= */
 
 supabaseClient.auth.onAuthStateChange(
- async(event,session)=>{
+ (event,session)=>{
 
   currentUser=session?.user||null;
-  await updateAuthUI();
-  await loadListings();
+
+  setTimeout(async()=>{
+
+   await updateAuthUI();
+   await loadListings();
+
+  },0);
 
  }
 );
