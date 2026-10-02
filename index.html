@@ -156,7 +156,10 @@ button:hover{
  background:#fff;
  border-radius:12px;
  overflow:hidden;
- box-shadow:0 3px 12px rgba(0,0,0,.1)
+ box-shadow:0 3px 12px rgba(0,0,0,.1);
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
 }
 
 .card-image{
@@ -186,7 +189,8 @@ button:hover{
 }
 
 .card-body{
- padding:16px
+ padding:16px;
+ flex:1;
 }
 
 .card-title{
@@ -215,14 +219,14 @@ button:hover{
  margin-top:6px
 }
 
-.contact-buttons{
+.contact-buttons, .owner-buttons{
  display:flex;
  gap:8px;
  flex-wrap:wrap;
  margin-top:12px
 }
 
-.contact-buttons a{
+.contact-buttons a, .owner-buttons button{
  display:inline-flex;
  align-items:center;
  justify-content:center;
@@ -231,7 +235,11 @@ button:hover{
  border-radius:8px;
  font-weight:bold;
  color:#fff;
- transition:.2s
+ transition:.2s;
+ font-size:14px;
+ margin:0;
+ width:auto;
+ flex:1;
 }
 
 .contact-buttons .phone{
@@ -242,9 +250,12 @@ button:hover{
  background:#25d366
 }
 
-.contact-buttons a:hover{
- opacity:.88;
- transform:translateY(-1px)
+.owner-buttons .edit-btn{
+ background:#d97706
+}
+
+.owner-buttons .delete-btn{
+ background:#dc2626
 }
 
 .loading{
@@ -618,11 +629,11 @@ button:hover{
   font-size:18px
  }
 
- .contact-buttons{
+ .contact-buttons, .owner-buttons{
   gap:6px
  }
 
- .contact-buttons a{
+ .contact-buttons a, .owner-buttons button{
   flex:1 1 auto;
   font-size:13px;
   padding:9px 8px
@@ -876,6 +887,59 @@ button:hover{
   <div style="font-size:12px;color:#777;margin-top:12px;line-height:1.5">
    Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.
   </div>
+
+ </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- İLAN DÜZENLEME MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="editModal">
+
+ <div class="simple-modal-content">
+
+  <button class="modal-close" id="editClose">
+   ✕
+  </button>
+
+  <h2>✏️ İlanı Düzenle</h2>
+
+  <input type="hidden" id="editIlanId">
+
+  <label style="font-size:12px;color:#666">İlan Başlığı</label>
+  <input type="text" id="editBaslik" placeholder="İlan Başlığı">
+
+  <label style="font-size:12px;color:#666">Fiyat (TL)</label>
+  <input type="number" id="editFiyat" placeholder="Fiyat">
+
+  <label style="font-size:12px;color:#666">Açıklama</label>
+  <textarea id="editAciklama" placeholder="Açıklama"></textarea>
+
+  <label style="font-size:12px;color:#666">Kategori</label>
+  <select id="editKategori">
+   <option value="">Kategori seçin</option>
+   <option value="Elektronik">Elektronik</option>
+   <option value="Araç">Araç</option>
+   <option value="Ev">Ev</option>
+   <option value="Emlak">Emlak</option>
+   <option value="Giyim">Giyim</option>
+   <option value="Telefon">Telefon</option>
+   <option value="İş">İş</option>
+   <option value="Diğer">Diğer</option>
+  </select>
+
+  <label style="font-size:12px;color:#666">Mahalle</label>
+  <input type="text" id="editMahalle" placeholder="Mahalle">
+
+  <label style="font-size:12px;color:#666">Telefon</label>
+  <input type="text" id="editTelefon" placeholder="Telefon">
+
+  <button id="editKaydetBtn" style="background:#16a34a;margin-top:15px">
+   💾 Değişiklikleri Kaydet
+  </button>
 
  </div>
 
@@ -1144,6 +1208,7 @@ supabase.createClient(
 
 let allListings=[];
 let selectedCategory="Tümü";
+let currentUser=null;
 
 let galleryImages=[];
 let galleryIndex=0;
@@ -1205,6 +1270,9 @@ document.getElementById("authModal");
 
 const uyelikModal =
 document.getElementById("uyelikModal");
+
+const editModal =
+document.getElementById("editModal");
 
 
 /* ================================================= */
@@ -1386,6 +1454,7 @@ async function updateAuthUI(){
  }=
  await supabaseClient.auth.getUser();
 
+ currentUser = user;
 
  const authBtn=
  document.getElementById("authBtn");
@@ -1452,6 +1521,8 @@ async function updateAuthUI(){
   ilanDurum.style.color="#991b1b";
 
  }
+
+ displayListings();
 
 }
 
@@ -1989,6 +2060,117 @@ document
 
 
 /* ================================================= */
+/* İLAN SİLME VE DÜZENLEME FONKSİYONLARI */
+/* ================================================= */
+
+async function deleteListing(id){
+
+ const confirmed = confirm("Bu ilanı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.");
+ if(!confirmed) return;
+
+ try{
+
+  const {error} = await supabaseClient
+   .from("ilantable")
+   .delete()
+   .eq("id", id);
+
+  if(error) throw error;
+
+  alert("✅ İlan başarıyla silindi.");
+  await loadListings();
+
+ }catch(error){
+
+  console.error("Silme hatası:", error);
+  alert("İlan silinirken bir hata oluştu: " + (error.message || error));
+
+ }
+
+}
+
+
+function openEditModal(ilan){
+
+ document.getElementById("editIlanId").value = ilan.id;
+ document.getElementById("editBaslik").value = ilan.baslik || "";
+ document.getElementById("editFiyat").value = ilan.fiyat !== null ? ilan.fiyat : "";
+ document.getElementById("editAciklama").value = ilan.aciklama || "";
+ document.getElementById("editKategori").value = ilan.kategori || "";
+ document.getElementById("editMahalle").value = ilan.mahalle || "";
+ document.getElementById("editTelefon").value = ilan.telefon || "";
+
+ editModal.classList.add("active");
+ document.body.style.overflow = "hidden";
+
+}
+
+
+document.getElementById("editClose").addEventListener("click", ()=>{
+
+ editModal.classList.remove("active");
+ document.body.style.overflow = "";
+
+});
+
+
+document.getElementById("editKaydetBtn").addEventListener("click", async function(){
+
+ const button = this;
+
+ const id = document.getElementById("editIlanId").value;
+ const baslik = document.getElementById("editBaslik").value.trim();
+ const fiyat = document.getElementById("editFiyat").value;
+ const aciklama = document.getElementById("editAciklama").value.trim();
+ const kategori = document.getElementById("editKategori").value;
+ const mahalle = document.getElementById("editMahalle").value.trim();
+ const telefon = document.getElementById("editTelefon").value.trim();
+
+ if(!baslik){ alert("İlan başlığı girin."); return; }
+ if(!kategori){ alert("Kategori seçin."); return; }
+ if(!telefon){ alert("Telefon numarası girin."); return; }
+
+ button.disabled = true;
+ button.textContent = "Kaydediliyor...";
+
+ try{
+
+  const {error} = await supabaseClient
+   .from("ilantable")
+   .update({
+    baslik: baslik,
+    fiyat: fiyat ? Number(fiyat) : null,
+    aciklama: aciklama,
+    kategori: kategori,
+    mahalle: mahalle,
+    telefon: telefon
+   })
+   .eq("id", id);
+
+  if(error) throw error;
+
+  alert("✅ İlan başarıyla güncellendi.");
+  editModal.classList.remove("active");
+  document.body.style.overflow = "";
+
+  await loadListings();
+
+ }catch(error){
+
+  console.error("Güncelleme hatası:", error);
+  alert("Güncelleme yapılırken hata oluştu: " + (error.message || error));
+
+ }finally{
+
+  button.disabled = false;
+  button.textContent = "💾 Değişiklikleri Kaydet";
+
+ }
+
+});
+
+
+/* ================================================= */
 /* ÜYELİK AÇ */
 /* ================================================= */
 
@@ -2370,6 +2552,31 @@ function displayListings(){
   cardBody.appendChild(infoCat);
   cardBody.appendChild(infoLoc);
   cardBody.appendChild(contactBtns);
+
+
+  /* İLAN SAHİBİ BUTONLARI (DÜZENLE & SİL) */
+  if(currentUser && (currentUser.id === ilan.user_id)){
+
+   const ownerBtns = document.createElement("div");
+   ownerBtns.className = "owner-buttons";
+
+   const editBtn = document.createElement("button");
+   editBtn.className = "edit-btn";
+   editBtn.textContent = "✏️ Düzenle";
+   editBtn.addEventListener("click", () => openEditModal(ilan));
+
+   const deleteBtn = document.createElement("button");
+   deleteBtn.className = "delete-btn";
+   deleteBtn.textContent = "🗑️ Sil";
+   deleteBtn.addEventListener("click", () => deleteListing(ilan.id));
+
+   ownerBtns.appendChild(editBtn);
+   ownerBtns.appendChild(deleteBtn);
+
+   cardBody.appendChild(ownerBtns);
+
+  }
+
 
   card.appendChild(imageBox);
   card.appendChild(cardBody);
