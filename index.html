@@ -2255,40 +2255,39 @@ function displayListings(){
 
    }
 
-
-   imageBox.addEventListener(
-    "click",
-    ()=>{
-     openGallery(
-      imageUrls,
-      ilan.baslik||"Fotoğraf"
-     );
-    }
-   );
-
+   imageBox.addEventListener("click",()=>{
+    openGallery(imageUrls,0,ilan.baslik);
+   });
 
   }else{
 
-   imageBox.innerHTML=
-   '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:40px">📷</div>';
+   const noImg=
+   document.createElement("div");
+
+   noImg.style.cssText=
+    "display:flex;align-items:center;justify-content:center;height:100%;color:#aaa;font-size:14px;";
+
+   noImg.textContent=
+    "Görsel Yok";
+
+   imageBox.appendChild(noImg);
 
   }
 
 
-  const body=
+  const cardBody=
   document.createElement("div");
 
-  body.className="card-body";
+  cardBody.className="card-body";
 
 
   const title=
   document.createElement("div");
 
-  title.className=
-   "card-title";
+  title.className="card-title";
 
   title.textContent=
-   ilan.baslik||"";
+   ilan.baslik||"İsimsiz İlan";
 
 
   const price=
@@ -2296,140 +2295,84 @@ function displayListings(){
 
   price.className="price";
 
-
   price.textContent=
-   (
-    ilan.fiyat!==null
-    &&
-    ilan.fiyat!==undefined
-    &&
-    ilan.fiyat!==""
-   )
-   ?
-   Number(ilan.fiyat)
-    .toLocaleString("tr-TR")
-    +" TL"
-   :
-   "Fiyat belirtilmemiş";
+   ilan.fiyat!==null&&ilan.fiyat!==undefined
+    ?Number(ilan.fiyat).toLocaleString("tr-TR")+" TL"
+    :"Fiyat Belirtilmedi";
 
 
-  const description=
+  const desc=
   document.createElement("div");
 
-  description.className=
-   "description";
+  desc.className="description";
 
-  description.textContent=
-   ilan.aciklama||"";
-
-
-  body.appendChild(title);
-
-  body.appendChild(price);
-
-  body.appendChild(description);
+  desc.textContent=
+   ilan.aciklama||"Açıklama yok.";
 
 
-  if(ilan.kategori){
+  const infoCat=
+  document.createElement("div");
 
-   const info=
-   document.createElement("div");
+  infoCat.className="info";
 
-   info.className="info";
-
-   info.innerHTML=
-    "📂 <b>Kategori:</b> "
-    +escapeHtml(ilan.kategori);
-
-   body.appendChild(info);
-
-  }
+  infoCat.textContent=
+   "📂 Kategori: "+(ilan.kategori||"Belirtilmedi");
 
 
-  if(ilan.mahalle){
+  const infoLoc=
+  document.createElement("div");
 
-   const info=
-   document.createElement("div");
+  infoLoc.className="info";
 
-   info.className="info";
+  infoLoc.textContent=
+   "📍 Mahalle: "+(ilan.mahalle||"Belirtilmedi");
 
-   info.innerHTML=
-    "📍 <b>Mahalle:</b> "
-    +escapeHtml(ilan.mahalle);
 
-   body.appendChild(info);
+  const contactBtns=
+  document.createElement("div");
 
-  }
+  contactBtns.className="contact-buttons";
 
 
   if(ilan.telefon){
 
-   const contactBox=
-   document.createElement("div");
-
-   contactBox.className=
-    "contact-buttons";
-
-
-   const whatsappUrl=
-    getWhatsAppUrl(
-     ilan.telefon,
-     ilan.baslik
-    );
-
-
-   const phone=
+   const phoneLink=
    document.createElement("a");
 
-   phone.className="phone";
+   phoneLink.className="phone";
 
-   phone.href=
-    "tel:"+ilan.telefon;
+   phoneLink.href="tel:"+ilan.telefon;
 
-   phone.textContent=
-    "📞 "+ilan.telefon;
-
-   phone.addEventListener(
-    "click",
-    e=>e.stopPropagation()
-   );
+   phoneLink.textContent="📞 "+ilan.telefon;
 
 
-   const whatsapp=
+   const waLink=
    document.createElement("a");
 
-   whatsapp.className=
-    "whatsapp-btn";
+   waLink.className="whatsapp-btn";
 
-   whatsapp.href=
-    whatsappUrl;
+   waLink.href=getWhatsAppUrl(ilan.telefon,ilan.baslik);
 
-   whatsapp.target="_blank";
+   waLink.target="_blank";
 
-   whatsapp.rel=
-    "noopener noreferrer";
-
-   whatsapp.textContent=
-    "💬 WhatsApp";
-
-   whatsapp.addEventListener(
-    "click",
-    e=>e.stopPropagation()
-   );
+   waLink.textContent="💬 WhatsApp";
 
 
-   contactBox.appendChild(phone);
-
-   contactBox.appendChild(whatsapp);
-
-   body.appendChild(contactBox);
+   contactBtns.appendChild(phoneLink);
+   contactBtns.appendChild(waLink);
 
   }
 
 
-  card.appendChild(imageBox);
+  cardBody.appendChild(title);
+  cardBody.appendChild(price);
+  cardBody.appendChild(desc);
+  cardBody.appendChild(infoCat);
+  cardBody.appendChild(infoLoc);
+  cardBody.appendChild(contactBtns);
 
-  card.appendChild(body);
+  card.appendChild(imageBox);
+  card.appendChild(cardBody);
 
   listingsContainer.appendChild(card);
 
@@ -2439,38 +2382,30 @@ function displayListings(){
 
 
 /* ================================================= */
-/* ARAMA */
+/* ARAMA DİNLEYİCİSİ */
 /* ================================================= */
 
-searchInput.addEventListener(
- "input",
- displayListings
-);
+searchInput.addEventListener("input",displayListings);
 
 
 /* ================================================= */
-/* KATEGORİ */
+/* KATEGORİ DİNLEYİCİLERİ */
 /* ================================================= */
 
 document
 .querySelectorAll(".category-btn")
-.forEach(button=>{
+.forEach(btn=>{
 
- button.addEventListener("click",()=>{
+ btn.addEventListener("click",()=>{
 
   document
   .querySelectorAll(".category-btn")
-  .forEach(btn=>
-   btn.classList.remove("active")
-  );
+  .forEach(b=>b.classList.remove("active"));
 
-
-  button.classList.add("active");
-
+  btn.classList.add("active");
 
   selectedCategory=
-   button.dataset.category;
-
+   btn.dataset.category;
 
   displayListings();
 
@@ -2480,644 +2415,349 @@ document
 
 
 /* ================================================= */
-/* GALERİ ZOOM */
+/* GALERİ FONKSİYONLARI */
 /* ================================================= */
 
-function resetZoom(){
+function openGallery(images,index,title){
 
- zoomLevel=1;
+ if(!images||!images.length) return;
 
- imageX=0;
-
- imageY=0;
-
- updateZoom();
-
-}
-
-
-function updateZoom(){
-
- galleryImage.style.transform=
-  `translate(${imageX}px,${imageY}px) scale(${zoomLevel})`;
-
-
- galleryImage.classList.toggle(
-  "zoomed",
-  zoomLevel>1
- );
-
-
- if(zoomLevel<=1){
-
-  imageX=0;
-
-  imageY=0;
-
-  galleryImage.style.transform=
-   "translate(0px,0px) scale(1)";
-
-  galleryImage.classList.remove(
-   "zoomed"
-  );
-
- }
-
-}
-
-
-function changeZoom(amount){
-
- zoomLevel=
- Math.max(
-  MIN_ZOOM,
-  Math.min(
-   MAX_ZOOM,
-   zoomLevel+amount
-  )
- );
-
-
- if(zoomLevel===1){
-
-  imageX=0;
-
-  imageY=0;
-
- }
-
-
- updateZoom();
-
-}
-
-
-/* ================================================= */
-/* GALERİ AÇ */
-/* ================================================= */
-
-function openGallery(images,title){
-
- galleryImages=
-  images||[];
-
- galleryIndex=0;
+ galleryImages=images;
+ galleryIndex=index||0;
 
  galleryTitle.textContent=
   title||"Fotoğraf";
 
- resetZoom();
+ updateGalleryImage();
+ renderThumbnails();
 
- galleryModal.classList.add(
-  "active"
- );
+ galleryModal.classList.add("active");
+ document.body.style.overflow="hidden";
 
- document.body.style.overflow=
-  "hidden";
-
- renderGallery();
-
-
- if(window.innerWidth<=600){
-
-  mobileZoomHint.classList.add(
-   "show"
-  );
-
-  clearTimeout(
-   window.zoomHintTimer
-  );
-
-  window.zoomHintTimer=
-   setTimeout(
-    ()=>{
-     mobileZoomHint.classList.remove(
-      "show"
-     );
-    },
-    2200
-   );
-
+ if('ontouchstart' in window){
+  mobileZoomHint.classList.add("show");
+  setTimeout(()=>{
+   mobileZoomHint.classList.remove("show");
+  },2500);
  }
 
 }
 
 
-/* ================================================= */
-/* GALERİ GÖSTER */
-/* ================================================= */
+function closeGallery(){
 
-function renderGallery(){
-
- if(!galleryImages.length)
-  return;
-
-
+ galleryModal.classList.remove("active");
+ document.body.style.overflow="";
  resetZoom();
 
+}
+
+
+function updateGalleryImage(){
+
+ resetZoom();
 
  galleryImage.src=
   galleryImages[galleryIndex];
 
+ updateThumbnailActive();
 
- galleryImage.alt=
-  galleryTitle.textContent;
+}
 
+
+function renderThumbnails(){
 
  thumbnails.innerHTML="";
 
+ galleryImages.forEach((imgUrl,idx)=>{
 
- galleryImages.forEach(
- (src,index)=>{
+  const thumb=
+  document.createElement("img");
 
-  const thumbnail=
-   document.createElement("img");
+  thumb.className="thumbnail"+(idx===galleryIndex?" active":"");
+  thumb.src=imgUrl;
+  thumb.alt="Küçük resim "+(idx+1);
 
-  thumbnail.className=
-   "thumbnail"
-   +
-   (
-    index===galleryIndex
-    ?" active"
-    :""
-   );
+  thumb.addEventListener("click",()=>{
+   galleryIndex=idx;
+   updateGalleryImage();
+  });
 
-
-  thumbnail.src=src;
-
-
-  thumbnail.addEventListener(
-   "click",
-   ()=>{
-
-    galleryIndex=index;
-
-    renderGallery();
-
-   }
-  );
-
-
-  thumbnails.appendChild(
-   thumbnail
-  );
+  thumbnails.appendChild(thumb);
 
  });
 
 }
 
 
+function updateThumbnailActive(){
+
+ const thumbs=
+ thumbnails.querySelectorAll(".thumbnail");
+
+ thumbs.forEach((t,i)=>{
+  if(i===galleryIndex){
+   t.classList.add("active");
+   t.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
+  }else{
+   t.classList.remove("active");
+  }
+ });
+
+}
+
+
 /* ================================================= */
+/* ZOOM HESAPLAMA & SÜRÜKLEME */
+/* ================================================= */
+
+function updateTransform(){
+
+ if(zoomLevel<=1){
+
+  zoomLevel=1;
+  imageX=0;
+  imageY=0;
+
+  galleryImage.classList.remove("zoomed","dragging");
+
+ }else{
+
+  galleryImage.classList.add("zoomed");
+
+ }
+
+ galleryImage.style.transform=
+  `translate(${imageX}px, ${imageY}px) scale(${zoomLevel})`;
+
+}
+
+
+function resetZoom(){
+
+ zoomLevel=1;
+ imageX=0;
+ imageY=0;
+ isDragging=false;
+
+ updateTransform();
+
+}
+
+
+function setZoom(newZoom){
+
+ zoomLevel=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,newZoom));
+
+ if(zoomLevel===1){
+  imageX=0;
+  imageY=0;
+ }
+
+ updateTransform();
+
+}
+
+
 /* ZOOM BUTONLARI */
-/* ================================================= */
 
-document
-.getElementById("zoomIn")
-.addEventListener(
- "click",
- ()=>changeZoom(ZOOM_STEP)
-);
+document.getElementById("zoomIn").addEventListener("click",()=>{
+ setZoom(zoomLevel+ZOOM_STEP);
+});
 
+document.getElementById("zoomOut").addEventListener("click",()=>{
+ setZoom(zoomLevel-ZOOM_STEP);
+});
 
-document
-.getElementById("zoomOut")
-.addEventListener(
- "click",
- ()=>changeZoom(-ZOOM_STEP)
-);
-
-
-document
-.getElementById("zoomReset")
-.addEventListener(
- "click",
- resetZoom
-);
-
-
-/* ================================================= */
-/* MOUSE ZOOM */
-/* ================================================= */
-
-galleryImage.addEventListener(
- "wheel",
- event=>{
-
-  event.preventDefault();
-
-  changeZoom(
-   event.deltaY<0
-    ?ZOOM_STEP
-    :-ZOOM_STEP
-  );
-
- },
- {passive:false}
-);
-
-
-galleryImage.addEventListener(
- "dblclick",
- ()=>{
-
-  zoomLevel=
-   zoomLevel===1
-   ?2.5
-   :1;
-
-  updateZoom();
-
- }
-);
-
-
-/* ================================================= */
-/* MOUSE SÜRÜKLEME */
-/* ================================================= */
-
-galleryImage.addEventListener(
- "mousedown",
- event=>{
-
-  if(zoomLevel<=1)
-   return;
-
-
-  isDragging=true;
-
-  galleryImage.classList.add(
-   "dragging"
-  );
-
-
-  dragStartX=
-   event.clientX;
-
-  dragStartY=
-   event.clientY;
-
-
-  startImageX=
-   imageX;
-
-  startImageY=
-   imageY;
-
-
-  event.preventDefault();
-
- }
-);
-
-
-window.addEventListener(
- "mousemove",
- event=>{
-
-  if(!isDragging)
-   return;
-
-
-  imageX=
-   startImageX
-   +(event.clientX-dragStartX);
-
-
-  imageY=
-   startImageY
-   +(event.clientY-dragStartY);
-
-
-  updateZoom();
-
- }
-);
-
-
-window.addEventListener(
- "mouseup",
- ()=>{
-
-  isDragging=false;
-
-  galleryImage.classList.remove(
-   "dragging"
-  );
-
- }
-);
-
-
-/* ================================================= */
-/* TELEFON PINCH ZOOM */
-/* ================================================= */
-
-function getTouchDistance(touches){
-
- const dx=
-  touches[0].clientX
-  -touches[1].clientX;
-
- const dy=
-  touches[0].clientY
-  -touches[1].clientY;
-
-
- return Math.sqrt(
-  dx*dx+dy*dy
- );
-
-}
-
-
-galleryImage.addEventListener(
- "touchstart",
- event=>{
-
-  if(event.touches.length===2){
-
-   pinchStartDistance=
-    getTouchDistance(
-     event.touches
-    );
-
-   pinchStartZoom=
-    zoomLevel;
-
-   return;
-
-  }
-
-
-  if(
-   event.touches.length===1
-   &&
-   zoomLevel>1
-  ){
-
-   const touch=
-    event.touches[0];
-
-
-   touchStartX=
-    touch.clientX;
-
-   touchStartY=
-    touch.clientY;
-
-
-   touchImageX=
-    imageX;
-
-   touchImageY=
-    imageY;
-
-  }
-
- },
- {passive:true}
-);
-
-
-galleryImage.addEventListener(
- "touchmove",
- event=>{
-
-  if(event.touches.length===2){
-
-   const currentDistance=
-    getTouchDistance(
-     event.touches
-    );
-
-
-   if(pinchStartDistance<=0)
-    return;
-
-
-   const scale=
-    currentDistance/
-    pinchStartDistance;
-
-
-   zoomLevel=
-    Math.max(
-     MIN_ZOOM,
-     Math.min(
-      MAX_ZOOM,
-      pinchStartZoom*scale
-     )
-    );
-
-
-   updateZoom();
-
-   event.preventDefault();
-
-   return;
-
-  }
-
-
-  if(
-   event.touches.length===1
-   &&
-   zoomLevel>1
-  ){
-
-   const touch=
-    event.touches[0];
-
-
-   imageX=
-    touchImageX
-    +(touch.clientX-touchStartX);
-
-
-   imageY=
-    touchImageY
-    +(touch.clientY-touchStartY);
-
-
-   updateZoom();
-
-   event.preventDefault();
-
-  }
-
- },
- {passive:false}
-);
-
-
-galleryImage.addEventListener(
- "touchend",
- event=>{
-
-  if(event.touches.length<2)
-   pinchStartDistance=0;
-
- }
-);
-
-
-/* ================================================= */
-/* GALERİ KAPAT */
-/* ================================================= */
-
-function closeGallery(){
-
- galleryModal.classList.remove(
-  "active"
- );
-
- document.body.style.overflow="";
-
+document.getElementById("zoomReset").addEventListener("click",()=>{
  resetZoom();
-
-}
-
-
-document
-.getElementById("closeGallery")
-.addEventListener(
- "click",
- closeGallery
-);
+});
 
 
-/* ================================================= */
-/* ÖNCEKİ FOTOĞRAF */
-/* ================================================= */
+/* GALERİ OKLARI */
 
-document
-.getElementById("galleryPrev")
-.addEventListener(
- "click",
- ()=>{
+document.getElementById("galleryPrev").addEventListener("click",()=>{
 
-  if(!galleryImages.length)
-   return;
+ if(galleryImages.length<=1) return;
+
+ galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;
+ updateGalleryImage();
+
+});
 
 
-  galleryIndex--;
+document.getElementById("galleryNext").addEventListener("click",()=>{
+
+ if(galleryImages.length<=1) return;
+
+ galleryIndex=(galleryIndex+1)%galleryImages.length;
+ updateGalleryImage();
+
+});
 
 
-  if(galleryIndex<0)
-   galleryIndex=
-    galleryImages.length-1;
+document.getElementById("closeGallery").addEventListener("click",closeGallery);
 
 
-  renderGallery();
+/* MOUSE DRAG & DOUBLE CLICK */
+
+galleryImage.addEventListener("dblclick",()=>{
+
+ if(zoomLevel>1){
+  resetZoom();
+ }else{
+  setZoom(2.5);
+ }
+
+});
+
+
+galleryImage.addEventListener("mousedown",e=>{
+
+ if(zoomLevel<=1) return;
+
+ e.preventDefault();
+
+ isDragging=true;
+ dragStartX=e.clientX;
+ dragStartY=e.clientY;
+
+ startImageX=imageX;
+ startImageY=imageY;
+
+ galleryImage.classList.add("dragging");
+
+});
+
+
+window.addEventListener("mousemove",e=>{
+
+ if(!isDragging||zoomLevel<=1) return;
+
+ const deltaX=e.clientX-dragStartX;
+ const deltaY=e.clientY-dragStartY;
+
+ imageX=startImageX+deltaX;
+ imageY=startImageY+deltaY;
+
+ updateTransform();
+
+});
+
+
+window.addEventListener("mouseup",()=>{
+
+ if(isDragging){
+  isDragging=false;
+  galleryImage.classList.remove("dragging");
+ }
+
+});
+
+
+/* DOKUNMATİK (TOUCH & PINCH) */
+
+const wrapper=document.getElementById("galleryImageWrapper");
+
+
+wrapper.addEventListener("touchstart",e=>{
+
+ if(e.touches.length===2){
+
+  const t1=e.touches[0];
+  const t2=e.touches[1];
+
+  pinchStartDistance=Math.hypot(t2.clientX-t1.clientX,t2.clientY-t1.clientY);
+  pinchStartZoom=zoomLevel;
+
+ }else if(e.touches.length===1){
+
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+
+  touchImageX=imageX;
+  touchImageY=imageY;
 
  }
-);
+
+},{passive:true});
 
 
-/* ================================================= */
-/* SONRAKİ FOTOĞRAF */
-/* ================================================= */
+wrapper.addEventListener("touchmove",e=>{
 
-document
-.getElementById("galleryNext")
-.addEventListener(
- "click",
- ()=>{
+ if(e.touches.length===2){
 
-  if(!galleryImages.length)
-   return;
+  const t1=e.touches[0];
+  const t2=e.touches[1];
 
+  const currentDist=Math.hypot(t2.clientX-t1.clientX,t2.clientY-t1.clientY);
 
-  galleryIndex++;
+  if(pinchStartDistance>0){
+   const scaleRatio=currentDist/pinchStartDistance;
+   setZoom(pinchStartZoom*scaleRatio);
+  }
 
+ }else if(e.touches.length===1&&zoomLevel>1){
 
-  if(
-   galleryIndex>=
-   galleryImages.length
-  )
-   galleryIndex=0;
+  const deltaX=e.touches[0].clientX-touchStartX;
+  const deltaY=e.touches[0].clientY-touchStartY;
 
+  imageX=touchImageX+deltaX;
+  imageY=touchImageY+deltaY;
 
-  renderGallery();
+  updateTransform();
 
  }
-);
+
+},{passive:true});
+
+
+wrapper.addEventListener("touchend",e=>{
+
+ if(e.touches.length<2){
+  pinchStartDistance=0;
+ }
+
+ if(e.touches.length===0&&zoomLevel===1){
+
+  const diffX=touchStartX-(e.changedTouches[0]?.clientX||touchStartX);
+
+  if(Math.abs(diffX)>60){
+
+   if(diffX>0&&galleryImages.length>1){
+    galleryIndex=(galleryIndex+1)%galleryImages.length;
+    updateGalleryImage();
+   }else if(diffX<0&&galleryImages.length>1){
+    galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;
+    updateGalleryImage();
+   }
+
+  }
+
+ }
+
+});
+
+
+/* KLAVYE KONTROLÜ */
+
+window.addEventListener("keydown",e=>{
+
+ if(!galleryModal.classList.contains("active")) return;
+
+ if(e.key==="Escape") closeGallery();
+ if(e.key==="ArrowLeft") document.getElementById("galleryPrev").click();
+ if(e.key==="ArrowRight") document.getElementById("galleryNext").click();
+
+});
 
 
 /* ================================================= */
-/* KLAVYE */
+/* İLK YÜKLEME */
 /* ================================================= */
 
-document.addEventListener(
- "keydown",
- event=>{
-
-  if(
-   !galleryModal.classList.contains(
-    "active"
-   )
-  )
-   return;
-
-
-  if(event.key==="Escape")
-   closeGallery();
-
-
-  if(event.key==="ArrowLeft")
-   document
-   .getElementById("galleryPrev")
-   .click();
-
-
-  if(event.key==="ArrowRight")
-   document
-   .getElementById("galleryNext")
-   .click();
-
-
-  if(
-   event.key==="+"||
-   event.key==="="
-  )
-   changeZoom(ZOOM_STEP);
-
-
-  if(event.key==="-")
-   changeZoom(-ZOOM_STEP);
-
-
-  if(event.key==="0")
-   resetZoom();
-
- });
-
-
-/* ================================================= */
-/* GALERİ DIŞINA TIKLAMA */
-/* ================================================= */
-
-galleryModal.addEventListener(
- "click",
- event=>{
-
-  if(event.target===galleryModal)
-   closeGallery();
-
- });
-
-
-/* ================================================= */
-/* BAŞLANGIÇ */
-/* ================================================= */
-
-(async function(){
-
- await updateAuthUI();
-
- await loadListings();
-
-})();
+updateAuthUI();
+loadListings();
 
 </script>
 
