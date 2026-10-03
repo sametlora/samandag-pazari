@@ -2635,24 +2635,22 @@ document
 
  try{
 
-  const {error}=
-  await supabaseClient
-  .from("odeme_talepleri")
-  .insert([{
-   user_id:user.id,
-   email:user.email||"",
-   paket:paket,
-   sure_gun:sure,
-   ilan_hakki:hak,
-   tutar:fiyat,
-   odeme_yontemi:"Havale/EFT",
-   gonderen_ad_soyad:senderName,
-   dekont_no:reference,
-   aciklama:description,
-   durum:"bekliyor"
-  }]);
+  const { data: bildirimId, error } =
+  await supabaseClient.rpc("odeme_bildir", {
+   p_paket: paket,
+   p_sure_gun: sure,
+   p_ilan_hakki: hak,
+   p_tutar: fiyat,
+   p_gonderen_ad_soyad: senderName,
+   p_dekont_no: reference || null,
+   p_aciklama: description || null
+  });
 
   if(error) throw error;
+
+  if(!bildirimId){
+   throw new Error("Ödeme bildirimi oluşturulamadı.");
+  }
 
   alert(
    "✅ Ödeme bildiriminiz alındı.\n\n"+
