@@ -784,6 +784,10 @@ button:hover{
    💳 Üyelik
   </button>
 
+  <button id="adminBtn" style="display:none;background:#7c3aed">
+   🛠️ Yönetici
+  </button>
+
  </div>
 
 </header>
@@ -1002,6 +1006,19 @@ button:hover{
 
 </div>
 
+
+
+<!-- ========================= -->
+<!-- YÖNETİCİ PANELİ -->
+<!-- ========================= -->
+<div class="modal simple-modal" id="adminModal">
+ <div class="simple-modal-content" style="max-width:900px">
+  <button class="modal-close" id="adminClose">✕</button>
+  <h2>🛠️ Yönetici Paneli</h2>
+  <div id="adminStatus" class="auth-status">Ödeme talepleri yükleniyor...</div>
+  <div id="adminPayments"></div>
+ </div>
+</div>
 
 <!-- ========================= -->
 <!-- ÜYELİK MODALI -->
@@ -1393,6 +1410,9 @@ document.getElementById("uyelikModal");
 const editModal =
 document.getElementById("editModal");
 
+const adminModal = document.getElementById("adminModal");
+const adminBtn = document.getElementById("adminBtn");
+
 const paymentModal =
 document.getElementById("paymentModal");
 
@@ -1412,7 +1432,7 @@ document.getElementById("paymentAmount");
  * BANKA BİLGİLERİNİ BURADAN DEĞİŞTİRİN.
  * Kartlı ödeme yoktur; yalnızca Havale/EFT kullanılır.
  */
-const BANK_NAME = "BANKA ADI";
+const BANK_NAME = "BANKA ADI"; // Banka adını burada değiştirin
 const BANK_OWNER = "Samet Gümüş";
 const BANK_IBAN = "TR47 0015 7000 0000 0069 5885 27";
 
@@ -1668,6 +1688,136 @@ async function updateAuthUI(){
  displayListings();
 
 }
+
+
+
+/* ================================================= */
+/* YÖNETİCİ PANELİ */
+/* ================================================= */
+
+async function isCurrentUserAdmin(){
+ const {data,error}=await supabaseClient.rpc("kullanici_admin_mi");
+ if(error){
+  console.error("Admin kontrolü:",error);
+  return false;
+ }
+ return data===true;
+}
+
+async function updateAdminUI(){
+ if(!currentUser){
+  adminBtn.style.display="none";
+  return;
+ }
+ const admin=await isCurrentUserAdmin();
+ adminBtn.style.display=admin ? "block" : "none";
+}
+
+async function loadAdminPayments(){
+ const status=document.getElementById("adminStatus");
+ const box=document.getElementById("adminPayments");
+
+ status.textContent="Ödeme talepleri yükleniyor...";
+ box.innerHTML="";
+
+ const {data,error}=await supabaseClient
+  .from("odeme_talepleri")
+  .select("*")
+  .order("created_at",{ascending:false});
+
+ if(error){
+  status.textContent="❌ Ödeme talepleri alınamadı: "+(error.message||error);
+  return;
+ }
+
+ const rows=(data||[]).filter(x=>x.durum==="bekliyor");
+
+ if(!rows.length){
+  status.textContent="Bekleyen ödeme bildirimi yok.";
+  box.innerHTML='<div style="padding:20px;background:#f3f4f6;border-radius:10px">Bekleyen ödeme bulunmuyor.</div>';
+  return;
+ }
+
+ status.textContent=rows.length+" bekleyen ödeme bildirimi var.";
+
+ rows.forEach(item=>{
+  const card=document.createElement("div");
+  card.style.cssText="border:1px solid #ddd;border-radius:12px;padding:15px;margin:10px 0;background:#fff";
+
+  const title=document.createElement("div");
+  title.style.fontWeight="bold";
+  title.style.fontSize="17px";
+  title.textContent=(item.paket||"").toUpperCase()+" — "+Number(item.tutar||0).toLocaleString("tr-TR")+" TL";
+
+  const info=document.createElement("div");
+  info.style.cssText="margin-top:8px;line-height:1.6;color:#555";
+  info.innerHTML=
+   "👤 "+escapeHtml(item.gonderen_ad_soyad||"")+
+   "<br>📧 "+escapeHtml(item.email||"")+
+   "<br>📦 "+escapeHtml(item.sure_gun)+" gün / "+escapeHtml(item.ilan_hakki)+" ilan"+
+   "<br>🧾 Dekont No: "+escapeHtml(item.dekont_no||"Belirtilmedi")+
+   "<br>📝 "+escapeHtml(item.aciklama||"")+
+   "<br>🕒 "+escapeHtml(new Date(item.created_at).toLocaleString("tr-TR"));
+
+  const buttons=document.createElement("div");
+  buttons.style.cssText="display:flex;gap:8px;margin-top:12px";
+
+  const approve=document.createElement("button");
+  approve.style.background="#16a34a";
+  approve.textContent="✅ Ödemeyi Onayla";
+  approve.onclick=async()=>{
+   if(!confirm("Bu ödemeyi onaylayıp üyeliği tanımlamak istiyor musunuz?")) return;
+   approve.disabled=true;
+   approve.textContent="Onaylanıyor...";
+   const {error}=await supabaseClient.rpc("odeme_onayla",{p_odeme_id:item.id});
+   if(error){
+    alert("Onaylama hatası: "+(error.message||error));
+    approve.disabled=false;
+    approve.textContent="✅ Ödemeyi Onayla";
+    return;
+   }
+   alert("✅ Ödeme onaylandı. Üyelik ve ilan hakları tanımlandı.");
+   await loadAdminPayments();
+  };
+
+  const reject=document.createElement("button");
+  reject.style.background="#dc2626";
+  reject.textContent="❌ Reddet";
+  reject.onclick=async()=>{
+   if(!confirm("Bu ödeme bildirimini reddetmek istiyor musunuz?")) return;
+   reject.disabled=true;
+   const {error}=await supabaseClient
+    .from("odeme_talepleri")
+    .update({durum:"reddedildi"})
+    .eq("id",item.id)
+    .eq("durum","bekliyor");
+   if(error){
+    alert("Reddetme hatası: "+(error.message||error));
+    reject.disabled=false;
+    return;
+   }
+   await loadAdminPayments();
+  };
+
+  buttons.appendChild(approve);
+  buttons.appendChild(reject);
+  card.appendChild(title);
+  card.appendChild(info);
+  card.appendChild(buttons);
+  box.appendChild(card);
+ });
+}
+
+adminBtn.addEventListener("click",async()=>{
+ adminModal.classList.add("active");
+ document.body.style.overflow="hidden";
+ await loadAdminPayments();
+});
+
+document.getElementById("adminClose").addEventListener("click",()=>{
+ adminModal.classList.remove("active");
+ document.body.style.overflow="";
+});
 
 
 /* ================================================= */
@@ -2127,32 +2277,17 @@ document
    "İlan yayınlanıyor...";
 
 
-  const {error}=
+  const {data:ilanId,error}=
   await supabaseClient
-  .from("ilantable")
-  .insert([{
-
-   user_id:user.id,
-
-   baslik:baslik,
-
-   fiyat:
-    fiyat
-     ?Number(fiyat)
-     :null,
-
-   aciklama:aciklama,
-
-   kategori:kategori,
-
-   mahalle:mahalle,
-
-   telefon:telefon,
-
-   resimurl:
-    JSON.stringify(imageUrls)
-
-  }]);
+  .rpc("ilan_ekle",{
+   p_baslik:baslik,
+   p_fiyat:fiyat ? Number(fiyat) : null,
+   p_aciklama:aciklama,
+   p_kategori:kategori,
+   p_mahalle:mahalle,
+   p_telefon:telefon,
+   p_resimurl:JSON.stringify(imageUrls)
+  });
 
 
   if(error)
