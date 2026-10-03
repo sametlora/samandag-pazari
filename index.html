@@ -1,848 +1,3371 @@
-```html
-<!-- =========================================================
-     SAMANDAĞ PAZARI
-     HAVALE / EFT ÖDEME SİSTEMİ
-     ÖDEME BİLDİRİMİ YOK
-     ========================================================= -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Samandağ Pazarı</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+ margin:0;
+ padding:0
+}
+
+body{
+ font-family:Arial,sans-serif;
+ background:#f5f5f5;
+ color:#222
+}
+
+header{
+ background:#111827;
+ color:#fff;
+ padding:15px 20px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ flex-wrap:wrap;
+ font-size:26px;
+ font-weight:bold
+}
+
+.header-title{
+ flex:1;
+ text-align:center
+}
+
+.header-buttons{
+ display:flex;
+ gap:8px;
+ align-items:center
+}
+
+.header-buttons button{
+ width:auto;
+ margin:0;
+ padding:10px 14px;
+ font-size:14px
+}
+
+.login-btn{
+ background:#2563eb
+}
+
+.membership-btn{
+ background:#dc2626
+}
+
+.logout-btn{
+ background:#6b7280
+}
+
+.container{
+ max-width:1200px;
+ margin:auto;
+ padding:20px
+}
+
+.form-box,
+.search-box{
+ background:#fff;
+ border-radius:12px;
+ box-shadow:0 2px 10px rgba(0,0,0,.08)
+}
+
+.form-box{
+ padding:20px;
+ margin-bottom:20px
+}
+
+.form-box h2{
+ margin-top:0
+}
+
+input,
+textarea,
+select,
+button{
+ width:100%;
+ padding:12px;
+ margin-top:8px;
+ margin-bottom:12px;
+ border:1px solid #ddd;
+ border-radius:8px;
+ font-size:15px
+}
+
+textarea{
+ min-height:100px;
+ resize:vertical
+}
+
+button{
+ background:#111827;
+ color:#fff;
+ border:none;
+ cursor:pointer;
+ font-weight:bold
+}
+
+button:hover{
+ opacity:.9
+}
+
+.search-box{
+ padding:15px;
+ margin-bottom:15px
+}
+
+.search-box input{
+ margin:0
+}
+
+.categories{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-bottom:20px
+}
+
+.category-btn{
+ width:auto;
+ margin:0;
+ padding:9px 14px;
+ background:#fff;
+ color:#333;
+ border:1px solid #ddd
+}
+
+.category-btn.active{
+ background:#111827;
+ color:#fff
+}
+
+#listings{
+ display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+ gap:20px
+}
+
+.card{
+ background:#fff;
+ border-radius:12px;
+ overflow:hidden;
+ box-shadow:0 3px 12px rgba(0,0,0,.1);
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+}
+
+.card-image{
+ height:400px;
+ background:#eee;
+ position:relative;
+ cursor:pointer;
+ overflow:hidden
+}
+
+.card-image img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ display:block
+}
+
+.photo-count{
+ position:absolute;
+ right:10px;
+ bottom:10px;
+ background:rgba(0,0,0,.7);
+ color:#fff;
+ padding:6px 9px;
+ border-radius:7px;
+ font-size:13px
+}
+
+.card-body{
+ padding:16px;
+ flex:1;
+}
+
+.card-title{
+ font-size:20px;
+ font-weight:bold;
+ margin-bottom:8px
+}
+
+.price{
+ color:#dc2626;
+ font-size:20px;
+ font-weight:bold;
+ margin-bottom:10px
+}
+
+.description{
+ color:#555;
+ line-height:1.5;
+ white-space:pre-wrap;
+ margin-bottom:10px
+}
+
+.info{
+ color:#555;
+ font-size:14px;
+ margin-top:6px
+}
+
+.contact-buttons, .owner-buttons{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ margin-top:12px
+}
+
+.contact-buttons a, .owner-buttons button{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ text-decoration:none;
+ padding:10px 13px;
+ border-radius:8px;
+ font-weight:bold;
+ color:#fff;
+ transition:.2s;
+ font-size:14px;
+ margin:0;
+ width:auto;
+ flex:1;
+}
+
+.contact-buttons .phone{
+ background:#16a34a
+}
+
+.contact-buttons .whatsapp-btn{
+ background:#25d366
+}
+
+.owner-buttons .edit-btn{
+ background:#d97706
+}
+
+.owner-buttons .delete-btn{
+ background:#dc2626
+}
+
+.loading{
+ text-align:center;
+ padding:40px;
+ color:#777
+}
+
+.empty{
+ background:#fff;
+ padding:40px;
+ text-align:center;
+ border-radius:12px;
+ color:#777
+}
+
+/* AUTH */
+
+.auth-status{
+ background:#f3f4f6;
+ border-radius:10px;
+ padding:12px;
+ margin-bottom:15px;
+ font-size:14px
+}
+
+.auth-user{
+ color:#166534;
+ font-weight:bold
+}
+
+/* ÜYELİK */
+
+.membership-content{
+ background:#fff;
+ color:#222;
+ width:100%;
+ max-width:900px;
+ border-radius:18px;
+ padding:25px;
+ position:relative;
+ max-height:90vh;
+ overflow:auto
+}
+
+.membership-title{
+ text-align:center;
+ margin:0 0 8px;
+ font-size:28px
+}
+
+.membership-subtitle{
+ text-align:center;
+ color:#666;
+ margin-bottom:20px
+}
+
+.trial-box{
+ background:#ecfdf5;
+ border:2px solid #86efac;
+ border-radius:12px;
+ padding:16px;
+ margin-bottom:20px;
+ text-align:center
+}
+
+.trial-box strong{
+ color:#166534;
+ font-size:19px
+}
+
+.plans{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:15px
+}
+
+.plan{
+ border:1px solid #ddd;
+ border-radius:14px;
+ padding:20px;
+ text-align:center;
+ position:relative
+}
+
+.plan.popular{
+ border:2px solid #111827
+}
+
+.popular-label{
+ position:absolute;
+ top:-12px;
+ left:50%;
+ transform:translateX(-50%);
+ background:#111827;
+ color:#fff;
+ padding:5px 12px;
+ border-radius:20px;
+ font-size:12px
+}
+
+.plan h3{
+ margin-top:5px;
+ font-size:21px
+}
+
+.plan-price{
+ font-size:30px;
+ font-weight:bold;
+ color:#dc2626;
+ margin:12px 0
+}
+
+.plan-info{
+ color:#666;
+ line-height:1.7;
+ font-size:14px
+}
+
+.plan button{
+ margin-top:12px
+}
+
+.payment-note{
+ margin-top:20px;
+ padding:14px;
+ background:#f3f4f6;
+ border-radius:10px;
+ color:#555;
+ font-size:13px;
+ line-height:1.5
+}
+
+/* HAVALE / EFT ÖDEME */
+.bank-box{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  padding:16px;
+  margin-top:16px;
+}
+.bank-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 0;
+  border-bottom:1px solid #e5e7eb;
+  font-size:14px;
+}
+.bank-row:last-child{border-bottom:0}
+.bank-row b{color:#111827}
+.payment-summary{
+  background:#ecfdf5;
+  border:1px solid #86efac;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:15px;
+}
+.payment-summary strong{color:#166534}
+.payment-help{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  border-radius:10px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:12px;
+}
+.copy-btn{
+  width:auto;
+  padding:7px 10px;
+  margin:0;
+  font-size:12px;
+  background:#374151;
+}
+.status-box{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e40af;
+  border-radius:10px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:12px;
+}
+@media(max-width:700px){
+  .bank-row{flex-direction:column;gap:5px}
+}
+
+/* GENEL MODAL */
+
+.modal{
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,.97);
+ z-index:9999;
+ display:none;
+ flex-direction:column
+}
+
+.modal.active{
+ display:flex
+}
+
+.simple-modal{
+ align-items:center;
+ justify-content:center;
+ background:rgba(0,0,0,.75);
+ padding:15px
+}
+
+.simple-modal-content{
+ background:#fff;
+ color:#222;
+ width:100%;
+ max-width:450px;
+ border-radius:16px;
+ padding:25px;
+ position:relative;
+ max-height:90vh;
+ overflow:auto
+}
+
+.modal-close{
+ position:absolute;
+ right:15px;
+ top:15px;
+ width:auto;
+ margin:0;
+ padding:7px 12px;
+ background:#dc2626
+}
+
+/* GALERİ */
+
+.modal-header{
+ height:65px;
+ min-height:65px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:10px 15px;
+ color:#fff;
+ background:rgba(0,0,0,.75);
+ z-index:20
+}
+
+.modal-title{
+ font-size:17px;
+ font-weight:bold;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ padding-right:10px
+}
+
+.close-btn{
+ width:auto;
+ margin:0;
+ padding:8px 14px;
+ background:#dc2626;
+ color:#fff;
+ font-size:20px
+}
+
+.zoom-controls{
+ position:absolute;
+ top:75px;
+ right:15px;
+ display:flex;
+ gap:6px;
+ z-index:30
+}
+
+.zoom-btn{
+ width:42px;
+ height:42px;
+ padding:0;
+ margin:0;
+ border-radius:8px;
+ background:rgba(255,255,255,.92);
+ color:#111;
+ font-size:21px;
+ font-weight:bold
+}
+
+.gallery-main{
+ flex:1;
+ min-height:0;
+ position:relative;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden
+}
+
+.gallery-image-wrapper{
+ width:100%;
+ height:100%;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ overflow:hidden;
+ touch-action:none
+}
+
+.gallery-main img{
+ max-width:90%;
+ max-height:78vh;
+ object-fit:contain;
+ user-select:none;
+ -webkit-user-drag:none;
+ transform:translate(0,0) scale(1);
+ transform-origin:center center;
+ transition:transform .12s ease;
+ cursor:zoom-in;
+ will-change:transform
+}
+
+.gallery-main img.zoomed{
+ cursor:grab
+}
+
+.gallery-main img.dragging{
+ cursor:grabbing;
+ transition:none
+}
+
+.gallery-arrow{
+ position:absolute;
+ top:50%;
+ transform:translateY(-50%);
+ width:52px;
+ height:70px;
+ padding:0;
+ margin:0;
+ background:rgba(255,255,255,.18);
+ color:#fff;
+ font-size:35px;
+ border-radius:8px;
+ z-index:25
+}
+
+.gallery-arrow:hover{
+ background:rgba(255,255,255,.35)
+}
+
+.gallery-prev{
+ left:15px
+}
+
+.gallery-next{
+ right:15px
+}
+
+.thumbnails{
+ height:90px;
+ min-height:90px;
+ background:rgba(0,0,0,.85);
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:8px 12px;
+ overflow-x:auto;
+ z-index:20
+}
+
+.thumbnail{
+ height:72px;
+ width:72px;
+ min-width:72px;
+ object-fit:cover;
+ border-radius:6px;
+ border:2px solid transparent;
+ cursor:pointer;
+ opacity:.65
+}
+
+.thumbnail.active{
+ border-color:#fff;
+ opacity:1
+}
+
+.mobile-zoom-hint{
+ display:none
+}
+
+@media(max-width:700px){
+
+ header{
+  font-size:20px;
+  padding:12px
+ }
+
+ .header-title{
+  width:100%;
+  flex:none
+ }
+
+ .header-buttons{
+  width:100%;
+  justify-content:center
+ }
+
+ .header-buttons button{
+  flex:1
+ }
+
+ .container{
+  padding:12px
+ }
+
+ #listings{
+  grid-template-columns:1fr;
+  gap:15px
+ }
+
+ .card-image{
+  height:220px
+ }
+
+ .card-title{
+  font-size:18px
+ }
+
+ .price{
+  font-size:18px
+ }
+
+ .contact-buttons, .owner-buttons{
+  gap:6px
+ }
+
+ .contact-buttons a, .owner-buttons button{
+  flex:1 1 auto;
+  font-size:13px;
+  padding:9px 8px
+ }
+
+ .plans{
+  grid-template-columns:1fr
+ }
+
+ .membership-content{
+  padding:18px
+ }
+
+ .membership-title{
+  font-size:23px
+ }
+
+ .gallery-main img{
+  max-width:96%;
+  max-height:76vh
+ }
+
+ .gallery-arrow{
+  width:42px;
+  height:58px;
+  font-size:28px
+ }
+
+ .gallery-prev{
+  left:5px
+ }
+
+ .gallery-next{
+  right:5px
+ }
+
+ .zoom-controls{
+  display:none
+ }
+
+ .thumbnails{
+  height:78px;
+  min-height:78px
+ }
+
+ .thumbnail{
+  height:58px;
+  width:58px;
+  min-width:58px
+ }
+
+ .mobile-zoom-hint{
+  display:block;
+  position:absolute;
+  left:50%;
+  bottom:98px;
+  transform:translateX(-50%);
+  z-index:26;
+  color:#fff;
+  background:rgba(0,0,0,.55);
+  padding:7px 11px;
+  border-radius:20px;
+  font-size:12px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .3s
+ }
+
+ .mobile-zoom-hint.show{
+  opacity:1
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+ <div class="header-title">
+  🛍️ Samandağ Pazarı
+ </div>
+
+ <div class="header-buttons">
+
+  <button class="login-btn" id="authBtn">
+   👤 Giriş / Kayıt
+  </button>
+
+  <button class="membership-btn" id="uyelikBtn">
+   💳 Üyelik
+  </button>
+
+  <button id="adminBtn" style="display:none;background:#7c3aed">
+   🛠️ Yönetici
+  </button>
+
+ </div>
+
+</header>
 
 
-<!-- =========================
-     ÜYELİK PAKETLERİ
-     ========================= -->
+<div class="container">
 
-<div class="uyelik-paketleri">
+ <!-- İLAN FORMU -->
 
-    <div class="paket-kart">
+ <div class="form-box">
 
-        <h3>Haftalık</h3>
+  <h2>📢 İlan Ver</h2>
 
-        <div class="paket-fiyat">
-            49 TL
-        </div>
+  <div id="ilanKullaniciDurumu"
+       style="background:#f3f4f6;padding:12px;border-radius:9px;margin-bottom:15px;font-size:14px">
+   İlan vermek için giriş yapmalısınız.
+  </div>
 
-        <div class="paket-bilgi">
-            7 Gün
-        </div>
+  <input type="text" id="baslik" placeholder="İlan Başlığı">
 
-        <div class="paket-bilgi">
-            10 İlan Hakkı
-        </div>
+  <input type="number" id="fiyat" placeholder="Fiyat">
 
-        <button
-            class="paketBtn"
+  <textarea id="aciklama" placeholder="Açıklama"></textarea>
+
+  <select id="kategori">
+   <option value="">Kategori seçin</option>
+   <option value="Elektronik">Elektronik</option>
+   <option value="Araç">Araç</option>
+   <option value="Ev">Ev</option>
+   <option value="Emlak">Emlak</option>
+   <option value="Giyim">Giyim</option>
+   <option value="Telefon">Telefon</option>
+   <option value="İş">İş</option>
+   <option value="Diğer">Diğer</option>
+  </select>
+
+  <input type="text" id="mahalle" placeholder="Mahalle">
+
+  <input type="text" id="telefon" placeholder="Telefon">
+
+  <input type="file"
+         id="fotograflar"
+         accept="image/*"
+         multiple>
+
+  <button id="ilanVerBtn">
+   📢 İlanı Yayınla
+  </button>
+
+ </div>
+
+
+ <!-- ARAMA -->
+
+ <div class="search-box">
+
+  <input type="text"
+         id="searchInput"
+         placeholder="🔎 İlan Ara">
+
+ </div>
+
+
+ <!-- KATEGORİLER -->
+
+ <div class="categories">
+
+  <button class="category-btn active" data-category="Tümü">
+   Tümü
+  </button>
+
+  <button class="category-btn" data-category="Elektronik">
+   Elektronik
+  </button>
+
+  <button class="category-btn" data-category="Araç">
+   Araç
+  </button>
+
+  <button class="category-btn" data-category="Ev">
+   Ev
+  </button>
+
+  <button class="category-btn" data-category="Emlak">
+   Emlak
+  </button>
+
+  <button class="category-btn" data-category="Giyim">
+   Giyim
+  </button>
+
+  <button class="category-btn" data-category="Telefon">
+   Telefon
+  </button>
+
+  <button class="category-btn" data-category="İş">
+   İş
+  </button>
+
+  <button class="category-btn" data-category="Diğer">
+   Diğer
+  </button>
+
+ </div>
+
+
+ <div id="listings">
+
+  <div class="loading">
+   İlanlar yükleniyor...
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- GİRİŞ / KAYIT MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="authModal">
+
+ <div class="simple-modal-content">
+
+  <button class="modal-close" id="authClose">
+   ✕
+  </button>
+
+  <h2>👤 Hesabım</h2>
+
+  <div id="authStatus" class="auth-status">
+   Giriş yapın veya yeni hesap oluşturun.
+  </div>
+
+  <input type="email"
+         id="authEmail"
+         placeholder="E-posta adresiniz">
+
+  <input type="password"
+         id="authPassword"
+         placeholder="Şifreniz">
+
+  <button id="loginBtn">
+   🔐 Giriş Yap
+  </button>
+
+  <button id="registerBtn"
+          style="background:#16a34a">
+   📝 Yeni Hesap Oluştur
+  </button>
+
+  <button id="logoutBtn"
+          style="background:#6b7280;display:none">
+   🚪 Çıkış Yap
+  </button>
+
+  <div style="font-size:12px;color:#777;margin-top:12px;line-height:1.5">
+   Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.
+  </div>
+
+ </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- İLAN DÜZENLEME MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="editModal">
+
+ <div class="simple-modal-content">
+
+  <button class="modal-close" id="editClose">
+   ✕
+  </button>
+
+  <h2>✏️ İlanı Düzenle</h2>
+
+  <input type="hidden" id="editIlanId">
+
+  <label style="font-size:12px;color:#666">İlan Başlığı</label>
+  <input type="text" id="editBaslik" placeholder="İlan Başlığı">
+
+  <label style="font-size:12px;color:#666">Fiyat (TL)</label>
+  <input type="number" id="editFiyat" placeholder="Fiyat">
+
+  <label style="font-size:12px;color:#666">Açıklama</label>
+  <textarea id="editAciklama" placeholder="Açıklama"></textarea>
+
+  <label style="font-size:12px;color:#666">Kategori</label>
+  <select id="editKategori">
+   <option value="">Kategori seçin</option>
+   <option value="Elektronik">Elektronik</option>
+   <option value="Araç">Araç</option>
+   <option value="Ev">Ev</option>
+   <option value="Emlak">Emlak</option>
+   <option value="Giyim">Giyim</option>
+   <option value="Telefon">Telefon</option>
+   <option value="İş">İş</option>
+   <option value="Diğer">Diğer</option>
+  </select>
+
+  <label style="font-size:12px;color:#666">Mahalle</label>
+  <input type="text" id="editMahalle" placeholder="Mahalle">
+
+  <label style="font-size:12px;color:#666">Telefon</label>
+  <input type="text" id="editTelefon" placeholder="Telefon">
+
+  <button id="editKaydetBtn" style="background:#16a34a;margin-top:15px">
+   💾 Değişiklikleri Kaydet
+  </button>
+
+ </div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- YÖNETİCİ PANELİ -->
+<!-- ========================= -->
+<div class="modal simple-modal" id="adminModal">
+ <div class="simple-modal-content" style="max-width:900px">
+  <button class="modal-close" id="adminClose">✕</button>
+  <h2>🛠️ Yönetici Paneli</h2>
+  <div id="adminStatus" class="auth-status">Ödeme talepleri yükleniyor...</div>
+  <div id="adminPayments"></div>
+ </div>
+</div>
+
+<!-- ========================= -->
+<!-- ÜYELİK MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="uyelikModal">
+
+ <div class="membership-content">
+
+  <button class="modal-close" id="uyelikKapat">
+   ✕
+  </button>
+
+  <h2 class="membership-title">
+   💳 Üyelik Paketleri
+  </h2>
+
+  <div class="membership-subtitle">
+   Samandağ Pazarı'nda ilan vermeye devam edin.
+  </div>
+
+
+  <div class="trial-box">
+
+   <strong>
+    🎁 İlk 30 Gün Ücretsiz
+   </strong>
+
+   <div style="margin-top:7px">
+    Yeni üyeler ilk 30 gün boyunca ilanlarını ücretsiz yayınlayabilir.
+   </div>
+
+  </div>
+
+
+  <div class="plans">
+
+
+   <!-- HAFTALIK -->
+
+   <div class="plan">
+
+    <h3>
+     📅 Haftalık
+    </h3>
+
+    <div class="plan-price">
+     49 TL
+    </div>
+
+    <div class="plan-info">
+
+     7 gün üyelik<br>
+     10 ilan hakkı<br>
+     İlan yayınlama
+
+    </div>
+
+    <button class="paketBtn"
             data-paket="haftalik"
             data-sure="7"
             data-hak="10"
-            data-fiyat="49"
-        >
-            Havale / EFT ile Öde
-        </button>
+            data-fiyat="49">
+
+     Haftalık Paketi Seç
+
+    </button>
+
+   </div>
+
+
+   <!-- AYLIK -->
+
+   <div class="plan popular">
+
+    <div class="popular-label">
+     POPÜLER
+    </div>
+
+    <h3>
+     📆 Aylık
+    </h3>
+
+    <div class="plan-price">
+     149 TL
+    </div>
+
+    <div class="plan-info">
+
+     30 gün üyelik<br>
+     50 ilan hakkı<br>
+     İlan yayınlama
 
     </div>
 
-
-    <div class="paket-kart">
-
-        <h3>Aylık</h3>
-
-        <div class="paket-fiyat">
-            149 TL
-        </div>
-
-        <div class="paket-bilgi">
-            30 Gün
-        </div>
-
-        <div class="paket-bilgi">
-            50 İlan Hakkı
-        </div>
-
-        <button
-            class="paketBtn"
+    <button class="paketBtn"
             data-paket="aylik"
             data-sure="30"
             data-hak="50"
-            data-fiyat="149"
-        >
-            Havale / EFT ile Öde
-        </button>
+            data-fiyat="149">
+
+     Aylık Paketi Seç
+
+    </button>
+
+   </div>
+
+
+   <!-- YILLIK -->
+
+   <div class="plan">
+
+    <h3>
+     ⭐ Yıllık
+    </h3>
+
+    <div class="plan-price">
+     999 TL
+    </div>
+
+    <div class="plan-info">
+
+     365 gün üyelik<br>
+     500 ilan hakkı<br>
+     İlan yayınlama
 
     </div>
 
-
-    <div class="paket-kart">
-
-        <h3>Yıllık</h3>
-
-        <div class="paket-fiyat">
-            999 TL
-        </div>
-
-        <div class="paket-bilgi">
-            365 Gün
-        </div>
-
-        <div class="paket-bilgi">
-            500 İlan Hakkı
-        </div>
-
-        <button
-            class="paketBtn"
+    <button class="paketBtn"
             data-paket="yillik"
             data-sure="365"
             data-hak="500"
-            data-fiyat="999"
-        >
-            Havale / EFT ile Öde
-        </button>
+            data-fiyat="999">
 
-    </div>
+     Yıllık Paketi Seç
 
-</div>
+    </button>
 
-
-<!-- =========================
-     ÖDEME MODALI
-     ========================= -->
-
-<div
-    class="modal simple-modal"
-    id="paymentModal"
->
-
-    <div class="simple-modal-content">
-
-        <button
-            class="modal-close"
-            id="paymentClose"
-            type="button"
-        >
-            ✕
-        </button>
+   </div>
 
 
-        <h2>
-            🏦 Havale / EFT ile Ödeme
-        </h2>
+  </div>
 
 
-        <!-- SEÇİLEN PAKET -->
+  <div class="payment-note">
 
-        <div class="payment-summary">
+   <b>🏦 Ödeme yöntemi: Havale / EFT</b><br><br>
 
-            <div>
-                Seçilen Paket:
-                <strong id="paymentPackage">-</strong>
-            </div>
+   Paket seçtiğinizde banka hesap bilgilerimiz gösterilir.
+   Havale veya EFT yaptıktan sonra dekont bilgilerinizi göndererek ödeme bildirimi oluşturabilirsiniz.
+   Ödeme yönetici tarafından kontrol edilip onaylandıktan sonra üyeliğiniz tanımlanır.
 
-            <div style="margin-top:7px">
-                Süre:
-                <strong id="paymentDuration">-</strong>
-                gün
-            </div>
+  </div>
 
-            <div style="margin-top:7px">
-                İlan Hakkı:
-                <strong id="paymentAdLimit">-</strong>
-            </div>
-
-            <div
-                style="
-                    margin-top:12px;
-                    font-size:22px;
-                "
-            >
-                Tutar:
-                <strong id="paymentAmount">-</strong>
-                TL
-            </div>
-
-        </div>
-
-
-        <!-- BANKA BİLGİLERİ -->
-
-        <div class="bank-box">
-
-            <h3>
-                💳 Banka Bilgileri
-            </h3>
-
-
-            <div class="bank-row">
-
-                <b>Banka</b>
-
-                <span id="bankName">
-                    Enpara
-                </span>
-
-            </div>
-
-
-            <div class="bank-row">
-
-                <b>Hesap Sahibi</b>
-
-                <span id="bankOwner">
-                    Samet Gümüş
-                </span>
-
-            </div>
-
-
-            <div class="bank-row">
-
-                <b>IBAN</b>
-
-                <span
-                    id="bankIban"
-                    style="
-                        font-weight:700;
-                        word-break:break-all;
-                    "
-                >
-                    TR47 0015 7000 0000 0069 5885 27
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- BİLGİLENDİRME -->
-
-        <div class="payment-help">
-
-            <strong>
-                📌 Ödeme işlemi
-            </strong>
-
-            <br><br>
-
-            Yukarıdaki banka hesabına seçtiğiniz paket
-            tutarında Havale/EFT gönderin.
-
-            <br><br>
-
-            Ödeme yaptıktan sonra dekontunuzu
-            site yöneticisine iletmeniz gerekmektedir.
-
-            <br><br>
-
-            <strong>
-                Ödeme kontrol edildikten sonra
-                üyelik paketiniz hesabınıza tanımlanacaktır.
-            </strong>
-
-        </div>
-
-
-        <!-- IBAN KOPYALA -->
-
-        <button
-            id="copyIbanBtn"
-            type="button"
-            style="
-                width:100%;
-                background:#16a34a;
-                color:#fff;
-                border:none;
-                border-radius:10px;
-                padding:14px;
-                margin-top:15px;
-                font-size:16px;
-                font-weight:700;
-                cursor:pointer;
-            "
-        >
-            📋 IBAN'ı Kopyala
-        </button>
-
-
-        <!-- GERİ -->
-
-        <button
-            id="paymentBackBtn"
-            type="button"
-            style="
-                width:100%;
-                background:#6b7280;
-                color:#fff;
-                border:none;
-                border-radius:10px;
-                padding:14px;
-                margin-top:10px;
-                font-size:16px;
-                font-weight:700;
-                cursor:pointer;
-            "
-        >
-            ← Paketlere Dön
-        </button>
-
-    </div>
+ </div>
 
 </div>
 
 
-<!-- =========================
-     CSS
-     ========================= -->
+<!-- ========================= -->
+<!-- HAVALE / EFT ÖDEME MODALI -->
+<!-- ========================= -->
 
-<style>
+<div class="modal simple-modal" id="paymentModal">
 
-.uyelik-paketleri{
+ <div class="simple-modal-content">
 
-    display:grid;
+  <button class="modal-close" id="paymentClose">✕</button>
 
-    grid-template-columns:
-        repeat(3,1fr);
+  <h2>🏦 Havale / EFT ile Ödeme</h2>
 
-    gap:20px;
+  <div class="payment-summary">
+   <div>Seçilen paket: <strong id="paymentPackage">-</strong></div>
+   <div style="margin-top:6px">Süre: <strong id="paymentDuration">-</strong> gün</div>
+   <div style="margin-top:6px">İlan hakkı: <strong id="paymentAdLimit">-</strong></div>
+   <div style="margin-top:6px;font-size:20px">Tutar: <strong id="paymentAmount">-</strong> TL</div>
+  </div>
 
-    max-width:1100px;
+  <div class="bank-box">
+   <h3 style="margin-top:0">Banka Bilgileri</h3>
 
-    margin:30px auto;
+   <div class="bank-row">
+    <b>Banka</b>
+    <span id="bankName">BANKA ADI</span>
+   </div>
 
-    padding:15px;
+   <div class="bank-row">
+    <b>Hesap Sahibi</b>
+    <span id="bankOwner">HESAP SAHİBİ</span>
+   </div>
 
-}
+   <div class="bank-row">
+    <b>IBAN</b>
+    <span id="bankIban">TR00 0000 0000 0000 0000 0000 00</span>
+   </div>
+  </div>
 
+  <div class="payment-help">
+   Ödemeyi yaptıktan sonra aşağıdaki bilgileri doldurun. Yönetici ödemenizi kontrol ettikten sonra paketi hesabınıza tanımlayacaktır.
+  </div>
 
-.paket-kart{
+  <input type="text" id="paymentSenderName" placeholder="Havale/EFT yapan kişi adı soyadı">
+  <input type="text" id="paymentReference" placeholder="Dekont / işlem numarası (varsa)">
+  <textarea id="paymentDescription" placeholder="Ek açıklama (isteğe bağlı)"></textarea>
 
-    background:#fff;
+  <button id="paymentSubmitBtn" style="background:#16a34a">
+   ✅ Ödeme Bildirimi Gönder
+  </button>
 
-    border-radius:18px;
+  <button id="paymentBackBtn" style="background:#6b7280">
+   ← Paketlere Dön
+  </button>
 
-    padding:25px;
+  <div class="status-box">
+   ℹ️ Havale/EFT ile ödeme otomatik olarak onaylanmaz. Ödeme bildiriminiz yönetici kontrolünden sonra üyeliğe çevrilir.
+  </div>
 
-    text-align:center;
+ </div>
+</div>
 
-    box-shadow:
-        0 8px 25px
-        rgba(0,0,0,.08);
 
-    border:1px solid #e5e7eb;
+<!-- ========================= -->
+<!-- GALERİ -->
+<!-- ========================= -->
 
-}
+<div class="modal" id="galleryModal">
 
+ <div class="modal-header">
 
-.paket-kart h3{
+  <div class="modal-title" id="galleryTitle">
+   Fotoğraf
+  </div>
 
-    margin:0 0 15px;
+  <button class="close-btn" id="closeGallery">
+   ✕
+  </button>
 
-    font-size:23px;
+ </div>
 
-}
 
+ <div class="zoom-controls">
 
-.paket-fiyat{
+  <button class="zoom-btn" id="zoomOut">
+   −
+  </button>
 
-    font-size:30px;
+  <button class="zoom-btn" id="zoomReset">
+   ↺
+  </button>
 
-    font-weight:800;
+  <button class="zoom-btn" id="zoomIn">
+   +
+  </button>
 
-    margin-bottom:15px;
+ </div>
 
-}
 
+ <div class="gallery-main">
 
-.paket-bilgi{
+  <button class="gallery-arrow gallery-prev"
+          id="galleryPrev">
+   ‹
+  </button>
 
-    margin:8px 0;
 
-    color:#6b7280;
+  <div class="gallery-image-wrapper"
+       id="galleryImageWrapper">
 
-}
+   <img id="galleryImage"
+        src=""
+        alt="">
 
+  </div>
 
-.paketBtn{
 
-    width:100%;
+  <div class="mobile-zoom-hint"
+       id="mobileZoomHint">
 
-    margin-top:18px;
+   🤏 İki parmakla büyüt / küçült
 
-    padding:14px;
+  </div>
 
-    border:0;
 
-    border-radius:10px;
+  <button class="gallery-arrow gallery-next"
+          id="galleryNext">
 
-    background:#16a34a;
+   ›
 
-    color:#fff;
+  </button>
 
-    font-size:15px;
+ </div>
 
-    font-weight:700;
 
-    cursor:pointer;
+ <div class="thumbnails"
+      id="thumbnails">
+ </div>
 
-}
+</div>
 
-
-.paketBtn:hover{
-
-    background:#15803d;
-
-}
-
-
-/* ÖDEME MODALI */
-
-.payment-summary{
-
-    background:#f0fdf4;
-
-    border:1px solid #bbf7d0;
-
-    border-radius:14px;
-
-    padding:17px;
-
-    margin-top:18px;
-
-}
-
-
-.bank-box{
-
-    background:#111827;
-
-    color:#fff;
-
-    border-radius:16px;
-
-    padding:20px;
-
-    margin-top:18px;
-
-}
-
-
-.bank-box h3{
-
-    margin-top:0;
-
-    margin-bottom:15px;
-
-}
-
-
-.bank-row{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:5px;
-
-    padding:12px 0;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.12);
-
-}
-
-
-.bank-row:last-child{
-
-    border-bottom:0;
-
-}
-
-
-.bank-row b{
-
-    color:#9ca3af;
-
-    font-size:13px;
-
-}
-
-
-.bank-row span{
-
-    font-size:17px;
-
-}
-
-
-.payment-help{
-
-    background:#fff7ed;
-
-    border:1px solid #fed7aa;
-
-    color:#9a3412;
-
-    border-radius:14px;
-
-    padding:16px;
-
-    margin-top:18px;
-
-    line-height:1.6;
-
-}
-
-
-/* MOBİL */
-
-@media(max-width:800px){
-
-    .uyelik-paketleri{
-
-        grid-template-columns:1fr;
-
-    }
-
-}
-
-</style>
-
-
-<!-- =========================
-     JAVASCRIPT
-     ========================= -->
 
 <script>
 
+/* ================================================= */
+/* SUPABASE */
+/* ================================================= */
 
-// ========================================
-// BANKA BİLGİLERİ
-// ========================================
+const SUPABASE_URL =
+"https://hicevhodrskuymffgbdo.supabase.co";
 
-const BANK_NAME =
-    "Enpara";
+const SUPABASE_KEY =
+"sb_publishable_wCUwLT4hjbddEjWY_HJEJQ_oTlTeUiB";
 
-const BANK_OWNER =
-    "Samet Gümüş";
+const supabaseClient =
+supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_KEY
+);
 
-const BANK_IBAN =
-    "TR47 0015 7000 0000 0069 5885 27";
+
+/* ================================================= */
+/* DEĞİŞKENLER */
+/* ================================================= */
+
+let allListings=[];
+let selectedCategory="Tümü";
+let currentUser=null;
+
+let galleryImages=[];
+let galleryIndex=0;
+
+let zoomLevel=1;
+
+const MIN_ZOOM=1;
+const MAX_ZOOM=4;
+const ZOOM_STEP=.25;
+
+let imageX=0;
+let imageY=0;
+
+let isDragging=false;
+
+let dragStartX=0;
+let dragStartY=0;
+
+let startImageX=0;
+let startImageY=0;
+
+let pinchStartDistance=0;
+let pinchStartZoom=1;
+
+let touchStartX=0;
+let touchStartY=0;
+
+let touchImageX=0;
+let touchImageY=0;
 
 
-// ========================================
-// ELEMENTLER
-// ========================================
+/* ================================================= */
+/* ELEMENTLER */
+/* ================================================= */
+
+const listingsContainer =
+document.getElementById("listings");
+
+const searchInput =
+document.getElementById("searchInput");
+
+const galleryModal =
+document.getElementById("galleryModal");
+
+const galleryImage =
+document.getElementById("galleryImage");
+
+const galleryTitle =
+document.getElementById("galleryTitle");
+
+const thumbnails =
+document.getElementById("thumbnails");
+
+const mobileZoomHint =
+document.getElementById("mobileZoomHint");
+
+const authModal =
+document.getElementById("authModal");
+
+const uyelikModal =
+document.getElementById("uyelikModal");
+
+const editModal =
+document.getElementById("editModal");
+
+const adminModal = document.getElementById("adminModal");
+const adminBtn = document.getElementById("adminBtn");
 
 const paymentModal =
-    document.getElementById("paymentModal");
+document.getElementById("paymentModal");
 
 const paymentPackage =
-    document.getElementById("paymentPackage");
+document.getElementById("paymentPackage");
 
 const paymentDuration =
-    document.getElementById("paymentDuration");
+document.getElementById("paymentDuration");
 
 const paymentAdLimit =
-    document.getElementById("paymentAdLimit");
+document.getElementById("paymentAdLimit");
 
 const paymentAmount =
-    document.getElementById("paymentAmount");
+document.getElementById("paymentAmount");
 
-const bankName =
-    document.getElementById("bankName");
-
-const bankOwner =
-    document.getElementById("bankOwner");
-
-const bankIban =
-    document.getElementById("bankIban");
-
-
-// ========================================
-// ÖDEME MODALINI AÇ
-// ========================================
-
-function openPaymentModal(
-    paket,
-    sure,
-    hak,
-    fiyat
-){
-
-    let paketAdi;
-
-    if(paket === "haftalik"){
-
-        paketAdi =
-            "Haftalık Üyelik";
-
-    }
-    else if(paket === "aylik"){
-
-        paketAdi =
-            "Aylık Üyelik";
-
-    }
-    else if(paket === "yillik"){
-
-        paketAdi =
-            "Yıllık Üyelik";
-
-    }
-    else{
-
-        paketAdi =
-            paket;
-
-    }
+/*
+ * BANKA BİLGİLERİNİ BURADAN DEĞİŞTİRİN.
+ * Kartlı ödeme yoktur; yalnızca Havale/EFT kullanılır.
+ */
+const BANK_NAME = "BANKA ADI"; // Banka adını burada değiştirin
+const BANK_OWNER = "Samet Gümüş";
+const BANK_IBAN = "TR47 0015 7000 0000 0069 5885 27";
 
 
-    paymentPackage.textContent =
-        paketAdi;
 
-    paymentDuration.textContent =
-        sure;
+/* ================================================= */
+/* HTML GÜVENLİĞİ */
+/* ================================================= */
 
-    paymentAdLimit.textContent =
-        hak;
+function escapeHtml(value){
 
-    paymentAmount.textContent =
-        Number(fiyat)
-        .toLocaleString("tr-TR");
-
-
-    bankName.textContent =
-        BANK_NAME;
-
-    bankOwner.textContent =
-        BANK_OWNER;
-
-    bankIban.textContent =
-        BANK_IBAN;
-
-
-    paymentModal.dataset.paket =
-        paket;
-
-    paymentModal.dataset.sure =
-        sure;
-
-    paymentModal.dataset.hak =
-        hak;
-
-    paymentModal.dataset.fiyat =
-        fiyat;
-
-
-    paymentModal.classList.add("active");
-
-    document.body.style.overflow =
-        "hidden";
+ return String(value??"")
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;")
+ .replace(/'/g,"&#039;");
 
 }
 
 
-// ========================================
-// PAKET BUTONLARI
-// ========================================
+/* ================================================= */
+/* RESİMLER */
+/* ================================================= */
+
+function getImageUrls(value){
+
+ if(!value)
+  return[];
+
+ if(Array.isArray(value))
+  return value;
+
+ try{
+
+  const parsed=JSON.parse(value);
+
+  if(Array.isArray(parsed))
+   return parsed;
+
+ }catch(e){}
+
+ return typeof value==="string"
+  ?[value]
+  :[];
+
+}
+
+
+/* ================================================= */
+/* WHATSAPP */
+/* ================================================= */
+
+function getWhatsAppNumber(phone){
+
+ let number=
+ String(phone||"").replace(/\D/g,"");
+
+ if(!number)
+  return"";
+
+ if(number.startsWith("0"))
+  number=number.substring(1);
+
+ if(!number.startsWith("90"))
+  number="90"+number;
+
+ return number;
+
+}
+
+
+function getWhatsAppUrl(phone,title){
+
+ const number=
+ getWhatsAppNumber(phone);
+
+ if(!number)
+  return"#";
+
+ const message=
+ `Merhaba, "${title||"ilan"}" ilanınız hakkında bilgi almak istiyorum.`;
+
+ return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+
+}
+
+
+/* ================================================= */
+/* FOTOĞRAF KONTROLÜ */
+/* ================================================= */
 
 document
-.querySelectorAll(".paketBtn")
-.forEach(function(button){
+.getElementById("fotograflar")
+.addEventListener("change",function(){
 
-    button.addEventListener(
-        "click",
-        async function(){
+ const files=this.files;
 
-            /*
-             * Supabase kullanıyorsan mevcut
-             * supabaseClient değişkenini kullanır.
-             */
+ if(files.length>10){
 
-            if(
-                typeof supabaseClient !==
-                "undefined"
-            ){
+  alert(
+   "En fazla 10 fotoğraf seçebilirsiniz."
+  );
 
-                const {
-                    data,
-                    error
-                } =
-                await supabaseClient
-                .auth
-                .getUser();
+  this.value="";
+
+  return;
+ }
 
 
-                if(error){
+ for(const file of files){
 
-                    alert(
-                        error.message
-                    );
+  if(file.size>5*1024*1024){
 
-                    return;
+   alert(
+    "Her fotoğraf en fazla 5 MB olabilir."
+   );
 
-                }
+   this.value="";
 
+   return;
 
-                if(!data.user){
+  }
 
-                    alert(
-                        "Üyelik satın almak için önce giriş yapmalısınız."
-                    );
-
-                    return;
-
-                }
-
-            }
-
-
-            const paket =
-                button.dataset.paket;
-
-            const sure =
-                Number(
-                    button.dataset.sure
-                );
-
-            const hak =
-                Number(
-                    button.dataset.hak
-                );
-
-            const fiyat =
-                Number(
-                    button.dataset.fiyat
-                );
-
-
-            openPaymentModal(
-                paket,
-                sure,
-                hak,
-                fiyat
-            );
-
-        }
-    );
+ }
 
 });
 
 
-// ========================================
-// IBAN KOPYALA
-// ========================================
+/* ================================================= */
+/* FOTOĞRAF YÜKLEME */
+/* ================================================= */
+
+async function uploadImage(file){
+
+ const extension=
+ file.name
+ .split(".")
+ .pop()
+ .toLowerCase();
+
+ const fileName=
+ Date.now()
+ +"_"
+ +Math.random()
+  .toString(36)
+  .substring(2)
+ +"."+extension;
+
+
+ const {error}=
+ await supabaseClient
+ .storage
+ .from("ilan-fotograflari")
+ .upload(fileName,file);
+
+
+ if(error)
+  throw error;
+
+
+ const {data}=
+ supabaseClient
+ .storage
+ .from("ilan-fotograflari")
+ .getPublicUrl(fileName);
+
+
+ return data.publicUrl;
+
+}
+
+
+/* ================================================= */
+/* AUTH DURUMU */
+/* ================================================= */
+
+async function updateAuthUI(){
+
+ const {
+  data:{user}
+ }=
+ await supabaseClient.auth.getUser();
+
+ currentUser = user;
+
+ const authBtn=
+ document.getElementById("authBtn");
+
+ const authStatus=
+ document.getElementById("authStatus");
+
+ const logoutBtn=
+ document.getElementById("logoutBtn");
+
+ const ilanDurum=
+ document.getElementById(
+  "ilanKullaniciDurumu"
+ );
+
+
+ if(user){
+
+  authBtn.textContent=
+   "👤 "+(user.email||"Hesabım");
+
+  authBtn.classList.remove("login-btn");
+  authBtn.classList.add("logout-btn");
+
+  authStatus.innerHTML=
+   `<div class="auth-user">
+      ✅ Giriş yapıldı
+    </div>
+    <div style="margin-top:5px">
+      ${escapeHtml(user.email||"")}
+    </div>`;
+
+  logoutBtn.style.display="block";
+
+
+  ilanDurum.innerHTML=
+   `✅ <b>${escapeHtml(user.email||"")}</b>
+    olarak giriş yaptınız.<br>
+    <span style="color:#666">
+    İlan yayınlayabilirsiniz.
+    </span>`;
+
+  ilanDurum.style.background="#ecfdf5";
+  ilanDurum.style.color="#166534";
+
+ }else{
+
+  authBtn.textContent=
+   "👤 Giriş / Kayıt";
+
+  authBtn.classList.remove("logout-btn");
+  authBtn.classList.add("login-btn");
+
+  authStatus.innerHTML=
+   "Giriş yapın veya yeni hesap oluşturun.";
+
+  logoutBtn.style.display="none";
+
+
+  ilanDurum.innerHTML=
+   "🔐 İlan vermek için önce giriş yapmalısınız.";
+
+  ilanDurum.style.background="#fef2f2";
+  ilanDurum.style.color="#991b1b";
+
+ }
+
+ displayListings();
+
+}
+
+
+
+/* ================================================= */
+/* YÖNETİCİ PANELİ */
+/* ================================================= */
+
+async function isCurrentUserAdmin(){
+ const {data,error}=await supabaseClient.rpc("kullanici_admin_mi");
+ if(error){
+  console.error("Admin kontrolü:",error);
+  return false;
+ }
+ return data===true;
+}
+
+async function updateAdminUI(){
+ if(!currentUser){
+  adminBtn.style.display="none";
+  return;
+ }
+ const admin=await isCurrentUserAdmin();
+ adminBtn.style.display=admin ? "block" : "none";
+}
+
+async function loadAdminPayments(){
+ const status=document.getElementById("adminStatus");
+ const box=document.getElementById("adminPayments");
+
+ status.textContent="Ödeme talepleri yükleniyor...";
+ box.innerHTML="";
+
+ const {data,error}=await supabaseClient
+  .from("odeme_talepleri")
+  .select("*")
+  .order("created_at",{ascending:false});
+
+ if(error){
+  status.textContent="❌ Ödeme talepleri alınamadı: "+(error.message||error);
+  return;
+ }
+
+ const rows=(data||[]).filter(x=>x.durum==="bekliyor");
+
+ if(!rows.length){
+  status.textContent="Bekleyen ödeme bildirimi yok.";
+  box.innerHTML='<div style="padding:20px;background:#f3f4f6;border-radius:10px">Bekleyen ödeme bulunmuyor.</div>';
+  return;
+ }
+
+ status.textContent=rows.length+" bekleyen ödeme bildirimi var.";
+
+ rows.forEach(item=>{
+  const card=document.createElement("div");
+  card.style.cssText="border:1px solid #ddd;border-radius:12px;padding:15px;margin:10px 0;background:#fff";
+
+  const title=document.createElement("div");
+  title.style.fontWeight="bold";
+  title.style.fontSize="17px";
+  title.textContent=(item.paket||"").toUpperCase()+" — "+Number(item.tutar||0).toLocaleString("tr-TR")+" TL";
+
+  const info=document.createElement("div");
+  info.style.cssText="margin-top:8px;line-height:1.6;color:#555";
+  info.innerHTML=
+   "👤 "+escapeHtml(item.gonderen_ad_soyad||"")+
+   "<br>📧 "+escapeHtml(item.email||"")+
+   "<br>📦 "+escapeHtml(item.sure_gun)+" gün / "+escapeHtml(item.ilan_hakki)+" ilan"+
+   "<br>🧾 Dekont No: "+escapeHtml(item.dekont_no||"Belirtilmedi")+
+   "<br>📝 "+escapeHtml(item.aciklama||"")+
+   "<br>🕒 "+escapeHtml(new Date(item.created_at).toLocaleString("tr-TR"));
+
+  const buttons=document.createElement("div");
+  buttons.style.cssText="display:flex;gap:8px;margin-top:12px";
+
+  const approve=document.createElement("button");
+  approve.style.background="#16a34a";
+  approve.textContent="✅ Ödemeyi Onayla";
+  approve.onclick=async()=>{
+   if(!confirm("Bu ödemeyi onaylayıp üyeliği tanımlamak istiyor musunuz?")) return;
+   approve.disabled=true;
+   approve.textContent="Onaylanıyor...";
+   const {error}=await supabaseClient.rpc("odeme_onayla",{p_odeme_id:item.id});
+   if(error){
+    alert("Onaylama hatası: "+(error.message||error));
+    approve.disabled=false;
+    approve.textContent="✅ Ödemeyi Onayla";
+    return;
+   }
+   alert("✅ Ödeme onaylandı. Üyelik ve ilan hakları tanımlandı.");
+   await loadAdminPayments();
+  };
+
+  const reject=document.createElement("button");
+  reject.style.background="#dc2626";
+  reject.textContent="❌ Reddet";
+  reject.onclick=async()=>{
+   if(!confirm("Bu ödeme bildirimini reddetmek istiyor musunuz?")) return;
+   reject.disabled=true;
+   const {error}=await supabaseClient
+    .from("odeme_talepleri")
+    .update({durum:"reddedildi"})
+    .eq("id",item.id)
+    .eq("durum","bekliyor");
+   if(error){
+    alert("Reddetme hatası: "+(error.message||error));
+    reject.disabled=false;
+    return;
+   }
+   await loadAdminPayments();
+  };
+
+  buttons.appendChild(approve);
+  buttons.appendChild(reject);
+  card.appendChild(title);
+  card.appendChild(info);
+  card.appendChild(buttons);
+  box.appendChild(card);
+ });
+}
+
+adminBtn.addEventListener("click",async()=>{
+ adminModal.classList.add("active");
+ document.body.style.overflow="hidden";
+ await loadAdminPayments();
+});
+
+document.getElementById("adminClose").addEventListener("click",()=>{
+ adminModal.classList.remove("active");
+ document.body.style.overflow="";
+});
+
+
+/* ================================================= */
+/* AUTH BUTONU */
+/* ================================================= */
 
 document
-.getElementById("copyIbanBtn")
-.addEventListener(
-    "click",
-    async function(){
+.getElementById("authBtn")
+.addEventListener("click",async()=>{
 
-        try{
-
-            await navigator
-                .clipboard
-                .writeText(
-                    BANK_IBAN
-                );
+ const {
+  data:{user}
+ }=
+ await supabaseClient.auth.getUser();
 
 
-            const eskiYazi =
-                this.textContent;
+ if(user){
+
+  const cevap=
+   confirm(
+    "Hesabınız açık.\n\nÇıkış yapmak ister misiniz?"
+   );
+
+  if(cevap){
+
+   await supabaseClient.auth.signOut();
+
+   await updateAuthUI();
+
+   alert("Çıkış yapıldı.");
+
+  }
+
+ }else{
+
+  authModal.classList.add("active");
+
+  document.body.style.overflow="hidden";
+
+ }
+
+});
 
 
-            this.textContent =
-                "✅ IBAN Kopyalandı";
+/* ================================================= */
+/* AUTH KAPAT */
+/* ================================================= */
+
+document
+.getElementById("authClose")
+.addEventListener("click",()=>{
+
+ authModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+});
 
 
-            setTimeout(
-                () => {
+/* ================================================= */
+/* GİRİŞ YAP */
+/* ================================================= */
 
-                    this.textContent =
-                        eskiYazi;
+document
+.getElementById("loginBtn")
+.addEventListener("click",async()=>{
 
-                },
-                2000
-            );
+ const email=
+ document.getElementById("authEmail")
+ .value
+ .trim();
 
-        }
-        catch(error){
+ const password=
+ document.getElementById("authPassword")
+ .value;
 
-            alert(
-                "IBAN:\n\n" +
-                BANK_IBAN
-            );
 
-        }
+ if(!email){
 
-    }
+  alert("E-posta adresinizi girin.");
+
+  return;
+
+ }
+
+
+ if(!password){
+
+  alert("Şifrenizi girin.");
+
+  return;
+
+ }
+
+
+ const button=
+ document.getElementById("loginBtn");
+
+ button.disabled=true;
+ button.textContent="Giriş yapılıyor...";
+
+
+ try{
+
+  const {error}=
+  await supabaseClient.auth.signInWithPassword({
+
+   email:email,
+
+   password:password
+
+  });
+
+
+  if(error)
+   throw error;
+
+
+  alert("✅ Giriş başarılı.");
+
+  authModal.classList.remove("active");
+
+  document.body.style.overflow="";
+
+  await updateAuthUI();
+
+
+ }catch(error){
+
+  alert(
+   "Giriş yapılamadı:\n"
+   +(error.message||error)
+  );
+
+ }finally{
+
+  button.disabled=false;
+
+  button.textContent="🔐 Giriş Yap";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* KAYIT OL */
+/* ================================================= */
+
+document
+.getElementById("registerBtn")
+.addEventListener("click",async()=>{
+
+ const email=
+ document.getElementById("authEmail")
+ .value
+ .trim();
+
+ const password=
+ document.getElementById("authPassword")
+ .value;
+
+
+ if(!email){
+
+  alert("E-posta adresinizi girin.");
+
+  return;
+
+ }
+
+
+ if(!password){
+
+  alert("Şifrenizi girin.");
+
+  return;
+
+ }
+
+
+ if(password.length<6){
+
+  alert(
+   "Şifre en az 6 karakter olmalıdır."
+  );
+
+  return;
+
+ }
+
+
+ const button=
+ document.getElementById("registerBtn");
+
+ button.disabled=true;
+ button.textContent="Hesap oluşturuluyor...";
+
+
+ try{
+
+  const {data,error}=
+  await supabaseClient.auth.signUp({
+
+   email:email,
+
+   password:password
+
+  });
+
+
+  if(error)
+   throw error;
+
+
+  if(data.user){
+
+   alert(
+    "✅ Hesabınız oluşturuldu.\n\n"+
+    "İlk 30 gün ücretsiz deneme süreniz başladı."
+   );
+
+  }
+
+
+  await updateAuthUI();
+
+
+ }catch(error){
+
+  alert(
+   "Kayıt oluşturulamadı:\n"
+   +(error.message||error)
+  );
+
+ }finally{
+
+  button.disabled=false;
+
+  button.textContent=
+   "📝 Yeni Hesap Oluştur";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* ÇIKIŞ */
+/* ================================================= */
+
+document
+.getElementById("logoutBtn")
+.addEventListener("click",async()=>{
+
+ const {error}=
+ await supabaseClient.auth.signOut();
+
+ if(error){
+
+  alert(error.message);
+
+  return;
+
+ }
+
+ authModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+ await updateAuthUI();
+
+ alert("Çıkış yapıldı.");
+
+});
+
+
+/* ================================================= */
+/* AUTH DEĞİŞİKLİĞİ */
+/* ================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+ async(event,session)=>{
+
+  await updateAuthUI();
+
+ }
 );
 
 
-// ========================================
-// KAPAT
-// ========================================
+/* ================================================= */
+/* İLAN VERME */
+/* ================================================= */
+
+document
+.getElementById("ilanVerBtn")
+.addEventListener("click",async function(){
+
+ const button=this;
+
+ const baslik=
+ document.getElementById("baslik")
+ .value
+ .trim();
+
+ const fiyat=
+ document.getElementById("fiyat")
+ .value;
+
+ const aciklama=
+ document.getElementById("aciklama")
+ .value
+ .trim();
+
+ const kategori=
+ document.getElementById("kategori")
+ .value;
+
+ const mahalle=
+ document.getElementById("mahalle")
+ .value
+ .trim();
+
+ const telefon=
+ document.getElementById("telefon")
+ .value
+ .trim();
+
+ const files=
+ document.getElementById("fotograflar")
+ .files;
+
+
+ if(!baslik){
+
+  alert("İlan başlığı girin.");
+
+  return;
+
+ }
+
+
+ if(!kategori){
+
+  alert("Kategori seçin.");
+
+  return;
+
+ }
+
+
+ if(!telefon){
+
+  alert("Telefon numarası girin.");
+
+  return;
+
+ }
+
+
+ button.disabled=true;
+
+ button.textContent=
+  "Hesap kontrol ediliyor...";
+
+
+ try{
+
+  /* KULLANICI */
+
+  const {
+   data:{user},
+   error:userError
+  }=
+  await supabaseClient.auth.getUser();
+
+
+  if(userError)
+   throw userError;
+
+
+  if(!user){
+
+   authModal.classList.add("active");
+
+   document.body.style.overflow="hidden";
+
+   alert(
+    "İlan vermek için önce giriş yapmalısınız."
+   );
+
+   return;
+
+  }
+
+
+  /* İLAN HAKKI */
+
+  button.textContent=
+   "İlan hakkı kontrol ediliyor...";
+
+
+  const {
+   data:hakVar,
+   error:hakError
+  }=
+  await supabaseClient
+  .rpc(
+   "kullanici_ilan_hakki_var_mi",
+   {
+    p_user_id:user.id
+   }
+  );
+
+
+  if(hakError)
+   throw hakError;
+
+
+  if(hakVar!==true){
+
+   uyelikModal.classList.add("active");
+
+   document.body.style.overflow="hidden";
+
+   alert(
+    "Ücretsiz deneme süreniz veya ilan hakkınız bitmiş.\n\n"+
+    "Devam etmek için bir üyelik paketi seçin."
+   );
+
+   return;
+
+  }
+
+
+  /* FOTOĞRAFLAR */
+
+  button.textContent=
+   "Fotoğraflar yükleniyor...";
+
+
+  const imageUrls=[];
+
+
+  for(const file of files){
+
+   imageUrls.push(
+    await uploadImage(file)
+   );
+
+  }
+
+
+  /* İLAN */
+
+  button.textContent=
+   "İlan yayınlanıyor...";
+
+
+  const {data:ilanId,error}=
+  await supabaseClient
+  .rpc("ilan_ekle",{
+   p_baslik:baslik,
+   p_fiyat:fiyat ? Number(fiyat) : null,
+   p_aciklama:aciklama,
+   p_kategori:kategori,
+   p_mahalle:mahalle,
+   p_telefon:telefon,
+   p_resimurl:JSON.stringify(imageUrls)
+  });
+
+
+  if(error)
+   throw error;
+
+
+  alert(
+   "✅ İlan başarıyla yayınlandı."
+  );
+
+
+  document.getElementById("baslik").value="";
+  document.getElementById("fiyat").value="";
+  document.getElementById("aciklama").value="";
+  document.getElementById("kategori").value="";
+  document.getElementById("mahalle").value="";
+  document.getElementById("telefon").value="";
+  document.getElementById("fotograflar").value="";
+
+
+  await loadListings();
+
+
+ }catch(error){
+
+  console.error(
+   "İlan yayınlama hatası:",
+   error
+  );
+
+
+  alert(
+   "İlan yayınlanırken hata oluştu:\n"+
+   (error.message||error)
+  );
+
+
+ }finally{
+
+  button.disabled=false;
+
+  button.textContent=
+   "📢 İlanı Yayınla";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* İLAN SİLME VE DÜZENLEME FONKSİYONLARI */
+/* ================================================= */
+
+async function deleteListing(id){
+
+ const confirmed = confirm("Bu ilanı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.");
+ if(!confirmed) return;
+
+ try{
+
+  const {error} = await supabaseClient
+   .from("ilantable")
+   .delete()
+   .eq("id", id);
+
+  if(error) throw error;
+
+  alert("✅ İlan başarıyla silindi.");
+  await loadListings();
+
+ }catch(error){
+
+  console.error("Silme hatası:", error);
+  alert("İlan silinirken bir hata oluştu: " + (error.message || error));
+
+ }
+
+}
+
+
+function openEditModal(ilan){
+
+ document.getElementById("editIlanId").value = ilan.id;
+ document.getElementById("editBaslik").value = ilan.baslik || "";
+ document.getElementById("editFiyat").value = ilan.fiyat !== null ? ilan.fiyat : "";
+ document.getElementById("editAciklama").value = ilan.aciklama || "";
+ document.getElementById("editKategori").value = ilan.kategori || "";
+ document.getElementById("editMahalle").value = ilan.mahalle || "";
+ document.getElementById("editTelefon").value = ilan.telefon || "";
+
+ editModal.classList.add("active");
+ document.body.style.overflow = "hidden";
+
+}
+
+
+document.getElementById("editClose").addEventListener("click", ()=>{
+
+ editModal.classList.remove("active");
+ document.body.style.overflow = "";
+
+});
+
+
+document.getElementById("editKaydetBtn").addEventListener("click", async function(){
+
+ const button = this;
+
+ const id = document.getElementById("editIlanId").value;
+ const baslik = document.getElementById("editBaslik").value.trim();
+ const fiyat = document.getElementById("editFiyat").value;
+ const aciklama = document.getElementById("editAciklama").value.trim();
+ const kategori = document.getElementById("editKategori").value;
+ const mahalle = document.getElementById("editMahalle").value.trim();
+ const telefon = document.getElementById("editTelefon").value.trim();
+
+ if(!baslik){ alert("İlan başlığı girin."); return; }
+ if(!kategori){ alert("Kategori seçin."); return; }
+ if(!telefon){ alert("Telefon numarası girin."); return; }
+
+ button.disabled = true;
+ button.textContent = "Kaydediliyor...";
+
+ try{
+
+  const {error} = await supabaseClient
+   .from("ilantable")
+   .update({
+    baslik: baslik,
+    fiyat: fiyat ? Number(fiyat) : null,
+    aciklama: aciklama,
+    kategori: kategori,
+    mahalle: mahalle,
+    telefon: telefon
+   })
+   .eq("id", id);
+
+  if(error) throw error;
+
+  alert("✅ İlan başarıyla güncellendi.");
+  editModal.classList.remove("active");
+  document.body.style.overflow = "";
+
+  await loadListings();
+
+ }catch(error){
+
+  console.error("Güncelleme hatası:", error);
+  alert("Güncelleme yapılırken hata oluştu: " + (error.message || error));
+
+ }finally{
+
+  button.disabled = false;
+  button.textContent = "💾 Değişiklikleri Kaydet";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* ÜYELİK AÇ */
+/* ================================================= */
+
+document
+.getElementById("uyelikBtn")
+.addEventListener("click",()=>{
+
+ uyelikModal.classList.add("active");
+
+ document.body.style.overflow="hidden";
+
+});
+
+
+/* ================================================= */
+/* ÜYELİK KAPAT */
+/* ================================================= */
+
+document
+.getElementById("uyelikKapat")
+.addEventListener("click",()=>{
+
+ uyelikModal.classList.remove("active");
+
+ document.body.style.overflow="";
+
+});
+
+
+uyelikModal.addEventListener("click",event=>{
+
+ if(event.target===uyelikModal){
+
+  uyelikModal.classList.remove("active");
+
+  document.body.style.overflow="";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* HAVALE / EFT ÖDEME */
+/* ================================================= */
+
+function openPaymentModal(paket,sure,hak,fiyat){
+
+ paymentPackage.textContent =
+  paket==="haftalik" ? "Haftalık" :
+  paket==="aylik" ? "Aylık" :
+  paket==="yillik" ? "Yıllık" : paket;
+
+ paymentDuration.textContent=sure;
+ paymentAdLimit.textContent=hak;
+ paymentAmount.textContent=Number(fiyat).toLocaleString("tr-TR");
+
+ document.getElementById("bankName").textContent=BANK_NAME;
+ document.getElementById("bankOwner").textContent=BANK_OWNER;
+ document.getElementById("bankIban").textContent=BANK_IBAN;
+
+ paymentModal.classList.add("active");
+ document.body.style.overflow="hidden";
+
+ paymentModal.dataset.paket=paket;
+ paymentModal.dataset.sure=sure;
+ paymentModal.dataset.hak=hak;
+ paymentModal.dataset.fiyat=fiyat;
+}
 
 document
 .getElementById("paymentClose")
-.addEventListener(
-    "click",
-    function(){
-
-        paymentModal
-            .classList
-            .remove("active");
-
-        document.body.style.overflow =
-            "";
-
-    }
-);
-
-
-// ========================================
-// PAKETLERE DÖN
-// ========================================
+.addEventListener("click",()=>{
+ paymentModal.classList.remove("active");
+ document.body.style.overflow="";
+});
 
 document
 .getElementById("paymentBackBtn")
-.addEventListener(
-    "click",
-    function(){
+.addEventListener("click",()=>{
+ paymentModal.classList.remove("active");
+ uyelikModal.classList.add("active");
+});
 
-        paymentModal
-            .classList
-            .remove("active");
+paymentModal.addEventListener("click",event=>{
+ if(event.target===paymentModal){
+  paymentModal.classList.remove("active");
+  document.body.style.overflow="";
+ }
+});
 
-        document.body.style.overflow =
-            "";
+document
+.querySelectorAll(".paketBtn")
+.forEach(button=>{
 
-    }
-);
+ button.addEventListener("click",async()=>{
+
+  const paket=button.dataset.paket;
+  const sure=button.dataset.sure;
+  const hak=button.dataset.hak;
+  const fiyat=button.dataset.fiyat;
+
+  const {
+   data:{user},
+   error
+  }=
+  await supabaseClient.auth.getUser();
+
+  if(error){
+   alert(error.message);
+   return;
+  }
+
+  if(!user){
+
+   uyelikModal.classList.remove("active");
+   authModal.classList.add("active");
+   document.body.style.overflow="hidden";
+
+   alert(
+    "Üyelik satın almak için önce giriş yapmalısınız."
+   );
+
+   return;
+  }
+
+  uyelikModal.classList.remove("active");
+  openPaymentModal(paket,sure,hak,fiyat);
+
+ });
+
+});
 
 
-// ========================================
-// MODAL DIŞINA TIKLAMA
-// ========================================
+document
+.getElementById("paymentSubmitBtn")
+.addEventListener("click",async function(){
 
-paymentModal.addEventListener(
-    "click",
-    function(event){
+ const button=this;
 
-        if(
-            event.target ===
-            paymentModal
-        ){
+ const {
+  data:{user},
+  error:userError
+ }=
+ await supabaseClient.auth.getUser();
 
-            paymentModal
-                .classList
-                .remove("active");
+ if(userError){
+  alert(userError.message);
+  return;
+ }
 
-            document.body.style.overflow =
-                "";
+ if(!user){
+  alert("Ödeme bildirimi göndermek için giriş yapmalısınız.");
+  return;
+ }
 
-        }
+ const senderName=
+  document.getElementById("paymentSenderName")
+  .value
+  .trim();
 
-    }
-);
+ const reference=
+  document.getElementById("paymentReference")
+  .value
+  .trim();
+
+ const description=
+  document.getElementById("paymentDescription")
+  .value
+  .trim();
+
+ if(!senderName){
+  alert("Havale/EFT yapan kişi adını girin.");
+  return;
+ }
+
+ const paket=paymentModal.dataset.paket;
+ const sure=Number(paymentModal.dataset.sure);
+ const hak=Number(paymentModal.dataset.hak);
+ const fiyat=Number(paymentModal.dataset.fiyat);
+
+ button.disabled=true;
+ button.textContent="Bildirim gönderiliyor...";
+
+ try{
+
+  const { data: bildirimId, error } =
+  await supabaseClient.rpc("odeme_bildir", {
+   p_paket: paket,
+   p_sure_gun: sure,
+   p_ilan_hakki: hak,
+   p_tutar: fiyat,
+   p_gonderen_ad_soyad: senderName,
+   p_dekont_no: reference || null,
+   p_aciklama: description || null
+  });
+
+  if(error) throw error;
+
+  if(!bildirimId){
+   throw new Error("Ödeme bildirimi oluşturulamadı.");
+  }
+
+  alert(
+   "✅ Ödeme bildiriminiz alındı.\n\n"+
+   "Havale/EFT ödemeniz yönetici tarafından kontrol edilecek ve onaylandıktan sonra üyeliğiniz tanımlanacaktır."
+  );
+
+  document.getElementById("paymentSenderName").value="";
+  document.getElementById("paymentReference").value="";
+  document.getElementById("paymentDescription").value="";
+
+  paymentModal.classList.remove("active");
+  document.body.style.overflow="";
+
+ }catch(error){
+
+  console.error("Ödeme bildirimi hatası:",error);
+
+  alert(
+   "Ödeme bildirimi gönderilemedi:\n"+
+   (error.message||error)
+  );
+
+ }finally{
+
+  button.disabled=false;
+  button.textContent="✅ Ödeme Bildirimi Gönder";
+
+ }
+
+});
+
+
+/* ================================================= */
+/* İLANLARI YÜKLE */
+/* ================================================= */
+
+async function loadListings(){
+
+ listingsContainer.innerHTML=
+  '<div class="loading">İlanlar yükleniyor...</div>';
+
+
+ const {
+  data,
+  error
+ }=
+ await supabaseClient
+ .from("ilantable")
+ .select("*")
+ .order(
+  "created_at",
+  {ascending:false}
+ );
+
+
+ if(error){
+
+  console.error(error);
+
+  listingsContainer.innerHTML=
+   '<div class="empty">İlanlar yüklenirken hata oluştu.</div>';
+
+  return;
+
+ }
+
+
+ allListings=data||[];
+
+ displayListings();
+
+}
+
+
+/* ================================================= */
+/* İLANLARI GÖSTER */
+/* ================================================= */
+
+function displayListings(){
+
+ const searchText=
+ searchInput
+ .value
+ .trim()
+ .toLowerCase();
+
+
+ const filtered=
+ allListings.filter(ilan=>{
+
+  const categoryMatch=
+   selectedCategory==="Tümü"
+   ||
+   ilan.kategori===selectedCategory;
+
+
+  const searchMatch=
+   !searchText
+   ||
+   String(ilan.baslik||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.aciklama||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.mahalle||"")
+    .toLowerCase()
+    .includes(searchText)
+   ||
+   String(ilan.kategori||"")
+    .toLowerCase()
+    .includes(searchText);
+
+
+  return categoryMatch&&searchMatch;
+
+ });
+
+
+ listingsContainer.innerHTML="";
+
+
+ if(!filtered.length){
+
+  listingsContainer.innerHTML=
+   '<div class="empty">İlan bulunamadı.</div>';
+
+  return;
+
+ }
+
+
+ filtered.forEach(ilan=>{
+
+  const card=
+  document.createElement("div");
+
+  card.className="card";
+
+
+  const imageUrls=
+   getImageUrls(ilan.resimurl);
+
+
+  const imageBox=
+   document.createElement("div");
+
+  imageBox.className=
+   "card-image";
+
+
+  if(imageUrls.length){
+
+   const image=
+   document.createElement("img");
+
+   image.src=imageUrls[0];
+
+   image.alt=
+    ilan.baslik||
+    "İlan fotoğrafı";
+
+
+   imageBox.appendChild(image);
+
+
+   if(imageUrls.length>1){
+
+    const count=
+    document.createElement("div");
+
+    count.className=
+     "photo-count";
+
+    count.textContent=
+     "📷 "
+     +imageUrls.length
+     +" fotoğraf";
+
+    imageBox.appendChild(count);
+
+   }
+
+   imageBox.addEventListener("click",()=>{
+    openGallery(imageUrls,0,ilan.baslik);
+   });
+
+  }else{
+
+   const noImg=
+   document.createElement("div");
+
+   noImg.style.cssText=
+    "display:flex;align-items:center;justify-content:center;height:100%;color:#aaa;font-size:14px;";
+
+   noImg.textContent=
+    "Görsel Yok";
+
+   imageBox.appendChild(noImg);
+
+  }
+
+
+  const cardBody=
+  document.createElement("div");
+
+  cardBody.className="card-body";
+
+
+  const title=
+  document.createElement("div");
+
+  title.className="card-title";
+
+  title.textContent=
+   ilan.baslik||"İsimsiz İlan";
+
+
+  const price=
+  document.createElement("div");
+
+  price.className="price";
+
+  price.textContent=
+   ilan.fiyat!==null&&ilan.fiyat!==undefined
+    ?Number(ilan.fiyat).toLocaleString("tr-TR")+" TL"
+    :"Fiyat Belirtilmedi";
+
+
+  const desc=
+  document.createElement("div");
+
+  desc.className="description";
+
+  desc.textContent=
+   ilan.aciklama||"Açıklama yok.";
+
+
+  const infoCat=
+  document.createElement("div");
+
+  infoCat.className="info";
+
+  infoCat.textContent=
+   "📂 Kategori: "+(ilan.kategori||"Belirtilmedi");
+
+
+  const infoLoc=
+  document.createElement("div");
+
+  infoLoc.className="info";
+
+  infoLoc.textContent=
+   "📍 Mahalle: "+(ilan.mahalle||"Belirtilmedi");
+
+
+  const contactBtns=
+  document.createElement("div");
+
+  contactBtns.className="contact-buttons";
+
+
+  if(ilan.telefon){
+
+   const phoneLink=
+   document.createElement("a");
+
+   phoneLink.className="phone";
+
+   phoneLink.href="tel:"+ilan.telefon;
+
+   phoneLink.textContent="📞 "+ilan.telefon;
+
+
+   const waLink=
+   document.createElement("a");
+
+   waLink.className="whatsapp-btn";
+
+   waLink.href=getWhatsAppUrl(ilan.telefon,ilan.baslik);
+
+   waLink.target="_blank";
+
+   waLink.textContent="💬 WhatsApp";
+
+
+   contactBtns.appendChild(phoneLink);
+   contactBtns.appendChild(waLink);
+
+  }
+
+
+  cardBody.appendChild(title);
+  cardBody.appendChild(price);
+  cardBody.appendChild(desc);
+  cardBody.appendChild(infoCat);
+  cardBody.appendChild(infoLoc);
+  cardBody.appendChild(contactBtns);
+
+
+  /* İLAN SAHİBİ BUTONLARI (DÜZENLE & SİL) */
+  if(currentUser && (currentUser.id === ilan.user_id)){
+
+   const ownerBtns = document.createElement("div");
+   ownerBtns.className = "owner-buttons";
+
+   const editBtn = document.createElement("button");
+   editBtn.className = "edit-btn";
+   editBtn.textContent = "✏️ Düzenle";
+   editBtn.addEventListener("click", () => openEditModal(ilan));
+
+   const deleteBtn = document.createElement("button");
+   deleteBtn.className = "delete-btn";
+   deleteBtn.textContent = "🗑️ Sil";
+   deleteBtn.addEventListener("click", () => deleteListing(ilan.id));
+
+   ownerBtns.appendChild(editBtn);
+   ownerBtns.appendChild(deleteBtn);
+
+   cardBody.appendChild(ownerBtns);
+
+  }
+
+
+  card.appendChild(imageBox);
+  card.appendChild(cardBody);
+
+  listingsContainer.appendChild(card);
+
+ });
+
+}
+
+
+/* ================================================= */
+/* ARAMA DİNLEYİCİSİ */
+/* ================================================= */
+
+searchInput.addEventListener("input",displayListings);
+
+
+/* ================================================= */
+/* KATEGORİ DİNLEYİCİLERİ */
+/* ================================================= */
+
+document
+.querySelectorAll(".category-btn")
+.forEach(btn=>{
+
+ btn.addEventListener("click",()=>{
+
+  document
+  .querySelectorAll(".category-btn")
+  .forEach(b=>b.classList.remove("active"));
+
+  btn.classList.add("active");
+
+  selectedCategory=
+   btn.dataset.category;
+
+  displayListings();
+
+ });
+
+});
+
+
+/* ================================================= */
+/* GALERİ FONKSİYONLARI */
+/* ================================================= */
+
+function openGallery(images,index,title){
+
+ if(!images||!images.length) return;
+
+ galleryImages=images;
+ galleryIndex=index||0;
+
+ galleryTitle.textContent=
+  title||"Fotoğraf";
+
+ updateGalleryImage();
+ renderThumbnails();
+
+ galleryModal.classList.add("active");
+ document.body.style.overflow="hidden";
+
+ if('ontouchstart' in window){
+  mobileZoomHint.classList.add("show");
+  setTimeout(()=>{
+   mobileZoomHint.classList.remove("show");
+  },2500);
+ }
+
+}
+
+
+function closeGallery(){
+
+ galleryModal.classList.remove("active");
+ document.body.style.overflow="";
+ resetZoom();
+
+}
+
+
+function updateGalleryImage(){
+
+ resetZoom();
+
+ galleryImage.src=
+  galleryImages[galleryIndex];
+
+ updateThumbnailActive();
+
+}
+
+
+function renderThumbnails(){
+
+ thumbnails.innerHTML="";
+
+ galleryImages.forEach((imgUrl,idx)=>{
+
+  const thumb=
+  document.createElement("img");
+
+  thumb.className="thumbnail"+(idx===galleryIndex?" active":"");
+  thumb.src=imgUrl;
+  thumb.alt="Küçük resim "+(idx+1);
+
+  thumb.addEventListener("click",()=>{
+   galleryIndex=idx;
+   updateGalleryImage();
+  });
+
+  thumbnails.appendChild(thumb);
+
+ });
+
+}
+
+
+function updateThumbnailActive(){
+
+ const thumbs=
+ thumbnails.querySelectorAll(".thumbnail");
+
+ thumbs.forEach((t,i)=>{
+  if(i===galleryIndex){
+   t.classList.add("active");
+   t.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});
+  }else{
+   t.classList.remove("active");
+  }
+ });
+
+}
+
+
+/* ================================================= */
+/* ZOOM HESAPLAMA & SÜRÜKLEME */
+/* ================================================= */
+
+function updateTransform(){
+
+ if(zoomLevel<=1){
+
+  zoomLevel=1;
+  imageX=0;
+  imageY=0;
+
+  galleryImage.classList.remove("zoomed","dragging");
+
+ }else{
+
+  galleryImage.classList.add("zoomed");
+
+ }
+
+ galleryImage.style.transform=
+  `translate(${imageX}px, ${imageY}px) scale(${zoomLevel})`;
+
+}
+
+
+function resetZoom(){
+
+ zoomLevel=1;
+ imageX=0;
+ imageY=0;
+ isDragging=false;
+
+ updateTransform();
+
+}
+
+
+function setZoom(newZoom){
+
+ zoomLevel=Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,newZoom));
+
+ if(zoomLevel===1){
+  imageX=0;
+  imageY=0;
+ }
+
+ updateTransform();
+
+}
+
+
+/* ZOOM BUTONLARI */
+
+document.getElementById("zoomIn").addEventListener("click",()=>{
+ setZoom(zoomLevel+ZOOM_STEP);
+});
+
+document.getElementById("zoomOut").addEventListener("click",()=>{
+ setZoom(zoomLevel-ZOOM_STEP);
+});
+
+document.getElementById("zoomReset").addEventListener("click",()=>{
+ resetZoom();
+});
+
+
+/* GALERİ OKLARI */
+
+document.getElementById("galleryPrev").addEventListener("click",()=>{
+
+ if(galleryImages.length<=1) return;
+
+ galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;
+ updateGalleryImage();
+
+});
+
+
+document.getElementById("galleryNext").addEventListener("click",()=>{
+
+ if(galleryImages.length<=1) return;
+
+ galleryIndex=(galleryIndex+1)%galleryImages.length;
+ updateGalleryImage();
+
+});
+
+
+document.getElementById("closeGallery").addEventListener("click",closeGallery);
+
+
+/* MOUSE DRAG & DOUBLE CLICK */
+
+galleryImage.addEventListener("dblclick",()=>{
+
+ if(zoomLevel>1){
+  resetZoom();
+ }else{
+  setZoom(2.5);
+ }
+
+});
+
+
+galleryImage.addEventListener("mousedown",e=>{
+
+ if(zoomLevel<=1) return;
+
+ e.preventDefault();
+
+ isDragging=true;
+ dragStartX=e.clientX;
+ dragStartY=e.clientY;
+
+ startImageX=imageX;
+ startImageY=imageY;
+
+ galleryImage.classList.add("dragging");
+
+});
+
+
+window.addEventListener("mousemove",e=>{
+
+ if(!isDragging||zoomLevel<=1) return;
+
+ const deltaX=e.clientX-dragStartX;
+ const deltaY=e.clientY-dragStartY;
+
+ imageX=startImageX+deltaX;
+ imageY=startImageY+deltaY;
+
+ updateTransform();
+
+});
+
+
+window.addEventListener("mouseup",()=>{
+
+ if(isDragging){
+  isDragging=false;
+  galleryImage.classList.remove("dragging");
+ }
+
+});
+
+
+/* DOKUNMATİK (TOUCH & PINCH) */
+
+const wrapper=document.getElementById("galleryImageWrapper");
+
+
+wrapper.addEventListener("touchstart",e=>{
+
+ if(e.touches.length===2){
+
+  const t1=e.touches[0];
+  const t2=e.touches[1];
+
+  pinchStartDistance=Math.hypot(t2.clientX-t1.clientX,t2.clientY-t1.clientY);
+  pinchStartZoom=zoomLevel;
+
+ }else if(e.touches.length===1){
+
+  touchStartX=e.touches[0].clientX;
+  touchStartY=e.touches[0].clientY;
+
+  touchImageX=imageX;
+  touchImageY=imageY;
+
+ }
+
+},{passive:true});
+
+
+wrapper.addEventListener("touchmove",e=>{
+
+ if(e.touches.length===2){
+
+  const t1=e.touches[0];
+  const t2=e.touches[1];
+
+  const currentDist=Math.hypot(t2.clientX-t1.clientX,t2.clientY-t1.clientY);
+
+  if(pinchStartDistance>0){
+   const scaleRatio=currentDist/pinchStartDistance;
+   setZoom(pinchStartZoom*scaleRatio);
+  }
+
+ }else if(e.touches.length===1&&zoomLevel>1){
+
+  const deltaX=e.touches[0].clientX-touchStartX;
+  const deltaY=e.touches[0].clientY-touchStartY;
+
+  imageX=touchImageX+deltaX;
+  imageY=touchImageY+deltaY;
+
+  updateTransform();
+
+ }
+
+},{passive:true});
+
+
+wrapper.addEventListener("touchend",e=>{
+
+ if(e.touches.length<2){
+  pinchStartDistance=0;
+ }
+
+ if(e.touches.length===0&&zoomLevel===1){
+
+  const diffX=touchStartX-(e.changedTouches[0]?.clientX||touchStartX);
+
+  if(Math.abs(diffX)>60){
+
+   if(diffX>0&&galleryImages.length>1){
+    galleryIndex=(galleryIndex+1)%galleryImages.length;
+    updateGalleryImage();
+   }else if(diffX<0&&galleryImages.length>1){
+    galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;
+    updateGalleryImage();
+   }
+
+  }
+
+ }
+
+});
+
+
+/* KLAVYE KONTROLÜ */
+
+window.addEventListener("keydown",e=>{
+
+ if(!galleryModal.classList.contains("active")) return;
+
+ if(e.key==="Escape") closeGallery();
+ if(e.key==="ArrowLeft") document.getElementById("galleryPrev").click();
+ if(e.key==="ArrowRight") document.getElementById("galleryNext").click();
+
+});
+
+
+/* ================================================= */
+/* İLK YÜKLEME */
+/* ================================================= */
+
+updateAuthUI();
+loadListings();
 
 </script>
-```
+
+</body>
+</html>
