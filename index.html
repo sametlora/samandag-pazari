@@ -389,6 +389,63 @@ button:hover{
  line-height:1.5
 }
 
+/* HAVALE / EFT ÖDEME */
+.bank-box{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  padding:16px;
+  margin-top:16px;
+}
+.bank-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 0;
+  border-bottom:1px solid #e5e7eb;
+  font-size:14px;
+}
+.bank-row:last-child{border-bottom:0}
+.bank-row b{color:#111827}
+.payment-summary{
+  background:#ecfdf5;
+  border:1px solid #86efac;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:15px;
+}
+.payment-summary strong{color:#166534}
+.payment-help{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  border-radius:10px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:12px;
+}
+.copy-btn{
+  width:auto;
+  padding:7px 10px;
+  margin:0;
+  font-size:12px;
+  background:#374151;
+}
+.status-box{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e40af;
+  border-radius:10px;
+  padding:12px;
+  font-size:13px;
+  line-height:1.5;
+  margin-top:12px;
+}
+@media(max-width:700px){
+  .bank-row{flex-direction:column;gap:5px}
+}
+
 /* GENEL MODAL */
 
 .modal{
@@ -1091,16 +1148,78 @@ button:hover{
 
   <div class="payment-note">
 
-   <b>💳 Ödeme sistemi:</b><br><br>
+   <b>🏦 Ödeme yöntemi: Havale / EFT</b><br><br>
 
-   Paketler ve üyelik ekranı hazırdır.
-   Gerçek para tahsilatı için ödeme sağlayıcısı bağlanması gerekir.
-   Ödeme tamamlandığında üyelik süresi ve ilan hakkı otomatik olarak hesaba tanımlanacaktır.
+   Paket seçtiğinizde banka hesap bilgilerimiz gösterilir.
+   Havale veya EFT yaptıktan sonra dekont bilgilerinizi göndererek ödeme bildirimi oluşturabilirsiniz.
+   Ödeme yönetici tarafından kontrol edilip onaylandıktan sonra üyeliğiniz tanımlanır.
 
   </div>
 
  </div>
 
+</div>
+
+
+<!-- ========================= -->
+<!-- HAVALE / EFT ÖDEME MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="paymentModal">
+
+ <div class="simple-modal-content">
+
+  <button class="modal-close" id="paymentClose">✕</button>
+
+  <h2>🏦 Havale / EFT ile Ödeme</h2>
+
+  <div class="payment-summary">
+   <div>Seçilen paket: <strong id="paymentPackage">-</strong></div>
+   <div style="margin-top:6px">Süre: <strong id="paymentDuration">-</strong> gün</div>
+   <div style="margin-top:6px">İlan hakkı: <strong id="paymentAdLimit">-</strong></div>
+   <div style="margin-top:6px;font-size:20px">Tutar: <strong id="paymentAmount">-</strong> TL</div>
+  </div>
+
+  <div class="bank-box">
+   <h3 style="margin-top:0">Banka Bilgileri</h3>
+
+   <div class="bank-row">
+    <b>Banka</b>
+    <span id="bankName">BANKA ADI</span>
+   </div>
+
+   <div class="bank-row">
+    <b>Hesap Sahibi</b>
+    <span id="bankOwner">HESAP SAHİBİ</span>
+   </div>
+
+   <div class="bank-row">
+    <b>IBAN</b>
+    <span id="bankIban">TR00 0000 0000 0000 0000 0000 00</span>
+   </div>
+  </div>
+
+  <div class="payment-help">
+   Ödemeyi yaptıktan sonra aşağıdaki bilgileri doldurun. Yönetici ödemenizi kontrol ettikten sonra paketi hesabınıza tanımlayacaktır.
+  </div>
+
+  <input type="text" id="paymentSenderName" placeholder="Havale/EFT yapan kişi adı soyadı">
+  <input type="text" id="paymentReference" placeholder="Dekont / işlem numarası (varsa)">
+  <textarea id="paymentDescription" placeholder="Ek açıklama (isteğe bağlı)"></textarea>
+
+  <button id="paymentSubmitBtn" style="background:#16a34a">
+   ✅ Ödeme Bildirimi Gönder
+  </button>
+
+  <button id="paymentBackBtn" style="background:#6b7280">
+   ← Paketlere Dön
+  </button>
+
+  <div class="status-box">
+   ℹ️ Havale/EFT ile ödeme otomatik olarak onaylanmaz. Ödeme bildiriminiz yönetici kontrolünden sonra üyeliğe çevrilir.
+  </div>
+
+ </div>
 </div>
 
 
@@ -1273,6 +1392,30 @@ document.getElementById("uyelikModal");
 
 const editModal =
 document.getElementById("editModal");
+
+const paymentModal =
+document.getElementById("paymentModal");
+
+const paymentPackage =
+document.getElementById("paymentPackage");
+
+const paymentDuration =
+document.getElementById("paymentDuration");
+
+const paymentAdLimit =
+document.getElementById("paymentAdLimit");
+
+const paymentAmount =
+document.getElementById("paymentAmount");
+
+/*
+ * BANKA BİLGİLERİNİ BURADAN DEĞİŞTİRİN.
+ * Kartlı ödeme yoktur; yalnızca Havale/EFT kullanılır.
+ */
+const BANK_NAME = "BANKA ADI";
+const BANK_OWNER = "Samet Gümüş";
+const BANK_IBAN = "TR47 0015 7000 0000 0069 5885 27";
+
 
 
 /* ================================================= */
@@ -2214,8 +2357,53 @@ uyelikModal.addEventListener("click",event=>{
 
 
 /* ================================================= */
-/* PAKET SEÇİMİ */
+/* HAVALE / EFT ÖDEME */
 /* ================================================= */
+
+function openPaymentModal(paket,sure,hak,fiyat){
+
+ paymentPackage.textContent =
+  paket==="haftalik" ? "Haftalık" :
+  paket==="aylik" ? "Aylık" :
+  paket==="yillik" ? "Yıllık" : paket;
+
+ paymentDuration.textContent=sure;
+ paymentAdLimit.textContent=hak;
+ paymentAmount.textContent=Number(fiyat).toLocaleString("tr-TR");
+
+ document.getElementById("bankName").textContent=BANK_NAME;
+ document.getElementById("bankOwner").textContent=BANK_OWNER;
+ document.getElementById("bankIban").textContent=BANK_IBAN;
+
+ paymentModal.classList.add("active");
+ document.body.style.overflow="hidden";
+
+ paymentModal.dataset.paket=paket;
+ paymentModal.dataset.sure=sure;
+ paymentModal.dataset.hak=hak;
+ paymentModal.dataset.fiyat=fiyat;
+}
+
+document
+.getElementById("paymentClose")
+.addEventListener("click",()=>{
+ paymentModal.classList.remove("active");
+ document.body.style.overflow="";
+});
+
+document
+.getElementById("paymentBackBtn")
+.addEventListener("click",()=>{
+ paymentModal.classList.remove("active");
+ uyelikModal.classList.add("active");
+});
+
+paymentModal.addEventListener("click",event=>{
+ if(event.target===paymentModal){
+  paymentModal.classList.remove("active");
+  document.body.style.overflow="";
+ }
+});
 
 document
 .querySelectorAll(".paketBtn")
@@ -2223,18 +2411,10 @@ document
 
  button.addEventListener("click",async()=>{
 
-  const paket=
-   button.dataset.paket;
-
-  const sure=
-   button.dataset.sure;
-
-  const hak=
-   button.dataset.hak;
-
-  const fiyat=
-   button.dataset.fiyat;
-
+  const paket=button.dataset.paket;
+  const sure=button.dataset.sure;
+  const hak=button.dataset.hak;
+  const fiyat=button.dataset.fiyat;
 
   const {
    data:{user},
@@ -2242,22 +2422,15 @@ document
   }=
   await supabaseClient.auth.getUser();
 
-
   if(error){
-
    alert(error.message);
-
    return;
-
   }
-
 
   if(!user){
 
    uyelikModal.classList.remove("active");
-
    authModal.classList.add("active");
-
    document.body.style.overflow="hidden";
 
    alert(
@@ -2265,21 +2438,114 @@ document
    );
 
    return;
-
   }
 
-
-  alert(
-   "📦 Seçilen paket:\n\n"+
-   "Paket: "+paket+"\n"+
-   "Süre: "+sure+" gün\n"+
-   "İlan hakkı: "+hak+"\n"+
-   "Fiyat: "+fiyat+" TL\n\n"+
-   "💳 Ödeme sistemi henüz bağlanmadı.\n\n"+
-   "Ödeme sistemi bağlandığında buradan ödeme yapabileceksiniz."
-  );
+  uyelikModal.classList.remove("active");
+  openPaymentModal(paket,sure,hak,fiyat);
 
  });
+
+});
+
+
+document
+.getElementById("paymentSubmitBtn")
+.addEventListener("click",async function(){
+
+ const button=this;
+
+ const {
+  data:{user},
+  error:userError
+ }=
+ await supabaseClient.auth.getUser();
+
+ if(userError){
+  alert(userError.message);
+  return;
+ }
+
+ if(!user){
+  alert("Ödeme bildirimi göndermek için giriş yapmalısınız.");
+  return;
+ }
+
+ const senderName=
+  document.getElementById("paymentSenderName")
+  .value
+  .trim();
+
+ const reference=
+  document.getElementById("paymentReference")
+  .value
+  .trim();
+
+ const description=
+  document.getElementById("paymentDescription")
+  .value
+  .trim();
+
+ if(!senderName){
+  alert("Havale/EFT yapan kişi adını girin.");
+  return;
+ }
+
+ const paket=paymentModal.dataset.paket;
+ const sure=Number(paymentModal.dataset.sure);
+ const hak=Number(paymentModal.dataset.hak);
+ const fiyat=Number(paymentModal.dataset.fiyat);
+
+ button.disabled=true;
+ button.textContent="Bildirim gönderiliyor...";
+
+ try{
+
+  const {error}=
+  await supabaseClient
+  .from("odeme_talepleri")
+  .insert([{
+   user_id:user.id,
+   email:user.email||"",
+   paket:paket,
+   sure_gun:sure,
+   ilan_hakki:hak,
+   tutar:fiyat,
+   odeme_yontemi:"Havale/EFT",
+   gonderen_ad_soyad:senderName,
+   dekont_no:reference,
+   aciklama:description,
+   durum:"bekliyor"
+  }]);
+
+  if(error) throw error;
+
+  alert(
+   "✅ Ödeme bildiriminiz alındı.\n\n"+
+   "Havale/EFT ödemeniz yönetici tarafından kontrol edilecek ve onaylandıktan sonra üyeliğiniz tanımlanacaktır."
+  );
+
+  document.getElementById("paymentSenderName").value="";
+  document.getElementById("paymentReference").value="";
+  document.getElementById("paymentDescription").value="";
+
+  paymentModal.classList.remove("active");
+  document.body.style.overflow="";
+
+ }catch(error){
+
+  console.error("Ödeme bildirimi hatası:",error);
+
+  alert(
+   "Ödeme bildirimi gönderilemedi:\n"+
+   (error.message||error)
+  );
+
+ }finally{
+
+  button.disabled=false;
+  button.textContent="✅ Ödeme Bildirimi Gönder";
+
+ }
 
 });
 
