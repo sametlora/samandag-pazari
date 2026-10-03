@@ -2635,25 +2635,23 @@ document
 
  try{
 
-  const { data: bildirimId, error } =
-  await supabaseClient.rpc("odeme_bildir", {
-   p_paket: paket,
-   p_sure_gun: sure,
-   p_ilan_hakki: hak,
-   p_tutar: fiyat,
-   p_gonderen_ad_soyad: senderName,
-   p_dekont_no: reference || null,
-   p_aciklama: description || null
+  const {data:bildirimId,error}=
+  await supabaseClient
+  .rpc("odeme_bildir",{
+   p_paket:paket,
+   p_sure_gun:sure,
+   p_ilan_hakki:hak,
+   p_tutar:fiyat,
+   p_gonderen_ad_soyad:senderName,
+   p_dekont_no:reference || null,
+   p_aciklama:description || null
   });
 
   if(error) throw error;
 
-  if(!bildirimId){
-   throw new Error("Ödeme bildirimi oluşturulamadı.");
-  }
-
   alert(
    "✅ Ödeme bildiriminiz alındı.\n\n"+
+   "Bildirim No: #"+(bildirimId||"")+"\n\n"+
    "Havale/EFT ödemeniz yönetici tarafından kontrol edilecek ve onaylandıktan sonra üyeliğiniz tanımlanacaktır."
   );
 
