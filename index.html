@@ -791,6 +791,7 @@ button:hover{
  transform-origin:center center;
  transition:transform .12s ease;
  cursor:zoom-in;
+
  will-change:transform
 }
 
@@ -1006,6 +1007,188 @@ button:hover{
   opacity:1
  }
 }
+
+
+/* ===== SAMANDAĞ PAZARI ŞATAFATLI TEMA ===== */
+:root{
+ --sp-orange:#ff7a00;
+ --sp-orange2:#ff4d00;
+ --sp-gold:#ffbf3f;
+ --sp-navy:#10182f;
+ --sp-blue:#243b72;
+}
+
+body{
+ font-family:Arial,Helvetica,sans-serif;
+ background:
+   radial-gradient(circle at 10% 0%,rgba(255,191,63,.16),transparent 22%),
+   radial-gradient(circle at 90% 10%,rgba(255,122,0,.14),transparent 25%),
+   linear-gradient(180deg,#f8fafc 0%,#eef2f7 55%,#f8fafc 100%);
+}
+
+header{
+ background:linear-gradient(120deg,#0b1022 0%,#182650 48%,#0f172a 100%);
+ color:#fff;
+ padding:16px 24px;
+ border-bottom:3px solid transparent;
+ border-image:linear-gradient(90deg,var(--sp-orange),var(--sp-gold),var(--sp-orange2)) 1;
+ box-shadow:0 10px 30px rgba(9,16,38,.22);
+}
+
+.header-title{
+ text-align:left;
+ font-size:42px;
+ font-weight:900;
+ letter-spacing:-1px;
+ color:#fff;
+ text-shadow:0 2px 0 #000,0 0 16px rgba(255,191,63,.32);
+}
+
+.header-title:first-letter{color:var(--sp-gold)}
+
+.header-buttons button{
+ border:1px solid rgba(255,255,255,.18);
+ border-radius:10px;
+ box-shadow:0 6px 18px rgba(0,0,0,.18);
+ transition:transform .18s ease,box-shadow .18s ease;
+}
+.header-buttons button:hover{
+ transform:translateY(-1px);
+ box-shadow:0 9px 24px rgba(0,0,0,.25);
+}
+.login-btn{
+ background:linear-gradient(135deg,var(--sp-orange),var(--sp-orange2));
+}
+.membership-btn{
+ background:linear-gradient(135deg,#fff,#fff8ec);
+ color:#d95c00;
+ border-color:#ffb45a !important;
+}
+
+.container{max-width:1380px;padding:18px 20px 38px}
+
+.form-box,.search-box{
+ border:1px solid rgba(255,122,0,.14);
+ border-radius:16px;
+ box-shadow:0 8px 28px rgba(15,23,42,.08);
+}
+
+.form-box{
+ background:linear-gradient(180deg,#fff 0%,#fffaf6 100%);
+}
+
+.form-box h2{
+ color:#fff;
+ background:linear-gradient(135deg,#141b34,#22345f 58%,#17203b);
+ border:none;
+ border-radius:12px;
+ padding:14px 16px;
+ font-size:21px;
+ box-shadow:0 8px 20px rgba(20,27,52,.2),inset 0 1px rgba(255,255,255,.08);
+}
+.form-box h2:hover{
+ background:linear-gradient(135deg,#1a2343,#2b4479 58%,#1b2542);
+ border:none;
+}
+.form-box h2:after{color:var(--sp-gold);font-weight:bold}
+
+.ilan-kategori-listesi{
+ background:linear-gradient(135deg,#fff8ef,#fff3df);
+ border:1px solid #ffd19d;
+ box-shadow:inset 0 1px #fff,0 4px 12px rgba(255,122,0,.08);
+}
+.ilan-kategori-baslik{color:#b84f00}
+.ilan-kategori-listesi li{
+ background:rgba(255,255,255,.75);
+ border:1px solid #ffe0bb;
+ border-radius:8px;
+ padding:6px 8px;
+ font-weight:700;
+}
+
+.search-box{
+ background:linear-gradient(180deg,#ffffff,#f8fbff);
+ border-color:#dbe4f0;
+ padding:14px;
+}
+.search-box input{
+ height:50px;
+ border:2px solid #dbe4f0;
+ box-shadow:inset 0 2px 6px rgba(15,23,42,.04);
+}
+.search-box input:focus{border-color:var(--sp-orange);outline:none;box-shadow:0 0 0 4px rgba(255,122,0,.12)}
+
+.categories{
+ gap:9px;
+ margin-bottom:18px;
+}
+.category-btn{
+ border:1px solid #d9e1ec;
+ border-radius:999px;
+ background:#fff;
+ color:#24304d;
+ box-shadow:0 4px 10px rgba(15,23,42,.05);
+}
+.category-btn:hover{border-color:#ffb45a;color:#c45100;background:#fffaf5}
+.category-btn.active{
+ background:linear-gradient(135deg,var(--sp-orange),var(--sp-orange2));
+ color:#fff;
+ border-color:transparent;
+ box-shadow:0 7px 18px rgba(255,102,0,.24);
+}
+
+#listings{
+ grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+ gap:20px;
+}
+.card{
+ border:1px solid #e5eaf1;
+ border-radius:16px;
+ background:linear-gradient(180deg,#fff 0%,#fcfdff 100%);
+ box-shadow:0 8px 24px rgba(15,23,42,.08);
+ transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.card:hover{
+ transform:translateY(-6px);
+ border-color:#ffd09e;
+ box-shadow:0 16px 34px rgba(15,23,42,.14);
+}
+.card-image{
+ height:300px;
+ background:linear-gradient(135deg,#e8edf5,#f8fafc);
+}
+.card-image img{transition:transform .25s ease}
+.card:hover .card-image img{transform:scale(1.035)}
+.photo-count{
+ background:linear-gradient(135deg,rgba(16,24,47,.88),rgba(255,122,0,.88));
+ border:1px solid rgba(255,255,255,.25);
+ box-shadow:0 4px 12px rgba(0,0,0,.22);
+}
+.card-body{padding:16px}
+.card-title{font-size:19px;color:#16213f}
+.price{font-size:22px;color:#db5b00}
+.info{color:#5a657a}
+.contact-buttons a,.owner-buttons button{border-radius:9px;box-shadow:0 5px 12px rgba(15,23,42,.08)}
+.contact-buttons .phone{background:linear-gradient(135deg,#16a34a,#15803d)}
+.contact-buttons .whatsapp-btn{background:linear-gradient(135deg,#2ee879,#16b957)}
+
+.simple-modal{background:rgba(5,10,25,.74);backdrop-filter:blur(5px)}
+.simple-modal-content,.membership-content{
+ border:1px solid rgba(255,255,255,.5);
+ box-shadow:0 24px 70px rgba(0,0,0,.32);
+}
+
+/* Daha büyük ve gösterişli başlık */
+@media(min-width:701px){
+ .header-title{font-size:46px}
+}
+
+@media(max-width:700px){
+ header{padding:12px 10px}
+ .header-title{font-size:31px;text-align:center;letter-spacing:-.8px}
+ .header-buttons button{border-radius:9px}
+ .card-image{height:250px}
+}
 </style>
 </head>
 
@@ -1014,7 +1197,7 @@ button:hover{
 <header>
 
  <div class="header-title">
-  🛍️ Samandağ Pazarı
+  🛍️ SAMANDAĞ PAZARI
  </div>
 
  <div class="header-buttons">
@@ -3476,6 +3659,19 @@ galleryImage.addEventListener("dblclick",()=>{
 });
 
 
+/* MOUSE TEKERLEĞİ İLE ZOOM */
+galleryImage.addEventListener("wheel",e=>{
+
+ if(!galleryModal.classList.contains("active")) return;
+
+ e.preventDefault();
+
+ const step = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
+ setZoom(zoomLevel + step);
+
+},{passive:false});
+
+
 galleryImage.addEventListener("mousedown",e=>{
 
  if(zoomLevel<=1) return;
@@ -3602,6 +3798,16 @@ wrapper.addEventListener("touchend",e=>{
 
 });
 
+
+
+
+/* ===== MOUSE TEKERLEĞİ ZOOM ===== */
+wrapper.addEventListener("wheel",e=>{
+ if(!galleryModal.classList.contains("active")) return;
+ e.preventDefault();
+ const direction=e.deltaY<0 ? 1 : -1;
+ setZoom(zoomLevel + direction * 0.25);
+},{passive:false});
 
 /* KLAVYE KONTROLÜ */
 
