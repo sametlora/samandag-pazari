@@ -770,6 +770,141 @@ button:hover{
   opacity:1
  }
 }
+
+/* FINAL AUTH DESIGN OVERRIDE */
+#authModal.simple-modal{
+  background:rgba(245,245,245,.94)!important;
+  backdrop-filter:blur(2px);
+  align-items:center!important;
+  justify-content:center!important;
+}
+#authModal .market-auth-card{
+  position:relative!important;
+  width:min(430px,calc(100vw - 28px))!important;
+  background:#fff!important;
+  border:1px solid #ddd!important;
+  border-radius:4px!important;
+  overflow:hidden!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.18)!important;
+  color:#333!important;
+}
+#authModal .market-auth-head{
+  position:relative!important;
+  padding:28px 24px 22px!important;
+  background:#f58220!important;
+  color:#fff!important;
+  border-bottom:1px solid #db6f13!important;
+}
+#authModal .market-auth-brand{
+  font-size:28px!important;
+  line-height:1.1!important;
+  font-weight:400!important;
+  letter-spacing:-.4px!important;
+  text-align:left!important;
+}
+#authModal .market-auth-brand strong{font-weight:800!important}
+#authModal .market-auth-headline{
+  margin-top:8px!important;
+  font-size:14px!important;
+  font-weight:400!important;
+  opacity:.96!important;
+}
+#authModal .market-auth-close{
+  position:absolute!important;
+  right:12px!important;
+  top:12px!important;
+  width:32px!important;
+  height:32px!important;
+  min-width:32px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+  font-size:25px!important;
+  line-height:30px!important;
+  font-weight:400!important;
+  cursor:pointer!important;
+}
+#authModal .market-auth-body{padding:24px!important}
+#authModal .market-auth-status{
+  padding:11px 12px!important;
+  margin:0 0 20px!important;
+  background:#fafafa!important;
+  border:1px solid #e4e4e4!important;
+  border-radius:4px!important;
+  color:#666!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+#authModal .market-auth-label{
+  display:block!important;
+  margin:0 0 6px!important;
+  color:#4b4b4b!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+#authModal .market-auth-input{
+  display:block!important;
+  width:100%!important;
+  height:44px!important;
+  box-sizing:border-box!important;
+  padding:11px 12px!important;
+  margin:0 0 16px!important;
+  background:#fff!important;
+  border:1px solid #cfcfcf!important;
+  border-radius:4px!important;
+  font-size:14px!important;
+  color:#333!important;
+  outline:none!important;
+}
+#authModal .market-auth-input:focus{
+  border-color:#f58220!important;
+  box-shadow:0 0 0 2px rgba(245,130,32,.12)!important;
+}
+#authModal .market-auth-login{
+  display:block!important;
+  width:100%!important;
+  height:46px!important;
+  padding:0 12px!important;
+  margin:2px 0 10px!important;
+  background:#f58220!important;
+  border:1px solid #e87312!important;
+  border-radius:4px!important;
+  color:#fff!important;
+  font-size:15px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+#authModal .market-auth-register{
+  display:block!important;
+  width:100%!important;
+  height:46px!important;
+  padding:0 12px!important;
+  margin:0!important;
+  background:#fff!important;
+  border:1px solid #f58220!important;
+  border-radius:4px!important;
+  color:#f58220!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+#authModal .market-auth-note{
+  margin:18px 0 0!important;
+  padding-top:14px!important;
+  border-top:1px solid #eee!important;
+  color:#888!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  text-align:center!important;
+}
+@media(max-width:500px){
+ #authModal .market-auth-head{padding:24px 20px 19px!important}
+ #authModal .market-auth-body{padding:20px!important}
+ #authModal .market-auth-brand{font-size:24px!important}
+}
 </style>
 </head>
 
@@ -917,23 +1052,26 @@ button:hover{
 <!-- ========================= -->
 
 <div class="modal simple-modal" id="authModal">
- <div class="auth-modal-content">
-  <button class="auth-close" id="authClose">✕</button>
-  <div class="auth-top">
-   <div class="auth-logo">Samandağ Pazarı</div>
-   <div class="auth-logo-sub">Güvenli ve kolay ilan alışverişi</div>
+ <div class="market-auth-card">
+  <div class="market-auth-head">
+   <button class="market-auth-close" id="authClose">×</button>
+   <div class="market-auth-brand">Samandağ <strong>Pazarı</strong></div>
+   <div class="market-auth-headline">Hesabınıza giriş yapın</div>
   </div>
-  <div class="auth-form">
-   <div id="authStatus" class="auth-status">Giriş yapın veya yeni hesap oluşturun.</div>
-   <label class="auth-label" for="authEmail">E-posta adresi</label>
-   <input class="auth-input" type="email" id="authEmail" placeholder="ornek@mail.com" autocomplete="email">
-   <label class="auth-label" for="authPassword">Şifre</label>
-   <input class="auth-input" type="password" id="authPassword" placeholder="Şifrenizi girin" autocomplete="current-password">
-   <button class="auth-main-btn" id="loginBtn">🔐 Giriş Yap</button>
-   <div class="auth-divider"><span>veya</span></div>
-   <button class="auth-register-btn" id="registerBtn">📝 Yeni Hesap Oluştur</button>
-   <button id="logoutBtn" style="background:#6b7280;display:none">🚪 Çıkış Yap</button>
-   <div class="auth-info">Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.</div>
+  <div class="market-auth-body">
+   <div class="market-auth-status" id="authStatus">Giriş yapın veya yeni hesap oluşturun.</div>
+
+   <label class="market-auth-label" for="authEmail">E-posta</label>
+   <input class="market-auth-input" type="email" id="authEmail" placeholder="E-posta adresiniz" autocomplete="email">
+
+   <label class="market-auth-label" for="authPassword">Şifre</label>
+   <input class="market-auth-input" type="password" id="authPassword" placeholder="Şifreniz" autocomplete="current-password">
+
+   <button class="market-auth-login" id="loginBtn">Giriş Yap</button>
+   <button class="market-auth-register" id="registerBtn">Yeni Hesap Oluştur</button>
+   <button id="logoutBtn" style="display:none;background:#6b7280;color:#fff;width:100%;border:0;border-radius:4px;padding:12px;margin-top:10px;font-weight:bold;cursor:pointer">Çıkış Yap</button>
+
+   <div class="market-auth-note">Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.</div>
   </div>
  </div>
 </div>
