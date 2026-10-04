@@ -2098,6 +2098,7 @@ select option{background:#FFF4A9 !important;color:#000 !important}
   <button class="modal-close" id="adminClose">✕</button>
   <h2>🛠️ Yönetici Paneli</h2>
   <div id="adminStatus" class="auth-status">Ödeme talepleri yükleniyor...</div>
+  <button id="adminRefreshPayments" style="background:#000;color:#FFD84D;border:1px solid #FFD84D">🔄 Ödeme Bildirimlerini Yenile</button>
   <div id="adminPayments"></div>
  </div>
 </div>
@@ -2891,15 +2892,31 @@ async function loadAdminPayments(){
  });
 }
 
+let adminPaymentsTimer=null;
+
+document.getElementById("adminRefreshPayments").addEventListener("click",async()=>{
+ await loadAdminPayments();
+});
+
 adminBtn.addEventListener("click",async()=>{
  adminModal.classList.add("active");
  document.body.style.overflow="hidden";
  await loadAdminPayments();
+ if(adminPaymentsTimer) clearInterval(adminPaymentsTimer);
+ adminPaymentsTimer=setInterval(async()=>{
+  if(adminModal.classList.contains("active")){
+   await loadAdminPayments();
+  }
+ },15000);
 });
 
 document.getElementById("adminClose").addEventListener("click",()=>{
  adminModal.classList.remove("active");
  document.body.style.overflow="";
+ if(adminPaymentsTimer){
+  clearInterval(adminPaymentsTimer);
+  adminPaymentsTimer=null;
+ }
 });
 
 
