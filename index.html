@@ -3156,33 +3156,49 @@ document
 
  try{
 
-  const isWebUrl =
-   window.location.protocol === "http:" ||
-   window.location.protocol === "https:";
+  /*
+   * E-posta onayında Supabase, emailRedirectTo verilmezse
+   * Dashboard > Authentication > URL Configuration > Site URL
+   * adresini kullanır. Böylece izin verilmeyen redirect URL nedeniyle
+   * kayıt işleminin reddedilmesini önlüyoruz.
+   *
+   * Özel bir dönüş adresi kullanmak isterseniz aşağıdaki sabiti doldurun
+   * ve bu adresi Supabase > Redirect URLs listesine ekleyin.
+   */
+  const AUTH_REDIRECT_URL = "";
 
-  const redirectUrl = isWebUrl
-   ? window.location.origin + window.location.pathname
-   : null;
+  const signupPayload = {
+   email: email,
+   password: password
+  };
 
-  const signupOptions = redirectUrl
-   ? { emailRedirectTo: redirectUrl }
-   : undefined;
+  if (AUTH_REDIRECT_URL.trim()) {
+   signupPayload.options = {
+    emailRedirectTo: AUTH_REDIRECT_URL.trim()
+   };
+  }
 
   const {data,error}=
-  await supabaseClient.auth.signUp({
-
-   email:email,
-
-   password:password,
-
-   options: signupOptions || undefined
-
-  });
+   await supabaseClient.auth.signUp(signupPayload);
 
 
   if(error)
    throw error;
 
+  /* Supabase Confirm email açıkken yeni hesapta session null olabilir;
+     bu hata değildir. Kullanıcıya doğrulama e-postası gönderilmiş demektir. */
+  const existingAccount =
+   data.user &&
+   Array.isArray(data.user.identities) &&
+   data.user.identities.length === 0;
+
+  if(existingAccount){
+   document.getElementById("authStatus").innerHTML=
+    '<div style="color:#b45309;font-weight:bold">⚠️ Bu e-posta zaten kayıtlı</div>'+
+    '<div style="margin-top:7px;line-height:1.6">Bu adresle daha önce hesap oluşturulmuş olabilir. Giriş yapmayı veya şifre yenilemeyi deneyin.</div>';
+   alert("⚠️ Bu e-posta adresiyle ilgili mevcut bir hesap var. Giriş yapmayı deneyin.");
+   return;
+  }
 
   await updateAuthUI(data.session ? data.user : null);
 
@@ -3212,9 +3228,12 @@ document
 
  }catch(error){
 
+  const errorMessage = error && error.message ? error.message : String(error);
+  console.error("Kayıt oluşturma hatası:",error);
   alert(
    "Kayıt oluşturulamadı:\n"
-   +(error.message||error)
+   + errorMessage +
+   "\n\nE-posta onayı kullanıyorsanız Supabase'de Confirm email ve Site URL ayarlarını kontrol edin."
   );
 
  }finally{
