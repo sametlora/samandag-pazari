@@ -2434,8 +2434,14 @@ const SUPABASE_KEY =
 const supabaseClient =
 supabase.createClient(
  SUPABASE_URL,
- SUPABASE_KEY
-);
+ SUPABASE_KEY,
+ {
+  auth:{
+   persistSession:true,
+   autoRefreshToken:true,
+   detectSessionInUrl:true
+  }
+ });
 
 
 /* ================================================= */
@@ -3150,10 +3156,17 @@ document
 
  try{
 
-  const signupOptions =
-   window.location.origin && window.location.origin !== "null"
-    ? { emailRedirectTo: window.location.origin + window.location.pathname }
-    : undefined;
+  const isWebUrl =
+   window.location.protocol === "http:" ||
+   window.location.protocol === "https:";
+
+  const redirectUrl = isWebUrl
+   ? window.location.origin + window.location.pathname
+   : null;
+
+  const signupOptions = redirectUrl
+   ? { emailRedirectTo: redirectUrl }
+   : undefined;
 
   const {data,error}=
   await supabaseClient.auth.signUp({
@@ -3251,10 +3264,12 @@ document
 /* ================================================= */
 
 supabaseClient.auth.onAuthStateChange(
- async(event,session)=>{
+ (event,session)=>{
 
-  /* Session'daki kullanıcıyı doğrudan kullan; ardından ilanları yenile. */
-  await updateAuthUI(session ? session.user : null);
+  /* Oturum değişince arayüz ve ilanlar hemen güncellensin. */
+  (async()=>{
+   await updateAuthUI(session ? session.user : null);
+  })();
 
  }
 );
@@ -4574,11 +4589,106 @@ ilanFormBaslik.addEventListener("keydown", e=>{
 
 
 /* ================================================= */
+/* E-POSTA ONAYI / GERİ DÖNÜŞ */
+/* ================================================= */
+
+async function handleEmailConfirmation(){
+
+ try{
+
+  const url = new URL(window.location.href);
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+
+  const errorCode = hash.get("error_code") || url.searchParams.get("error_code");
+  const errorDescription = hash.get("error_description") || url.searchParams.get("error_description");
+
+  if(errorCode || errorDescription){
+   const cleanMessage = decodeURIComponent((errorDescription || "E-posta doğrulaması başarısız oldu.").replace(/\+/g," "));
+   const status = document.getElementById("authStatus");
+   status.innerHTML =
+    '<div style="color:#b91c1c;font-weight:bold">❌ E-posta doğrulaması başarısız</div>'+
+    '<div style="margin-top:7px;line-height:1.5">'+escapeHtml(cleanMessage)+'</div>';
+   authModal.classList.add("active");
+   document.body.style.overflow="hidden";
+   return false;
+  }
+
+  const code = url.searchParams.get("code");
+
+  if(code){
+   const {error} = await supabaseClient.auth.exchangeCodeForSession(code);
+   if(error) throw error;
+  }
+
+  // Supabase JS client implicit akışta hash içindeki access/refresh token'ları
+  // otomatik olarak oturuma çevirir. Oturumun oluşmasını okuyup UI'ı hemen yenile.
+  const {data:{session}} = await supabaseClient.auth.getSession();
+
+  if(session && session.user){
+   const confirmedAt = session.user.email_confirmed_at || session.user.confirmed_at;
+
+   await updateAuthUI(session.user);
+
+   authModal.classList.add("active");
+   document.body.style.overflow="hidden";
+
+   const status = document.getElementById("authStatus");
+   if(confirmedAt){
+    status.innerHTML =
+     '<div style="color:#166534;font-weight:bold;font-size:16px">✅ E-posta onaylandı</div>'+
+     '<div style="margin-top:7px;line-height:1.6">'+
+     'Hesabınız başarıyla aktifleştirildi.<br>'+
+     '<b>'+escapeHtml(session.user.email || "")+'</b> olarak giriş yapıldı.</div>';
+
+    alert("✅ E-posta adresiniz onaylandı. Hesabınız aktif hale geldi.");
+   }
+
+   // Token/code tekrar kullanılmasın ve URL temiz görünsün.
+   const cleanUrl = window.location.origin + window.location.pathname;
+   if(window.location.protocol === "http:" || window.location.protocol === "https:"){
+    window.history.replaceState({}, document.title, cleanUrl);
+   }
+
+   return true;
+  }
+
+  // Onaydan sonra session otomatik gelmezse kullanıcıyı açıkça bilgilendir.
+  const {data:{user}} = await supabaseClient.auth.getUser();
+  if(user && (user.email_confirmed_at || user.confirmed_at)){
+   await updateAuthUI(user);
+   authModal.classList.add("active");
+   document.body.style.overflow="hidden";
+
+   document.getElementById("authStatus").innerHTML=
+    '<div style="color:#166534;font-weight:bold;font-size:16px">✅ E-posta onaylandı</div>'+
+    '<div style="margin-top:7px;line-height:1.6">Hesabınız aktifleştirildi. Şimdi giriş yapabilirsiniz.</div>';
+
+   return true;
+  }
+
+ }catch(error){
+  console.error("E-posta doğrulama hatası:",error);
+  const status = document.getElementById("authStatus");
+  status.innerHTML=
+   '<div style="color:#b91c1c;font-weight:bold">❌ Doğrulama tamamlanamadı</div>'+
+   '<div style="margin-top:7px;line-height:1.5">'+escapeHtml(error.message || error)+'</div>';
+  authModal.classList.add("active");
+  document.body.style.overflow="hidden";
+ }
+
+ return false;
+}
+
+
+/* ================================================= */
 /* İLK YÜKLEME */
 /* ================================================= */
 
-updateAuthUI();
-loadListings();
+(async()=>{
+ await handleEmailConfirmation();
+ await updateAuthUI();
+ await loadListings();
+})();
 
 </script>
 
