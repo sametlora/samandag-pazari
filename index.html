@@ -1853,7 +1853,7 @@ select option{background:#FFF4A9 !important;color:#000 !important}
    </button>
 
    <button class="admin-menu-btn" id="adminBtn" style="display:none">
-    🛠️ Yönetici
+    🚪 Çıkış Yap
    </button>
 
   </div>
@@ -2791,10 +2791,12 @@ async function isCurrentUserAdmin(){
 async function updateAdminUI(){
  if(!currentUser){
   adminBtn.style.display="none";
+  adminBtn.textContent="🚪 Çıkış Yap";
   return;
  }
- const admin=await isCurrentUserAdmin();
- adminBtn.style.display=admin ? "block" : "none";
+
+ adminBtn.textContent="🚪 Çıkış Yap";
+ adminBtn.style.display="block";
 }
 
 async function loadAdminPayments(){
@@ -2899,15 +2901,17 @@ document.getElementById("adminRefreshPayments").addEventListener("click",async()
 });
 
 adminBtn.addEventListener("click",async()=>{
- adminModal.classList.add("active");
- document.body.style.overflow="hidden";
- await loadAdminPayments();
- if(adminPaymentsTimer) clearInterval(adminPaymentsTimer);
- adminPaymentsTimer=setInterval(async()=>{
-  if(adminModal.classList.contains("active")){
-   await loadAdminPayments();
-  }
- },15000);
+ const {error}=await supabaseClient.auth.signOut();
+
+ if(error){
+  alert("Çıkış yapılamadı: "+(error.message||error));
+  return;
+ }
+
+ adminModal.classList.remove("active");
+ document.body.style.overflow="";
+ await updateAuthUI();
+ alert("✅ Çıkış yapıldı.");
 });
 
 document.getElementById("adminClose").addEventListener("click",()=>{
