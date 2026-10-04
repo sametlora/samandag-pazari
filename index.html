@@ -2693,12 +2693,20 @@ async function uploadImage(file){
 /* AUTH DURUMU */
 /* ================================================= */
 
-async function updateAuthUI(){
+async function updateAuthUI(userOverride){
 
- const {
-  data:{user}
- }=
- await supabaseClient.auth.getUser();
+ let user;
+
+ if(userOverride !== undefined){
+  user = userOverride;
+ }else{
+  const {
+   data:{user:loadedUser}
+  }=
+  await supabaseClient.auth.getUser();
+
+  user = loadedUser;
+ }
 
  currentUser = user;
 
@@ -2769,7 +2777,9 @@ async function updateAuthUI(){
  }
 
  await updateAdminUI();
- displayListings();
+
+ /* Giriş/çıkış sonrası ilanları Supabase'den anında yeniden çek. */
+ await loadListings();
 
 }
 
@@ -3206,7 +3216,8 @@ document
 supabaseClient.auth.onAuthStateChange(
  async(event,session)=>{
 
-  await updateAuthUI();
+  /* Session'daki kullanıcıyı doğrudan kullan; ardından ilanları yenile. */
+  await updateAuthUI(session ? session.user : null);
 
  }
 );
