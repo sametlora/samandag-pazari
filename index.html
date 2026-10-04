@@ -22,21 +22,28 @@ body{
 }
 
 header{
- background:#111827;
- color:#fff;
- padding:15px 20px;
+ background:#fff;
+ color:#333;
+ padding:12px 22px;
  display:flex;
  align-items:center;
  justify-content:space-between;
- gap:10px;
+ gap:18px;
  flex-wrap:wrap;
- font-size:26px;
- font-weight:bold
+ border-bottom:1px solid #e6e6e6;
+ box-shadow:0 2px 10px rgba(0,0,0,.06);
+ position:sticky;
+ top:0;
+ z-index:1000
 }
 
 .header-title{
  flex:1;
- text-align:center
+ text-align:left;
+ font-size:24px;
+ font-weight:800;
+ color:#f58220;
+ letter-spacing:-.3px
 }
 
 .header-buttons{
@@ -48,55 +55,154 @@ header{
 .header-buttons button{
  width:auto;
  margin:0;
- padding:10px 14px;
- font-size:14px
+ padding:9px 13px;
+ font-size:13px;
+ border-radius:5px;
+ border:1px solid #ddd;
+ box-shadow:none
 }
 
 .login-btn{
- background:#2563eb
+ background:#f58220;
+ color:#fff
 }
 
 .membership-btn{
- background:#dc2626
+ background:#fff;
+ color:#f58220;
+ border-color:#f58220
 }
 
 .logout-btn{
- background:#6b7280
+ background:#555;
+ color:#fff
 }
 
 .container{
- max-width:1200px;
+ max-width:1320px;
  margin:auto;
- padding:20px
+ padding:16px 20px 32px
 }
 
 .form-box,
 .search-box{
  background:#fff;
- border-radius:12px;
- box-shadow:0 2px 10px rgba(0,0,0,.08)
+ border:1px solid #e8e8e8;
+ border-radius:8px;
+ box-shadow:0 2px 10px rgba(0,0,0,.05)
 }
 
 .form-box{
- padding:20px;
- margin-bottom:20px
+ padding:14px 16px;
+ margin-bottom:14px;
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:8px 10px;
+ align-items:start
 }
 
 .form-box h2{
- margin-top:0
+ margin:0;
+ color:#333;
+ font-size:18px;
+ grid-column:1 / -1;
+ cursor:pointer;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:10px 12px;
+ border:1px solid #e5e7eb;
+ border-radius:8px;
+ background:#fff;
+ user-select:none;
+ transition:.2s
 }
+
+.form-box h2:hover{
+ border-color:#f58220;
+ background:#fffaf5
+}
+
+.form-box h2:after{
+ content:"＋";
+ font-size:24px;
+ color:#f58220;
+ font-weight:normal;
+ line-height:1
+}
+
+.form-box.open h2:after{
+ content:"−"
+}
+
+.ilan-form-icerik{
+ display:none;
+ grid-column:1 / -1;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:8px 10px;
+ align-items:start
+}
+
+.form-box.open .ilan-form-icerik{
+ display:grid
+}
+
+.ilan-kategori-listesi{
+ grid-column:1 / -1;
+ background:#fff8f1;
+ border:1px solid #fed7aa;
+ border-radius:10px;
+ padding:10px 13px;
+ margin:-4px 0 0;
+}
+
+.ilan-kategori-baslik{
+ font-size:13px;
+ font-weight:700;
+ color:#c2410c;
+ margin-bottom:7px;
+}
+
+.ilan-kategori-listesi ul{
+ display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:5px 12px;
+ list-style:none;
+ padding:0;
+ margin:0;
+}
+
+.ilan-kategori-listesi li{
+ font-size:13px;
+ color:#444;
+ line-height:1.4;
+}
+
+#ilanKullaniciDurumu{
+ grid-column:1 / -1 !important;
+ margin-bottom:2px !important;
+ padding:9px 11px !important;
+ border:1px solid #eee
+}
+
+.form-box #baslik{grid-column:span 2}
+.form-box #aciklama{grid-column:1 / -1;min-height:72px}
+.form-box #fotograflar{grid-column:span 3}
+.form-box #ilanVerBtn{grid-column:span 1;align-self:stretch;margin-top:0;background:#f58220}
 
 input,
 textarea,
 select,
 button{
  width:100%;
- padding:12px;
- margin-top:8px;
- margin-bottom:12px;
- border:1px solid #ddd;
- border-radius:8px;
- font-size:15px
+ padding:10px 11px;
+ margin-top:0;
+ margin-bottom:0;
+ border:1px solid #d9d9d9;
+ border-radius:6px;
+ font-size:14px;
+ background:#fff
 }
 
 textarea{
@@ -105,7 +211,7 @@ textarea{
 }
 
 button{
- background:#111827;
+ background:#333;
  color:#fff;
  border:none;
  cursor:pointer;
@@ -117,53 +223,67 @@ button:hover{
 }
 
 .search-box{
- padding:15px;
- margin-bottom:15px
+ padding:10px;
+ margin-bottom:12px;
+ position:sticky;
+ top:67px;
+ z-index:900
 }
 
 .search-box input{
- margin:0
+ margin:0;
+ height:44px;
+ border-color:#d7d7d7;
+ font-size:15px
 }
 
 .categories{
  display:flex;
- gap:8px;
+ gap:7px;
  flex-wrap:wrap;
- margin-bottom:20px
+ margin-bottom:14px
 }
 
 .category-btn{
  width:auto;
  margin:0;
- padding:9px 14px;
+ padding:8px 13px;
  background:#fff;
- color:#333;
- border:1px solid #ddd
+ color:#444;
+ border:1px solid #ddd;
+ border-radius:5px
 }
 
 .category-btn.active{
- background:#111827;
- color:#fff
+ background:#f58220;
+ color:#fff;
+ border-color:#f58220
 }
 
 #listings{
  display:grid;
- grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
- gap:20px
+ grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+ gap:16px
 }
 
 .card{
  background:#fff;
- border-radius:12px;
+ border:1px solid #e6e6e6;
+ border-radius:7px;
  overflow:hidden;
- box-shadow:0 3px 12px rgba(0,0,0,.1);
+ box-shadow:0 2px 9px rgba(0,0,0,.07);
  display:flex;
  flex-direction:column;
  justify-content:space-between;
+ transition:transform .15s ease,box-shadow .15s ease
+}
+.card:hover{
+ transform:translateY(-2px);
+ box-shadow:0 5px 16px rgba(0,0,0,.1)
 }
 
 .card-image{
- height:400px;
+ height:270px;
  background:#eee;
  position:relative;
  cursor:pointer;
@@ -189,28 +309,32 @@ button:hover{
 }
 
 .card-body{
- padding:16px;
- flex:1;
+ padding:13px;
+ flex:1
 }
 
 .card-title{
- font-size:20px;
+ font-size:17px;
  font-weight:bold;
- margin-bottom:8px
+ margin-bottom:7px
 }
 
 .price{
- color:#dc2626;
- font-size:20px;
+ color:#d65f00;
+ font-size:19px;
  font-weight:bold;
- margin-bottom:10px
+ margin-bottom:9px
 }
 
 .description{
  color:#555;
- line-height:1.5;
+ line-height:1.45;
  white-space:pre-wrap;
- margin-bottom:10px
+ margin-bottom:9px;
+ display:-webkit-box;
+ -webkit-line-clamp:3;
+ -webkit-box-orient:vertical;
+ overflow:hidden
 }
 
 .info{
@@ -231,15 +355,15 @@ button:hover{
  align-items:center;
  justify-content:center;
  text-decoration:none;
- padding:10px 13px;
- border-radius:8px;
+ padding:9px 11px;
+ border-radius:6px;
  font-weight:bold;
  color:#fff;
  transition:.2s;
  font-size:14px;
  margin:0;
  width:auto;
- flex:1;
+ flex:1
 }
 
 .contact-buttons .phone{
@@ -272,27 +396,106 @@ button:hover{
  color:#777
 }
 
-/* AUTH - SAHIBINDEN TARZI */
-.auth-modal-content{background:#fff;color:#333;width:100%;max-width:430px;border-radius:6px;padding:0;position:relative;overflow:hidden;box-shadow:0 12px 45px rgba(0,0,0,.28)}
-.auth-top{background:#fff;padding:28px 30px 18px;border-bottom:1px solid #e5e5e5}
-.auth-logo{text-align:center;font-size:27px;font-weight:700;color:#f58220;margin-bottom:5px}
-.auth-logo-sub{text-align:center;color:#777;font-size:13px}
-.auth-form{padding:25px 30px 30px}
-.auth-label{display:block;font-size:13px;color:#555;margin-bottom:5px;font-weight:bold}
-.auth-input{width:100%;height:46px;padding:12px 13px;margin:0 0 15px;border:1px solid #ccc;border-radius:4px;font-size:14px;outline:none;transition:.2s}
-.auth-input:focus{border-color:#f58220;box-shadow:0 0 0 2px rgba(245,130,32,.12)}
-.auth-main-btn{width:100%;height:46px;background:#f58220;color:#fff;border:0;border-radius:4px;margin:5px 0 12px;font-size:15px;font-weight:bold}
-.auth-main-btn:hover{background:#e87312}
-.auth-register-btn{width:100%;height:44px;background:#fff;color:#f58220;border:1px solid #f58220;border-radius:4px;margin:0;font-size:14px;font-weight:bold}
-.auth-register-btn:hover{background:#fff7f0}
-.auth-status{background:#f7f7f7;border:1px solid #e5e5e5;border-radius:4px;padding:10px 12px;margin-bottom:18px;font-size:13px;color:#666}
-.auth-user{color:#218838;font-weight:bold}
-.auth-divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:#aaa;font-size:12px}
-.auth-divider:before,.auth-divider:after{content:"";flex:1;height:1px;background:#e5e5e5}
-.auth-info{text-align:center;color:#888;font-size:11px;line-height:1.5;margin-top:18px}
-.auth-close{position:absolute;right:12px;top:12px;z-index:5;width:32px;height:32px;padding:0;margin:0;background:#f5f5f5;color:#555;border-radius:50%;font-size:17px}
-.auth-close:hover{background:#eee}
-@media(max-width:500px){.auth-modal-content{max-width:calc(100% - 24px);border-radius:6px}.auth-top{padding:24px 20px 15px}.auth-form{padding:20px}.auth-logo{font-size:24px}}
+/* AUTH - MODERN PAZARYERİ TEMASI */
+.auth-modal-content{
+ background:#fff;
+ color:#333;
+ width:100%;
+ max-width:420px;
+ border-radius:8px;
+ overflow:hidden;
+ position:relative;
+ box-shadow:0 18px 60px rgba(0,0,0,.28)
+}
+.auth-top{
+ background:#fff;
+ padding:26px 28px 16px;
+ border-bottom:1px solid #ececec;
+ text-align:center
+}
+.auth-brand{
+ font-size:26px;
+ font-weight:800;
+ color:#f58220;
+ letter-spacing:-.4px
+}
+.auth-sub{
+ margin-top:4px;
+ color:#777;
+ font-size:12px
+}
+.auth-form{
+ padding:20px 28px 24px
+}
+.auth-label{
+ display:block;
+ color:#555;
+ font-size:12px;
+ font-weight:bold;
+ margin:0 0 5px
+}
+.auth-input{
+ width:100%;
+ height:44px;
+ margin:0 0 13px;
+ border:1px solid #ccc;
+ border-radius:5px;
+ background:#fff
+}
+.auth-input:focus{
+ outline:none;
+ border-color:#f58220;
+ box-shadow:0 0 0 2px rgba(245,130,32,.12)
+}
+.auth-main-btn{
+ width:100%;
+ height:45px;
+ margin:3px 0 10px;
+ background:#f58220;
+ border-radius:5px
+}
+.auth-register-btn{
+ width:100%;
+ height:43px;
+ margin:0;
+ background:#fff;
+ color:#f58220;
+ border:1px solid #f58220;
+ border-radius:5px
+}
+.auth-status{
+ background:#f7f7f7;
+ border:1px solid #e7e7e7;
+ border-radius:5px;
+ padding:10px 11px;
+ margin-bottom:16px;
+ font-size:13px;
+ color:#666
+}
+.auth-user{
+ color:#218838;
+ font-weight:bold
+}
+.auth-info{
+ text-align:center;
+ color:#888;
+ font-size:11px;
+ line-height:1.5;
+ margin-top:15px
+}
+.auth-close-btn{
+ position:absolute;
+ right:11px;
+ top:10px;
+ z-index:3;
+ width:30px;
+ height:30px;
+ padding:0;
+ margin:0;
+ border-radius:50%;
+ background:#f5f5f5;
+ color:#666
+}
 
 /* ÜYELİK */
 
@@ -450,6 +653,14 @@ button:hover{
   margin-top:12px;
 }
 @media(max-width:700px){
+
+ .ilan-form-icerik{
+  grid-template-columns:1fr;
+ }
+
+ .ilan-kategori-listesi ul{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
   .bank-row{flex-direction:column;gap:5px}
 }
 
@@ -651,38 +862,55 @@ button:hover{
  display:none
 }
 
+
+@media(max-width:900px){
+ .form-box{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+ .form-box #baslik{grid-column:1 / -1}
+ .form-box #fotograflar{grid-column:1 / -1}
+ .form-box #ilanVerBtn{grid-column:1 / -1}
+}
+
 @media(max-width:700px){
 
  header{
   font-size:20px;
-  padding:12px
+  padding:10px 12px;
+  position:sticky;
+  top:0
  }
 
  .header-title{
   width:100%;
-  flex:none
+  flex:none;
+  text-align:center;
+  font-size:21px
  }
 
  .header-buttons{
   width:100%;
-  justify-content:center
+  justify-content:center;
+  gap:6px
  }
 
  .header-buttons button{
-  flex:1
+  flex:1;
+  padding:9px 7px;
+  font-size:12px
  }
 
  .container{
-  padding:12px
+  padding:10px
  }
 
  #listings{
   grid-template-columns:1fr;
-  gap:15px
+  gap:12px
  }
 
  .card-image{
-  height:220px
+  height:240px
  }
 
  .card-title{
@@ -714,6 +942,14 @@ button:hover{
  .membership-title{
   font-size:23px
  }
+
+ .search-box{top:74px}
+
+ .form-box{
+  grid-template-columns:1fr;
+  padding:12px;
+ }
+ .form-box #baslik,.form-box #aciklama,.form-box #fotograflar,.form-box #ilanVerBtn{grid-column:1 / -1}
 
  .gallery-main img{
   max-width:96%;
@@ -770,141 +1006,6 @@ button:hover{
   opacity:1
  }
 }
-
-/* FINAL AUTH DESIGN OVERRIDE */
-#authModal.simple-modal{
-  background:rgba(245,245,245,.94)!important;
-  backdrop-filter:blur(2px);
-  align-items:center!important;
-  justify-content:center!important;
-}
-#authModal .market-auth-card{
-  position:relative!important;
-  width:min(430px,calc(100vw - 28px))!important;
-  background:#fff!important;
-  border:1px solid #ddd!important;
-  border-radius:4px!important;
-  overflow:hidden!important;
-  box-shadow:0 8px 28px rgba(0,0,0,.18)!important;
-  color:#333!important;
-}
-#authModal .market-auth-head{
-  position:relative!important;
-  padding:28px 24px 22px!important;
-  background:#f58220!important;
-  color:#fff!important;
-  border-bottom:1px solid #db6f13!important;
-}
-#authModal .market-auth-brand{
-  font-size:28px!important;
-  line-height:1.1!important;
-  font-weight:400!important;
-  letter-spacing:-.4px!important;
-  text-align:left!important;
-}
-#authModal .market-auth-brand strong{font-weight:800!important}
-#authModal .market-auth-headline{
-  margin-top:8px!important;
-  font-size:14px!important;
-  font-weight:400!important;
-  opacity:.96!important;
-}
-#authModal .market-auth-close{
-  position:absolute!important;
-  right:12px!important;
-  top:12px!important;
-  width:32px!important;
-  height:32px!important;
-  min-width:32px!important;
-  padding:0!important;
-  margin:0!important;
-  border:0!important;
-  border-radius:50%!important;
-  background:rgba(255,255,255,.18)!important;
-  color:#fff!important;
-  font-size:25px!important;
-  line-height:30px!important;
-  font-weight:400!important;
-  cursor:pointer!important;
-}
-#authModal .market-auth-body{padding:24px!important}
-#authModal .market-auth-status{
-  padding:11px 12px!important;
-  margin:0 0 20px!important;
-  background:#fafafa!important;
-  border:1px solid #e4e4e4!important;
-  border-radius:4px!important;
-  color:#666!important;
-  font-size:13px!important;
-  line-height:1.4!important;
-}
-#authModal .market-auth-label{
-  display:block!important;
-  margin:0 0 6px!important;
-  color:#4b4b4b!important;
-  font-size:13px!important;
-  font-weight:700!important;
-}
-#authModal .market-auth-input{
-  display:block!important;
-  width:100%!important;
-  height:44px!important;
-  box-sizing:border-box!important;
-  padding:11px 12px!important;
-  margin:0 0 16px!important;
-  background:#fff!important;
-  border:1px solid #cfcfcf!important;
-  border-radius:4px!important;
-  font-size:14px!important;
-  color:#333!important;
-  outline:none!important;
-}
-#authModal .market-auth-input:focus{
-  border-color:#f58220!important;
-  box-shadow:0 0 0 2px rgba(245,130,32,.12)!important;
-}
-#authModal .market-auth-login{
-  display:block!important;
-  width:100%!important;
-  height:46px!important;
-  padding:0 12px!important;
-  margin:2px 0 10px!important;
-  background:#f58220!important;
-  border:1px solid #e87312!important;
-  border-radius:4px!important;
-  color:#fff!important;
-  font-size:15px!important;
-  font-weight:700!important;
-  cursor:pointer!important;
-}
-#authModal .market-auth-register{
-  display:block!important;
-  width:100%!important;
-  height:46px!important;
-  padding:0 12px!important;
-  margin:0!important;
-  background:#fff!important;
-  border:1px solid #f58220!important;
-  border-radius:4px!important;
-  color:#f58220!important;
-  font-size:14px!important;
-  font-weight:700!important;
-  cursor:pointer!important;
-}
-#authModal .market-auth-note{
-  margin:18px 0 0!important;
-  padding-top:14px!important;
-  border-top:1px solid #eee!important;
-  color:#888!important;
-  font-size:11px!important;
-  line-height:1.5!important;
-  text-align:center!important;
-}
-@media(max-width:500px){
- #authModal .market-auth-head{padding:24px 20px 19px!important}
- #authModal .market-auth-body{padding:20px!important}
- #authModal .market-auth-brand{font-size:24px!important}
-}
 </style>
 </head>
 
@@ -941,7 +1042,23 @@ button:hover{
 
  <div class="form-box">
 
-  <h2>📢 İlan Ver</h2>
+  <h2 id="ilanFormBaslik" role="button" tabindex="0" aria-expanded="false">📢 İlan Ver</h2>
+
+  <div class="ilan-form-icerik" id="ilanFormIcerik">
+
+  <div class="ilan-kategori-listesi">
+   <div class="ilan-kategori-baslik">Yüklenebilecek kategoriler</div>
+   <ul>
+    <li>📱 Elektronik</li>
+    <li>🚗 Araç</li>
+    <li>🏠 Ev</li>
+    <li>🏢 Emlak</li>
+    <li>👕 Giyim</li>
+    <li>📞 Telefon</li>
+    <li>💼 İş</li>
+    <li>📦 Diğer</li>
+   </ul>
+  </div>
 
   <div id="ilanKullaniciDurumu"
        style="background:#f3f4f6;padding:12px;border-radius:9px;margin-bottom:15px;font-size:14px">
@@ -950,7 +1067,7 @@ button:hover{
 
   <input type="text" id="baslik" placeholder="İlan Başlığı">
 
-  <input type="number" id="fiyat" placeholder="Fiyat">
+  <input type="number" id="fiyat" placeholder="Fiyat (TL)">
 
   <textarea id="aciklama" placeholder="Açıklama"></textarea>
 
@@ -978,6 +1095,8 @@ button:hover{
   <button id="ilanVerBtn">
    📢 İlanı Yayınla
   </button>
+
+  </div>
 
  </div>
 
@@ -1052,30 +1171,110 @@ button:hover{
 <!-- ========================= -->
 
 <div class="modal simple-modal" id="authModal">
- <div class="market-auth-card">
-  <div class="market-auth-head">
-   <button class="market-auth-close" id="authClose">×</button>
-   <div class="market-auth-brand">Samandağ <strong>Pazarı</strong></div>
-   <div class="market-auth-headline">Hesabınıza giriş yapın</div>
+
+ <div class="auth-modal-content">
+
+  <button class="auth-close-btn" id="authClose">✕</button>
+
+  <div class="auth-top">
+   <div class="auth-brand">Samandağ Pazarı</div>
+   <div class="auth-sub">Hesabınıza giriş yapın veya ücretsiz üye olun</div>
   </div>
-  <div class="market-auth-body">
-   <div class="market-auth-status" id="authStatus">Giriş yapın veya yeni hesap oluşturun.</div>
 
-   <label class="market-auth-label" for="authEmail">E-posta</label>
-   <input class="market-auth-input" type="email" id="authEmail" placeholder="E-posta adresiniz" autocomplete="email">
+  <div class="auth-form">
 
-   <label class="market-auth-label" for="authPassword">Şifre</label>
-   <input class="market-auth-input" type="password" id="authPassword" placeholder="Şifreniz" autocomplete="current-password">
+   <div id="authStatus" class="auth-status">
+    Giriş yapın veya yeni hesap oluşturun.
+   </div>
 
-   <button class="market-auth-login" id="loginBtn">Giriş Yap</button>
-   <button class="market-auth-register" id="registerBtn">Yeni Hesap Oluştur</button>
-   <button id="logoutBtn" style="display:none;background:#6b7280;color:#fff;width:100%;border:0;border-radius:4px;padding:12px;margin-top:10px;font-weight:bold;cursor:pointer">Çıkış Yap</button>
+   <label class="auth-label" for="authEmail">E-posta adresi</label>
+   <input class="auth-input" type="email" id="authEmail" placeholder="E-posta adresiniz" autocomplete="email">
 
-   <div class="market-auth-note">Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.</div>
+   <label class="auth-label" for="authPassword">Şifre</label>
+   <input class="auth-input" type="password" id="authPassword" placeholder="Şifreniz" autocomplete="current-password">
+
+   <button class="auth-main-btn" id="loginBtn">🔐 Giriş Yap</button>
+
+   <button class="auth-register-btn" id="registerBtn">📝 Yeni Hesap Oluştur</button>
+
+   <button id="logoutBtn" style="background:#6b7280;display:none;margin-top:10px">🚪 Çıkış Yap</button>
+
+   <div class="auth-info">
+    Yeni üyelerde ilk 30 gün ücretsiz deneme süresi başlar.
+   </div>
+
   </div>
+
  </div>
+
 </div>
 
+
+<!-- ========================= -->
+<!-- İLAN DÜZENLEME MODALI -->
+<!-- ========================= -->
+
+<div class="modal simple-modal" id="editModal">
+
+ <div class="simple-modal-content">
+
+  <button class="modal-close" id="editClose">
+   ✕
+  </button>
+
+  <h2>✏️ İlanı Düzenle</h2>
+
+  <input type="hidden" id="editIlanId">
+
+  <label style="font-size:12px;color:#666">İlan Başlığı</label>
+  <input type="text" id="editBaslik" placeholder="İlan Başlığı">
+
+  <label style="font-size:12px;color:#666">Fiyat (TL)</label>
+  <input type="number" id="editFiyat" placeholder="Fiyat">
+
+  <label style="font-size:12px;color:#666">Açıklama</label>
+  <textarea id="editAciklama" placeholder="Açıklama"></textarea>
+
+  <label style="font-size:12px;color:#666">Kategori</label>
+  <select id="editKategori">
+   <option value="">Kategori seçin</option>
+   <option value="Elektronik">Elektronik</option>
+   <option value="Araç">Araç</option>
+   <option value="Ev">Ev</option>
+   <option value="Emlak">Emlak</option>
+   <option value="Giyim">Giyim</option>
+   <option value="Telefon">Telefon</option>
+   <option value="İş">İş</option>
+   <option value="Diğer">Diğer</option>
+  </select>
+
+  <label style="font-size:12px;color:#666">Mahalle</label>
+  <input type="text" id="editMahalle" placeholder="Mahalle">
+
+  <label style="font-size:12px;color:#666">Telefon</label>
+  <input type="text" id="editTelefon" placeholder="Telefon">
+
+  <button id="editKaydetBtn" style="background:#16a34a;margin-top:15px">
+   💾 Değişiklikleri Kaydet
+  </button>
+
+ </div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- YÖNETİCİ PANELİ -->
+<!-- ========================= -->
+<div class="modal simple-modal" id="adminModal">
+ <div class="simple-modal-content" style="max-width:900px">
+  <button class="modal-close" id="adminClose">✕</button>
+  <h2>🛠️ Yönetici Paneli</h2>
+  <div id="adminStatus" class="auth-status">Ödeme talepleri yükleniyor...</div>
+  <div id="adminPayments"></div>
+ </div>
+</div>
 
 <!-- ========================= -->
 <!-- ÜYELİK MODALI -->
@@ -3414,6 +3613,27 @@ window.addEventListener("keydown",e=>{
  if(e.key==="ArrowLeft") document.getElementById("galleryPrev").click();
  if(e.key==="ArrowRight") document.getElementById("galleryNext").click();
 
+});
+
+
+/* ================================================= */
+/* İLAN FORMU AÇ / KAPAT */
+/* ================================================= */
+
+const ilanFormBox = document.querySelector(".form-box");
+const ilanFormBaslik = document.getElementById("ilanFormBaslik");
+
+function toggleIlanForm(){
+ const isOpen = ilanFormBox.classList.toggle("open");
+ ilanFormBaslik.setAttribute("aria-expanded", String(isOpen));
+}
+
+ilanFormBaslik.addEventListener("click", toggleIlanForm);
+ilanFormBaslik.addEventListener("keydown", e=>{
+ if(e.key === "Enter" || e.key === " "){
+  e.preventDefault();
+  toggleIlanForm();
+ }
 });
 
 
