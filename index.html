@@ -652,6 +652,23 @@ button:hover{
   line-height:1.5;
   margin-top:12px;
 }
+
+.ilan-uyelik-link{
+ width:auto;
+ display:inline-block;
+ margin:8px 0 0;
+ padding:8px 12px;
+ background:#d4af37 !important;
+ color:#111 !important;
+ border:1px solid #a67c00 !important;
+ border-radius:8px;
+ font-weight:800;
+ cursor:pointer;
+}
+.ilan-uyelik-link:hover{
+ background:#f1cf4b !important;
+}
+
 @media(max-width:700px){
 
  .ilan-form-icerik{
@@ -3133,12 +3150,19 @@ document
 
  try{
 
+  const signupOptions =
+   window.location.origin && window.location.origin !== "null"
+    ? { emailRedirectTo: window.location.origin + window.location.pathname }
+    : undefined;
+
   const {data,error}=
   await supabaseClient.auth.signUp({
 
    email:email,
 
-   password:password
+   password:password,
+
+   options: signupOptions || undefined
 
   });
 
@@ -3147,7 +3171,23 @@ document
    throw error;
 
 
-  if(data.user){
+  await updateAuthUI(data.session ? data.user : null);
+
+
+  if(data.user && !data.session){
+
+   document.getElementById("authStatus").innerHTML=
+    '<div class="auth-user">📧 E-posta onayı gerekli</div>'+
+    '<div style="margin-top:7px;line-height:1.6">'+
+    'Hesabınız oluşturuldu. <b>'+escapeHtml(email)+'</b> adresine gönderilen onay bağlantısına tıklayın. Onaydan sonra giriş yapabilirsiniz.'+
+    '</div>';
+
+   alert(
+    "✅ Hesabınız oluşturuldu.\n\n"+
+    "E-posta adresinize gönderilen onay bağlantısına tıklayın. Onaydan sonra giriş yapabilirsiniz."
+   );
+
+  }else if(data.user){
 
    alert(
     "✅ Hesabınız oluşturuldu.\n\n"+
@@ -3155,9 +3195,6 @@ document
    );
 
   }
-
-
-  await updateAuthUI();
 
 
  }catch(error){
@@ -3316,12 +3353,30 @@ document
 
   if(!user){
 
-   authModal.classList.add("active");
+   const ilanDurum=document.getElementById("ilanKullaniciDurumu");
 
-   document.body.style.overflow="hidden";
+   ilanDurum.innerHTML=
+    '🔐 <b>İlan yayınlamak için üyelik oluşturmanız gerekiyor.</b><br>'+
+    '<button type="button" id="ilanUyelikOlusturBtn" class="ilan-uyelik-link">'+
+      '👉 Üyelik oluşturmak için tıklayın'+
+    '</button>';
+
+   ilanDurum.style.background="#fff7d6";
+   ilanDurum.style.color="#111";
+
+   const ilanUyelikBtn=document.getElementById("ilanUyelikOlusturBtn");
+   if(ilanUyelikBtn){
+    ilanUyelikBtn.addEventListener("click",()=>{
+     authModal.classList.add("active");
+     document.body.style.overflow="hidden";
+     setTimeout(()=>{
+      document.getElementById("authEmail")?.focus();
+     },50);
+    });
+   }
 
    alert(
-    "İlan vermek için önce giriş yapmalısınız."
+    "İlan yayınlamak için önce üyelik oluşturmanız gerekiyor.\n\nAşağıdaki 'Üyelik oluşturmak için tıklayın' düğmesine basın."
    );
 
    return;
