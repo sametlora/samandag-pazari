@@ -1189,6 +1189,647 @@ header{
  .header-buttons button{border-radius:9px}
  .card-image{height:250px}
 }
+
+/* ===== SON TEMA DÜZELTMELERİ ===== */
+header{
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:10px;
+ text-align:center;
+ padding:18px 20px 14px;
+}
+.header-title{
+ flex:none;
+ width:100%;
+ text-align:center;
+ white-space:nowrap;
+ font-size:48px;
+ line-height:1.05;
+ font-weight:900;
+ letter-spacing:-1.5px;
+}
+.header-buttons{
+ width:100%;
+ justify-content:center;
+ flex-wrap:wrap;
+}
+@media(max-width:700px){
+ header{padding:14px 10px 12px;gap:8px}
+ .header-title{font-size:29px;letter-spacing:-.8px;white-space:nowrap}
+ .header-buttons{gap:6px}
+ .header-buttons button{flex:0 1 auto;width:auto}
+}
+
+
+/* UST MENU DUZENI */
+header{
+ display:flex !important;
+ flex-direction:column !important;
+ align-items:center !important;
+ justify-content:center !important;
+ gap:10px !important;
+ text-align:center !important;
+}
+.header-title{
+ width:100% !important;
+ flex:none !important;
+ text-align:center !important;
+ font-size:clamp(34px,5vw,54px) !important;
+ line-height:1.05 !important;
+ margin:0 !important;
+}
+.header-buttons{
+ width:100% !important;
+ display:flex !important;
+ justify-content:center !important;
+ align-items:center !important;
+ flex-wrap:wrap !important;
+ gap:8px !important;
+}
+.header-buttons button{
+ flex:0 1 auto !important;
+ width:auto !important;
+ min-width:120px;
+ margin:0 !important;
+}
+@media(max-width:700px){
+ header{padding:12px 10px !important; gap:9px !important;}
+ .header-title{font-size:32px !important;}
+ .header-buttons{gap:6px !important;}
+ .header-buttons button{min-width:0 !important; padding:9px 10px !important; font-size:12px !important;}
+}
+
+
+/* UST MENU - IKI AYRI SATIR / FARKLI RENKLER */
+header{
+ background:linear-gradient(135deg,#0b1220 0%,#151f33 55%,#202b44 100%);
+ padding:0;
+ display:block;
+ color:#fff;
+ box-shadow:0 6px 22px rgba(0,0,0,.18);
+}
+.header-title-row{
+ width:100%;
+ padding:20px 16px 16px;
+ text-align:center;
+ background:linear-gradient(135deg,#111827,#1f2937);
+ border-bottom:1px solid rgba(255,255,255,.12);
+}
+.header-title{
+ width:100%;
+ margin:0;
+ font-size:clamp(32px,5vw,54px);
+ line-height:1.05;
+ font-weight:900;
+ letter-spacing:.5px;
+ color:#fff;
+ text-shadow:0 3px 12px rgba(0,0,0,.35);
+}
+.header-buttons-row{
+ width:100%;
+ padding:12px 16px 14px;
+ background:#0f172a;
+}
+.header-buttons{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:10px;
+ width:100%;
+ flex-wrap:wrap;
+}
+.header-buttons button{
+ width:auto;
+ min-width:155px;
+ margin:0;
+ padding:11px 16px;
+ border:1px solid rgba(255,255,255,.18);
+ border-radius:10px;
+ font-size:14px;
+ font-weight:800;
+ box-shadow:0 4px 12px rgba(0,0,0,.16);
+}
+.header-buttons .login-btn{
+ background:#2563eb !important;
+}
+.header-buttons .membership-btn{
+ background:#dc2626 !important;
+}
+.header-buttons .admin-menu-btn{
+ background:#7c3aed !important;
+}
+.header-buttons .logout-btn{
+ background:#16a34a !important;
+}
+@media(max-width:700px){
+ .header-title-row{padding:16px 12px 13px}
+ .header-title{font-size:31px}
+ .header-buttons-row{padding:10px 10px 12px}
+ .header-buttons{gap:8px}
+ .header-buttons button{
+  min-width:120px;
+  flex:1 1 120px;
+  padding:10px 11px;
+  font-size:13px;
+ }
+}
+
+/* ===== SIYAH + ALTIN PREMIUM SON TEMA ===== */
+header{
+ background:#050505 !important;
+ border-bottom:2px solid #c89b3c !important;
+ box-shadow:0 10px 30px rgba(0,0,0,.45) !important;
+}
+.header-title-row{
+ background:#050505 !important;
+ border-bottom:1px solid rgba(212,175,55,.28) !important;
+ padding:22px 16px 18px !important;
+}
+.header-title{
+ color:#d4af37 !important;
+ font-size:clamp(36px,5.5vw,58px) !important;
+ font-weight:1000 !important;
+ letter-spacing:1.2px !important;
+ text-shadow:
+  0 0 4px rgba(255,255,255,.16),
+  0 0 12px rgba(212,175,55,.45),
+  0 3px 0 #6f5310 !important;
+}
+.header-buttons-row{
+ background:#0b0b0b !important;
+ border-top:1px solid rgba(212,175,55,.12) !important;
+}
+
+/* Ilan Ver basligi da siyah + altin */
+.form-box h2{
+ background:linear-gradient(135deg,#050505,#111111) !important;
+ color:#d4af37 !important;
+ border:1px solid #7f6420 !important;
+ box-shadow:
+  0 8px 24px rgba(0,0,0,.28),
+  inset 0 1px rgba(255,255,255,.05),
+  0 0 14px rgba(212,175,55,.10) !important;
+ text-shadow:0 0 10px rgba(212,175,55,.32) !important;
+}
+.form-box h2:hover{
+ background:linear-gradient(135deg,#111111,#191919) !important;
+ border-color:#d4af37 !important;
+}
+.form-box h2:after{
+ color:#d4af37 !important;
+ text-shadow:0 0 8px rgba(212,175,55,.45) !important;
+}
+
+/* Kategori listesi de temaya uyumlu */
+.ilan-kategori-listesi{
+ background:linear-gradient(135deg,#0a0a0a,#151515) !important;
+ border:1px solid #6f5310 !important;
+}
+.ilan-kategori-baslik{color:#d4af37 !important; text-shadow:0 0 8px rgba(212,175,55,.25)}
+.ilan-kategori-listesi li{
+ background:#111 !important;
+ color:#f1d77a !important;
+ border-color:#4f4018 !important;
+}
+
+@media(max-width:700px){
+ .header-title{font-size:34px !important; letter-spacing:.6px !important}
+}
+
+
+/* ===== PARLAK SARI / YÜKSEK KONTRAST ===== */
+header, .header-title-row, .header-buttons-row{background:#050505 !important;}
+header{border-bottom:3px solid #ffe600 !important; box-shadow:0 10px 32px rgba(0,0,0,.55),0 0 22px rgba(255,230,0,.16) !important;}
+.header-title-row{border-bottom:1px solid rgba(255,230,0,.42) !important;}
+.header-title{
+ color:#ffe600 !important;
+ font-weight:1000 !important;
+ text-shadow:
+  0 0 2px #fff36b,
+  0 0 8px rgba(255,230,0,.95),
+  0 0 18px rgba(255,215,0,.65),
+  0 3px 0 #8a7000 !important;
+}
+.header-buttons-row{border-top:1px solid rgba(255,230,0,.18) !important;}
+.header-buttons button{
+ color:#fff000 !important;
+ background:#090909 !important;
+ border:2px solid #ffd800 !important;
+ text-shadow:0 0 7px rgba(255,230,0,.65) !important;
+ box-shadow:0 0 0 1px rgba(255,255,255,.05),0 5px 16px rgba(0,0,0,.5),0 0 12px rgba(255,216,0,.18) !important;
+}
+.header-buttons .login-btn,.header-buttons .membership-btn,.header-buttons .admin-menu-btn,.header-buttons .logout-btn{
+ background:#090909 !important;
+ color:#fff000 !important;
+}
+.header-buttons button:hover{
+ background:#161600 !important;
+ border-color:#fff36b !important;
+ color:#fff36b !important;
+ box-shadow:0 0 20px rgba(255,230,0,.34) !important;
+}
+.form-box h2{
+ background:#050505 !important;
+ color:#ffe600 !important;
+ border:2px solid #ffd800 !important;
+ text-shadow:0 0 3px #fff36b,0 0 10px rgba(255,230,0,.8),0 2px 0 #806600 !important;
+ box-shadow:0 8px 24px rgba(0,0,0,.32),0 0 16px rgba(255,230,0,.2),inset 0 1px rgba(255,255,255,.08) !important;
+}
+.form-box h2:hover{background:#111100 !important;color:#fff36b !important;border-color:#fff36b !important;}
+.form-box h2:after{color:#fff000 !important;text-shadow:0 0 8px rgba(255,230,0,.9) !important;}
+.ilan-kategori-listesi{background:#080808 !important;border:2px solid #b99800 !important;}
+.ilan-kategori-baslik{color:#ffe600 !important;text-shadow:0 0 8px rgba(255,230,0,.65) !important;font-weight:900 !important;}
+.ilan-kategori-listesi li{background:#111100 !important;color:#fff36b !important;border-color:#6f5b00 !important;text-shadow:0 0 4px rgba(255,230,0,.25) !important;}
+.ilan-kategori-listesi li:hover{background:#1a1a00 !important;color:#fff !important;border-color:#ffd800 !important;}
+
+/* ===== ALTIN SARI ZEMIN / SIYAH YAZI ===== */
+header,
+.header-title-row,
+.header-buttons-row{
+ background:linear-gradient(135deg,#ffd400 0%,#ffea61 48%,#ffd000 100%) !important;
+ color:#050505 !important;
+}
+header{
+ border-bottom:4px solid #b8860b !important;
+ box-shadow:0 8px 26px rgba(120,90,0,.28), inset 0 1px 0 rgba(255,255,255,.55) !important;
+}
+.header-title-row{
+ border-bottom:2px solid rgba(0,0,0,.18) !important;
+}
+.header-title{
+ color:#050505 !important;
+ text-shadow:0 2px 0 rgba(255,255,255,.5), 0 3px 10px rgba(0,0,0,.15) !important;
+ font-weight:1000 !important;
+}
+.header-buttons-row{
+ border-top:0 !important;
+}
+.header-buttons button,
+.header-buttons .login-btn,
+.header-buttons .membership-btn,
+.header-buttons .admin-menu-btn,
+.header-buttons .logout-btn{
+ background:linear-gradient(180deg,#ffe85a,#f6c800) !important;
+ color:#050505 !important;
+ border:2px solid #9a7600 !important;
+ text-shadow:none !important;
+ box-shadow:0 4px 10px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.6) !important;
+}
+.header-buttons button:hover{
+ background:#fff06a !important;
+ color:#000 !important;
+ border-color:#6f5200 !important;
+ box-shadow:0 6px 16px rgba(0,0,0,.22) !important;
+}
+.form-box h2{
+ background:linear-gradient(135deg,#ffd400,#ffea61,#ffd000) !important;
+ color:#050505 !important;
+ border:2px solid #9a7600 !important;
+ text-shadow:0 1px 0 rgba(255,255,255,.55) !important;
+ box-shadow:0 7px 18px rgba(120,90,0,.2), inset 0 1px 0 rgba(255,255,255,.65) !important;
+}
+.form-box h2:hover{
+ background:#fff06a !important;
+ color:#000 !important;
+ border-color:#6f5200 !important;
+}
+.form-box h2:after{
+ color:#050505 !important;
+ text-shadow:none !important;
+}
+.ilan-kategori-listesi{
+ background:linear-gradient(135deg,#ffe45a,#ffd21a) !important;
+ border:2px solid #a27a00 !important;
+}
+.ilan-kategori-baslik{
+ color:#050505 !important;
+ text-shadow:none !important;
+}
+.ilan-kategori-listesi li{
+ background:#fff2a6 !important;
+ color:#050505 !important;
+ border:1px solid #a27a00 !important;
+ text-shadow:none !important;
+}
+.ilan-kategori-listesi li:hover{
+ background:#fff7c7 !important;
+ color:#000 !important;
+ border-color:#6f5200 !important;
+}
+@media(max-width:700px){
+ .header-title{color:#050505 !important;}
+ .header-buttons button{color:#050505 !important;}
+}
+
+/* ===== GOLD SARI SON DOKUNUS ===== */
+:root{--sp-gold:#FFD700;--sp-gold2:#FFC400;--sp-gold-dark:#A97800;--sp-black:#050505}
+header,
+.header-title-row,
+.header-buttons-row{
+ background:linear-gradient(135deg,#B8860B 0%,#FFD700 22%,#FFEA61 50%,#FFD700 78%,#B8860B 100%) !important;
+ color:#050505 !important;
+}
+header{
+ border-bottom:4px solid #8A6200 !important;
+ box-shadow:0 10px 28px rgba(93,62,0,.35),inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+.header-title-row{
+ border-bottom:2px solid rgba(90,60,0,.25) !important;
+}
+.header-title{
+ color:#000 !important;
+ text-shadow:0 2px 0 rgba(255,255,255,.72),0 3px 8px rgba(80,55,0,.28) !important;
+ font-weight:1000 !important;
+}
+.header-buttons-row{border-top:0 !important}
+.header-buttons button,
+.header-buttons .login-btn,
+.header-buttons .membership-btn,
+.header-buttons .admin-menu-btn,
+.header-buttons .logout-btn{
+ background:linear-gradient(180deg,#FFE44D 0%,#FFD000 52%,#F2B900 100%) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+ text-shadow:none !important;
+ box-shadow:0 5px 13px rgba(76,49,0,.22),inset 0 1px 0 rgba(255,255,255,.75) !important;
+}
+.header-buttons button:hover{
+ background:linear-gradient(180deg,#FFF06A,#FFD91A) !important;
+ color:#000 !important;
+ border-color:#694900 !important;
+}
+.form-box h2{
+ background:linear-gradient(135deg,#B8860B 0%,#FFD700 24%,#FFEA61 50%,#FFD000 76%,#B8860B 100%) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+ text-shadow:0 1px 0 rgba(255,255,255,.7) !important;
+ box-shadow:0 8px 20px rgba(96,65,0,.26),inset 0 1px 0 rgba(255,255,255,.78) !important;
+}
+.form-box h2:hover{background:linear-gradient(135deg,#C99600,#FFF06A,#FFD000) !important;color:#000 !important}
+.form-box h2:after{color:#000 !important;text-shadow:none !important}
+.ilan-kategori-listesi{
+ background:linear-gradient(135deg,#D8A800,#FFD700,#F6C400) !important;
+ border:2px solid #8F6800 !important;
+ box-shadow:0 5px 16px rgba(89,58,0,.2),inset 0 1px 0 rgba(255,255,255,.55) !important;
+}
+.ilan-kategori-baslik{color:#000 !important;font-weight:900 !important;text-shadow:0 1px 0 rgba(255,255,255,.6) !important}
+.ilan-kategori-listesi li{
+ background:#FFE45A !important;
+ color:#000 !important;
+ border:1px solid #9A7100 !important;
+ text-shadow:none !important;
+}
+.ilan-kategori-listesi li:hover{background:#FFF06A !important;color:#000 !important;border-color:#694900 !important}
+@media(max-width:700px){
+ .header-title{color:#000 !important}
+ .header-buttons button{color:#000 !important}
+}
+
+
+/* =========================================================
+   SAMANDAĞ PAZARI - GOLD / SİYAH BÜTÜNSEL TEMA
+   Son görünüm: altın gold zemin + net siyah yazı
+   ========================================================= */
+:root{
+ --gold:#FFD700;
+ --gold2:#FFC400;
+ --gold3:#F2B900;
+ --gold-light:#FFF1A6;
+ --gold-pale:#FFF8CF;
+ --gold-dark:#8A6200;
+ --black:#090909;
+ --black2:#161616;
+}
+
+body{
+ background:
+   radial-gradient(circle at 12% 0%,rgba(255,215,0,.34),transparent 24%),
+   radial-gradient(circle at 88% 6%,rgba(255,198,0,.28),transparent 26%),
+   linear-gradient(180deg,#fff3a8 0%,#ffe15a 35%,#fff6b8 100%) !important;
+ color:#000 !important;
+}
+
+.container{padding-top:22px !important}
+
+/* Arama alanı */
+.search-box{
+ background:linear-gradient(135deg,#D8A800 0%,#FFD700 28%,#FFF06A 52%,#FFD000 78%,#C79200 100%) !important;
+ border:2px solid var(--gold-dark) !important;
+ box-shadow:0 8px 22px rgba(85,56,0,.22),inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+.search-box input{
+ background:#FFFBE4 !important;
+ color:#000 !important;
+ border:2px solid #9A7100 !important;
+ font-weight:700 !important;
+ box-shadow:inset 0 2px 5px rgba(0,0,0,.08) !important;
+}
+.search-box input::placeholder{color:#393000 !important;opacity:1 !important}
+.search-box input:focus{border-color:#5c4300 !important;box-shadow:0 0 0 4px rgba(255,215,0,.28) !important}
+
+/* Kategoriler */
+.categories{
+ padding:2px 0 4px !important;
+}
+.category-btn{
+ background:linear-gradient(180deg,#FFF06A 0%,#FFD21A 55%,#F2B900 100%) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+ font-weight:900 !important;
+ box-shadow:0 5px 12px rgba(78,49,0,.18),inset 0 1px rgba(255,255,255,.65) !important;
+ text-shadow:none !important;
+}
+.category-btn:hover,
+.category-btn.active{
+ background:linear-gradient(180deg,#FFF6A8 0%,#FFE24A 48%,#FFD000 100%) !important;
+ color:#000 !important;
+ border-color:#684B00 !important;
+ box-shadow:0 7px 16px rgba(76,48,0,.22),0 0 12px rgba(255,215,0,.26) !important;
+}
+
+/* İlan kutusunun tamamı */
+.form-box{
+ background:linear-gradient(135deg,#D8A800,#FFD700 32%,#FFF06A 55%,#FFD000 82%,#C79200) !important;
+ border:2px solid var(--gold-dark) !important;
+ box-shadow:0 10px 26px rgba(83,55,0,.24),inset 0 1px 0 rgba(255,255,255,.72) !important;
+}
+.form-box h2{
+ background:var(--black) !important;
+ color:var(--gold) !important;
+ border-color:#000 !important;
+ text-shadow:0 0 7px rgba(255,215,0,.48) !important;
+}
+.form-box h2:hover{background:#1b1b1b !important;color:#fff06a !important}
+.ilan-form-icerik{color:#000 !important}
+#ilanKullaniciDurumu{
+ background:linear-gradient(180deg,#FFF7C7,#FFE66B) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+ font-weight:800 !important;
+}
+.ilan-kategori-listesi{
+ background:linear-gradient(135deg,#FFE766,#FFD21A,#F4BE00) !important;
+ border:2px solid #8F6800 !important;
+ color:#000 !important;
+}
+.ilan-kategori-baslik{color:#000 !important;font-weight:1000 !important}
+.ilan-kategori-listesi li{
+ background:#FFF5A8 !important;
+ color:#000 !important;
+ border:1px solid #9A7100 !important;
+ font-weight:800 !important;
+}
+.ilan-kategori-listesi li:hover{background:#FFFBE0 !important}
+
+/* Form alanları */
+.form-box input,
+.form-box textarea,
+.form-box select{
+ background:#FFFBEA !important;
+ color:#000 !important;
+ border:2px solid #9A7100 !important;
+ font-weight:600 !important;
+ box-shadow:inset 0 2px 5px rgba(0,0,0,.06) !important;
+}
+.form-box input::placeholder,
+.form-box textarea::placeholder{color:#403700 !important;opacity:1 !important}
+.form-box input:focus,
+.form-box textarea:focus,
+.form-box select:focus{border-color:#4F3900 !important;outline:none !important;box-shadow:0 0 0 4px rgba(255,215,0,.24) !important}
+#ilanVerBtn{
+ background:linear-gradient(180deg,#0A0A0A,#222) !important;
+ color:#FFD700 !important;
+ border:2px solid #000 !important;
+ font-size:15px !important;
+ font-weight:900 !important;
+ text-shadow:0 0 6px rgba(255,215,0,.35) !important;
+ box-shadow:0 6px 16px rgba(0,0,0,.28) !important;
+}
+#ilanVerBtn:hover{background:#000 !important;color:#FFF06A !important}
+
+/* İlanlar - ana odak */
+#listings{gap:18px !important}
+.card{
+ background:linear-gradient(180deg,#FFF8C7 0%,#FFD940 38%,#FFF2A3 100%) !important;
+ border:2px solid #9A7100 !important;
+ box-shadow:0 10px 24px rgba(83,55,0,.20),inset 0 1px rgba(255,255,255,.55) !important;
+}
+.card:hover{
+ transform:translateY(-5px) !important;
+ border-color:#5E4300 !important;
+ box-shadow:0 18px 32px rgba(70,45,0,.26),0 0 14px rgba(255,215,0,.23) !important;
+}
+.card-image{background:#E6C63D !important}
+.card-title{color:#000 !important;font-weight:1000 !important}
+.price{color:#000 !important;font-weight:1000 !important}
+.description,.info{color:#171300 !important;font-weight:600 !important}
+.photo-count{background:#000 !important;color:#FFD700 !important;border:1px solid #FFD700 !important}
+
+/* İletişim / sahip butonları da aynı palet */
+.contact-buttons a,
+.owner-buttons button{
+ background:linear-gradient(180deg,#FFF06A,#FFD000) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+ font-weight:900 !important;
+ box-shadow:0 4px 10px rgba(76,49,0,.16) !important;
+}
+.contact-buttons a:hover,
+.owner-buttons button:hover{background:#FFF06A !important;color:#000 !important}
+
+.loading,
+.empty{
+ background:linear-gradient(135deg,#FFE65A,#FFF1A6,#FFD21A) !important;
+ color:#000 !important;
+ border:2px solid #9A7100 !important;
+ font-weight:800 !important;
+ box-shadow:0 8px 20px rgba(83,55,0,.18) !important;
+}
+
+/* Giriş / kayıt, üyelik, düzenleme, yönetici ve ödeme pencereleri */
+.simple-modal-content,
+.auth-modal-content,
+.membership-content{
+ background:linear-gradient(135deg,#D8A800,#FFD700 32%,#FFF06A 55%,#FFD000 82%,#C79200) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+ box-shadow:0 24px 70px rgba(60,40,0,.38),inset 0 1px rgba(255,255,255,.7) !important;
+}
+.simple-modal-content h2,
+.membership-title{color:#000 !important;text-shadow:0 1px 0 rgba(255,255,255,.7) !important}
+.auth-top{background:transparent !important;border-bottom:2px solid rgba(0,0,0,.18) !important}
+.auth-brand{color:#000 !important;font-weight:1000 !important}
+.auth-sub,.auth-label,.auth-info{color:#1a1600 !important}
+.auth-form{background:transparent !important}
+.auth-input{
+ background:#FFFBEA !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+}
+.auth-input::placeholder{color:#403700 !important;opacity:1 !important}
+.auth-status{
+ background:#FFF1A6 !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+}
+.auth-user{color:#000 !important}
+.auth-main-btn,
+.auth-register-btn{
+ background:linear-gradient(180deg,#0A0A0A,#222) !important;
+ color:#FFD700 !important;
+ border:2px solid #000 !important;
+}
+.auth-register-btn{background:linear-gradient(180deg,#FFF06A,#FFD000) !important;color:#000 !important;border-color:#8F6800 !important}
+.auth-close-btn,
+.modal-close{background:#000 !important;color:#FFD700 !important;border:1px solid #FFD700 !important}
+
+.trial-box,
+.payment-summary,
+.payment-note,
+.bank-box,
+.payment-help,
+.status-box{
+ background:linear-gradient(135deg,#FFF2A3,#FFD945) !important;
+ color:#000 !important;
+ border:2px solid #8F6800 !important;
+}
+.plan{
+ background:linear-gradient(180deg,#FFF4A9,#FFD737) !important;
+ border:2px solid #8F6800 !important;
+ color:#000 !important;
+ box-shadow:0 8px 18px rgba(79,51,0,.16) !important;
+}
+.plan.popular{border:3px solid #000 !important}
+.popular-label{background:#000 !important;color:#FFD700 !important}
+.plan h3,.plan-info,.plan-price{color:#000 !important}
+.plan button,
+.paketBtn,
+#paymentSubmitBtn,
+#paymentBackBtn,
+#editKaydetBtn{
+ background:linear-gradient(180deg,#0A0A0A,#222) !important;
+ color:#FFD700 !important;
+ border:2px solid #000 !important;
+}
+.payment-submit-btn:hover,.plan button:hover,#paymentSubmitBtn:hover,#paymentBackBtn:hover,#editKaydetBtn:hover{background:#000 !important;color:#FFF06A !important}
+.bank-row{border-bottom-color:rgba(0,0,0,.22) !important}
+.bank-row b,.payment-summary strong{color:#000 !important}
+.copy-btn{background:#000 !important;color:#FFD700 !important;border:1px solid #FFD700 !important}
+
+/* Seçimler / dropdown */
+select option{background:#FFF4A9 !important;color:#000 !important}
+
+/* Mobilde de aynı görünüm */
+@media(max-width:700px){
+ .container{padding-left:10px !important;padding-right:10px !important}
+ .card-image{height:250px !important}
+ .search-box{padding:9px !important}
+ .category-btn{padding:8px 11px !important}
+ .form-box{padding:11px !important}
+}
+
 </style>
 </head>
 
@@ -1196,24 +1837,26 @@ header{
 
 <header>
 
- <div class="header-title">
-  🛍️ SAMANDAĞ PAZARI
+ <div class="header-title-row">
+  <div class="header-title">🛍️ SAMANDAĞ PAZARI</div>
  </div>
 
- <div class="header-buttons">
+ <div class="header-buttons-row">
+  <div class="header-buttons">
 
-  <button class="login-btn" id="authBtn">
-   👤 Giriş / Kayıt
-  </button>
+   <button class="login-btn" id="authBtn">
+    👤 Giriş / Kayıt
+   </button>
 
-  <button class="membership-btn" id="uyelikBtn">
-   💳 Üyelik
-  </button>
+   <button class="membership-btn" id="uyelikBtn">
+    💳 Üyelik
+   </button>
 
-  <button id="adminBtn" style="display:none;background:#7c3aed">
-   🛠️ Yönetici
-  </button>
+   <button class="admin-menu-btn" id="adminBtn" style="display:none">
+    🛠️ Yönetici
+   </button>
 
+  </div>
  </div>
 
 </header>
@@ -1871,7 +2514,7 @@ document.getElementById("paymentAmount");
  * BANKA BİLGİLERİNİ BURADAN DEĞİŞTİRİN.
  * Kartlı ödeme yoktur; yalnızca Havale/EFT kullanılır.
  */
-const BANK_NAME = "BANKA ADI"; // Banka adını burada değiştirin
+const BANK_NAME = "Enpara"; // Havale/EFT bankası
 const BANK_OWNER = "Samet Gümüş";
 const BANK_IBAN = "TR47 0015 7000 0000 0069 5885 27";
 
@@ -2124,6 +2767,7 @@ async function updateAuthUI(){
 
  }
 
+ await updateAdminUI();
  displayListings();
 
 }
@@ -3074,24 +3718,23 @@ document
 
  try{
 
-  const {error}=
-  await supabaseClient
-  .from("odeme_talepleri")
-  .insert([{
-   user_id:user.id,
-   email:user.email||"",
-   paket:paket,
-   sure_gun:sure,
-   ilan_hakki:hak,
-   tutar:fiyat,
-   odeme_yontemi:"Havale/EFT",
-   gonderen_ad_soyad:senderName,
-   dekont_no:reference,
-   aciklama:description,
-   durum:"bekliyor"
-  }]);
+  /* ÖDEME BİLDİRİMİ: Supabase RPC üzerinden gönderilir.
+     Bu yöntem RLS/policy sorunlarını doğrudan tablo insertine göre daha güvenli şekilde çözer. */
+  const {data:bildirimId,error}=await supabaseClient.rpc("odeme_bildir",{
+   p_paket:paket,
+   p_sure_gun:sure,
+   p_ilan_hakki:hak,
+   p_tutar:fiyat,
+   p_gonderen_ad_soyad:senderName,
+   p_dekont_no:reference||null,
+   p_aciklama:description||null
+  });
 
   if(error) throw error;
+
+  if(!bildirimId){
+   throw new Error("Ödeme bildirimi oluşturulamadı. Supabase odeme_bildir fonksiyonunun kurulu olduğunu kontrol edin.");
+  }
 
   alert(
    "✅ Ödeme bildiriminiz alındı.\n\n"+
