@@ -2748,7 +2748,22 @@ async function updateAuthUI(userOverride){
  );
 
 
+
+ const authEmail=document.getElementById("authEmail");
+ const authPassword=document.getElementById("authPassword");
+ const loginBtn=document.getElementById("loginBtn");
+ const registerBtn=document.getElementById("registerBtn");
+ const emailLabel=document.querySelector('label[for="authEmail"]');
+ const passwordLabel=document.querySelector('label[for="authPassword"]');
+
  if(user){
+
+  if(authEmail) authEmail.style.display="none";
+  if(authPassword) authPassword.style.display="none";
+  if(loginBtn) loginBtn.style.display="none";
+  if(registerBtn) registerBtn.style.display="none";
+  if(emailLabel) emailLabel.style.display="none";
+  if(passwordLabel) passwordLabel.style.display="none";
 
   authBtn.textContent=
    "👤 "+(user.email||"Hesabım");
@@ -2778,6 +2793,13 @@ async function updateAuthUI(userOverride){
   ilanDurum.style.color="#166534";
 
  }else{
+
+  if(authEmail) authEmail.style.display="";
+  if(authPassword) authPassword.style.display="";
+  if(loginBtn) loginBtn.style.display="";
+  if(registerBtn) registerBtn.style.display="";
+  if(emailLabel) emailLabel.style.display="";
+  if(passwordLabel) passwordLabel.style.display="";
 
   authBtn.textContent=
    "👤 Giriş / Kayıt";
@@ -4612,85 +4634,97 @@ ilanFormBaslik.addEventListener("keydown", e=>{
 /* ================================================= */
 
 async function handleEmailConfirmation(){
-
  try{
-
   const url = new URL(window.location.href);
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
 
-  const errorCode = hash.get("error_code") || url.searchParams.get("error_code");
-  const errorDescription = hash.get("error_description") || url.searchParams.get("error_description");
+  const errorCode =
+   hash.get("error_code") ||
+   url.searchParams.get("error_code");
+
+  const errorDescription =
+   hash.get("error_description") ||
+   url.searchParams.get("error_description");
+
+  const code = url.searchParams.get("code");
+  const hasAuthHash =
+   hash.get("access_token") ||
+   hash.get("refresh_token") ||
+   hash.get("type");
+
+  /* Normal sayfa yenilemesinde giriş penceresini açma. */
+  if(!errorCode && !errorDescription && !code && !hasAuthHash){
+   return false;
+  }
 
   if(errorCode || errorDescription){
-   const cleanMessage = decodeURIComponent((errorDescription || "E-posta doğrulaması başarısız oldu.").replace(/\+/g," "));
+   const cleanMessage = decodeURIComponent(
+    (errorDescription || "E-posta doğrulaması başarısız oldu.")
+     .replace(/\+/g," ")
+   );
+
    const status = document.getElementById("authStatus");
    status.innerHTML =
     '<div style="color:#b91c1c;font-weight:bold">❌ E-posta doğrulaması başarısız</div>'+
-    '<div style="margin-top:7px;line-height:1.5">'+escapeHtml(cleanMessage)+'</div>';
+    '<div style="margin-top:7px;line-height:1.5">'+
+    escapeHtml(cleanMessage)+
+    '</div>';
+
    authModal.classList.add("active");
    document.body.style.overflow="hidden";
    return false;
   }
 
-  const code = url.searchParams.get("code");
-
   if(code){
-   const {error} = await supabaseClient.auth.exchangeCodeForSession(code);
+   const {error} =
+    await supabaseClient.auth.exchangeCodeForSession(code);
    if(error) throw error;
   }
 
-  // Supabase JS client implicit akışta hash içindeki access/refresh token'ları
-  // otomatik olarak oturuma çevirir. Oturumun oluşmasını okuyup UI'ı hemen yenile.
-  const {data:{session}} = await supabaseClient.auth.getSession();
+  const {data:{session}} =
+   await supabaseClient.auth.getSession();
 
   if(session && session.user){
-   const confirmedAt = session.user.email_confirmed_at || session.user.confirmed_at;
+   const confirmedAt =
+    session.user.email_confirmed_at ||
+    session.user.confirmed_at;
 
    await updateAuthUI(session.user);
 
-   authModal.classList.add("active");
-   document.body.style.overflow="hidden";
-
-   const status = document.getElementById("authStatus");
    if(confirmedAt){
-    status.innerHTML =
+    document.getElementById("authStatus").innerHTML =
      '<div style="color:#166534;font-weight:bold;font-size:16px">✅ E-posta onaylandı</div>'+
      '<div style="margin-top:7px;line-height:1.6">'+
      'Hesabınız başarıyla aktifleştirildi.<br>'+
-     '<b>'+escapeHtml(session.user.email || "")+'</b> olarak giriş yapıldı.</div>';
+     '<b>'+escapeHtml(session.user.email || "")+
+     '</b> olarak giriş yapıldı.</div>';
 
     alert("✅ E-posta adresiniz onaylandı. Hesabınız aktif hale geldi.");
    }
 
-   // Token/code tekrar kullanılmasın ve URL temiz görünsün.
-   const cleanUrl = window.location.origin + window.location.pathname;
-   if(window.location.protocol === "http:" || window.location.protocol === "https:"){
+   const cleanUrl =
+    window.location.origin + window.location.pathname;
+
+   if(window.location.protocol === "http:" ||
+      window.location.protocol === "https:"){
     window.history.replaceState({}, document.title, cleanUrl);
    }
 
    return true;
   }
 
-  // Onaydan sonra session otomatik gelmezse kullanıcıyı açıkça bilgilendir.
-  const {data:{user}} = await supabaseClient.auth.getUser();
-  if(user && (user.email_confirmed_at || user.confirmed_at)){
-   await updateAuthUI(user);
-   authModal.classList.add("active");
-   document.body.style.overflow="hidden";
-
-   document.getElementById("authStatus").innerHTML=
-    '<div style="color:#166534;font-weight:bold;font-size:16px">✅ E-posta onaylandı</div>'+
-    '<div style="margin-top:7px;line-height:1.6">Hesabınız aktifleştirildi. Şimdi giriş yapabilirsiniz.</div>';
-
-   return true;
-  }
+  return false;
 
  }catch(error){
   console.error("E-posta doğrulama hatası:",error);
+
   const status = document.getElementById("authStatus");
-  status.innerHTML=
+  status.innerHTML =
    '<div style="color:#b91c1c;font-weight:bold">❌ Doğrulama tamamlanamadı</div>'+
-   '<div style="margin-top:7px;line-height:1.5">'+escapeHtml(error.message || error)+'</div>';
+   '<div style="margin-top:7px;line-height:1.5">'+
+   escapeHtml(error.message || error)+
+   '</div>';
+
   authModal.classList.add("active");
   document.body.style.overflow="hidden";
  }
@@ -4698,8 +4732,6 @@ async function handleEmailConfirmation(){
  return false;
 }
 
-
-/* ================================================= */
 /* İLK YÜKLEME */
 /* ================================================= */
 
