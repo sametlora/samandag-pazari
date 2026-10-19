@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Samandağ Pazarı</title>
+<title>Samandağ 2. El Pazarı</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1847,7 +1847,318 @@ select option{background:#FFF4A9 !important;color:#000 !important}
  .form-box{padding:11px !important}
 }
 
+
+
+/* ===== SON DÜZENLEME: SİYAH + KOYU ALTIN DENGESİ ===== */
+:root{--sp-black:#080808;--sp-black2:#151515;--sp-gold:#B8860B;--sp-gold-light:#D4AF37;}
+html,body{background:#f4f4f4 !important;color:#222 !important;}
+header,.header-title-row,.header-buttons-row{background:#080808 !important;color:#D4AF37 !important;}
+header{border-bottom:2px solid #B8860B !important;}
+.header-title-row{background:#080808 !important;border-bottom:1px solid #60470a !important;}
+.header-title{color:#D4AF37 !important;text-shadow:0 2px 8px rgba(184,134,11,.25) !important;}
+.header-buttons-row{background:#111 !important;}
+.header-buttons button,.header-buttons .login-btn,.header-buttons .membership-btn,.header-buttons .admin-menu-btn,.header-buttons .logout-btn{background:#151515 !important;color:#D4AF37 !important;border:1px solid #B8860B !important;box-shadow:none !important;}
+.header-buttons button:hover{background:#292929 !important;color:#F0D477 !important;}
+.form-box,.search-box{background:#fff !important;color:#222 !important;border:1px solid #ddd !important;}
+.form-box h2{background:#111 !important;color:#D4AF37 !important;border:1px solid #B8860B !important;text-shadow:none !important;box-shadow:none !important;}
+.categories{background:transparent !important;}
+.category-btn{background:#111 !important;color:#D4AF37 !important;border:1px solid #B8860B !important;}
+.category-btn.active,.category-btn:hover{background:#B8860B !important;color:#080808 !important;}
+#listings .card,.listing-card,.ilan-card{background:#fff !important;color:#222 !important;}
+.trial-box,.payment-summary,.payment-note,.bank-box,.payment-help,.status-box{background:#171717 !important;color:#f5f5f5 !important;border:1px solid #B8860B !important;}
+.trial-box strong,.payment-summary strong,.bank-row b{color:#D4AF37 !important;}
+.plans .plan,.plan{background:#171717 !important;color:#f5f5f5 !important;border:1px solid #B8860B !important;box-shadow:none !important;}
+.plan h3,.plan-info,.plan-price{color:#f5f5f5 !important;}
+.plan-price,.popular-label{color:#D4AF37 !important;}
+.plan.popular{border:2px solid #D4AF37 !important;}
+.popular-label{background:#B8860B !important;color:#080808 !important;}
+.plan button,.paketBtn,#paymentSubmitBtn,#paymentBackBtn,#editKaydetBtn,.copy-btn{background:#080808 !important;color:#D4AF37 !important;border:1px solid #B8860B !important;}
+.plan button:hover,.paketBtn:hover,#paymentSubmitBtn:hover,#paymentBackBtn:hover,#editKaydetBtn:hover,.copy-btn:hover{background:#B8860B !important;color:#080808 !important;}
+.auth-modal-content,.simple-modal-content,.membership-content{background:#fff !important;color:#222 !important;}
+.auth-top{background:#111 !important;color:#D4AF37 !important;}
+.auth-brand,.membership-title{color:#B8860B !important;}
+.auth-main-btn,.auth-register-btn{background:#111 !important;color:#D4AF37 !important;border:1px solid #B8860B !important;}
+input,textarea,select{background:#fff !important;color:#222 !important;border-color:#ccc !important;}
+select option{background:#fff !important;color:#222 !important;}
+.bank-row{border-bottom-color:rgba(184,134,11,.35) !important;}
+@media(max-width:700px){.header-title-row{background:#080808 !important}.header-title{color:#D4AF37 !important}.category-btn{background:#111 !important;color:#D4AF37 !important}}
+
+
+/* Logo ve başlık: mevcut site işlevlerine dokunmadan eklendi */
+.header-title-row{width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:10px 12px !important;}
+.header-branding{display:flex !important;align-items:center !important;justify-content:center !important;gap:14px !important;width:100% !important;min-width:0 !important;}
+.logo-crop{display:block !important;width:54px !important;height:54px !important;overflow:hidden !important;flex:0 0 54px !important;border-radius:50% !important;}
+.samandag-belediye-logo{display:block !important;width:241px !important;max-width:none !important;height:54px !important;object-fit:fill !important;flex:none !important;filter:brightness(0) saturate(100%) invert(69%) sepia(56%) saturate(539%) hue-rotate(7deg) brightness(91%) contrast(89%) !important;}
+.header-title{flex:0 1 auto !important;text-align:left !important;font-size:clamp(18px,2.7vw,28px) !important;line-height:1.2 !important;white-space:normal !important;color:#D4AF37 !important;}
+@media(max-width:520px){.header-branding{gap:8px !important}.logo-crop{width:42px !important;height:42px !important;flex-basis:42px !important}.samandag-belediye-logo{width:187px !important;height:42px !important;max-width:none !important}.header-title{font-size:clamp(15px,4vw,20px) !important}}
+
+
+/* BAŞLIK DÜZELTMESİ: büyük, gösterişli ve mobil uyumlu */
+.header-title-row{
+  width:100% !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:14px 12px 12px !important;
+}
+.header-branding{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:18px !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+.logo-crop{
+  display:block !important;
+  width:68px !important;
+  height:68px !important;
+  overflow:hidden !important;
+  flex:0 0 68px !important;
+  border-radius:50% !important;
+  background:#080808 !important;
+  border:2px solid #B8860B !important;
+  box-shadow:0 0 0 3px rgba(212,175,55,.14),0 5px 18px rgba(0,0,0,.45) !important;
+}
+.samandag-belediye-logo{
+  display:block !important;
+  width:304px !important;
+  max-width:none !important;
+  height:64px !important;
+  object-fit:fill !important;
+  flex:none !important;
+  filter:brightness(0) saturate(100%) invert(69%) sepia(56%) saturate(539%) hue-rotate(7deg) brightness(91%) contrast(89%) !important;
+}
+.header-title{
+  flex:0 1 auto !important;
+  width:auto !important;
+  max-width:calc(100% - 90px) !important;
+  text-align:left !important;
+  font-family:Georgia,'Times New Roman',serif !important;
+  font-size:clamp(30px,4.2vw,50px) !important;
+  font-weight:900 !important;
+  font-style:italic !important;
+  letter-spacing:1.2px !important;
+  line-height:1.05 !important;
+  white-space:normal !important;
+  color:#D4AF37 !important;
+  background:linear-gradient(180deg,#FFF1A8 0%,#D4AF37 42%,#9A6B12 100%) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  text-shadow:0 2px 0 rgba(70,43,0,.25),0 5px 15px rgba(184,134,11,.22) !important;
+}
+@media(max-width:700px){
+  .header-title-row{padding:10px 7px !important}
+  .header-branding{gap:10px !important}
+  .logo-crop{width:48px !important;height:48px !important;flex-basis:48px !important}
+  .samandag-belediye-logo{width:215px !important;height:44px !important}
+  .header-title{font-size:clamp(22px,5.3vw,32px) !important;letter-spacing:.2px !important;max-width:calc(100% - 58px) !important}
+}
+
+
+
+/* =====================================================
+   SAMANDAĞ 2. EL PAZARI — LÜKS SİYAH & ŞAMPANYA ALTIN TEMA
+   Mevcut Supabase, ilan, üyelik, ödeme ve yönetici işlevleri korunur.
+   ===================================================== */
+:root{
+ --lux-black:#080808;--lux-panel:#11100d;--lux-panel-2:#17140e;
+ --lux-gold:#d4af37;--lux-gold-light:#fff0a6;--lux-gold-deep:#8d6416;
+ --lux-border:rgba(212,175,55,.34);--lux-text:#f7f0dc;--lux-muted:#b9b09a;
+ --lux-shadow:0 14px 38px rgba(0,0,0,.38);
+}
+html{scroll-behavior:smooth;background:var(--lux-black)!important;}
+body{background:radial-gradient(ellipse at 50% -15%,#30230b 0%,#100f0c 34%,#070707 72%)!important;color:var(--lux-text)!important;font-family:Arial,Helvetica,sans-serif!important;min-height:100vh;}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.13;background-image:radial-gradient(rgba(212,175,55,.45) .65px,transparent .65px);background-size:19px 19px;}
+header{display:flex!important;flex-direction:column!important;gap:0!important;position:sticky!important;top:0;z-index:1000;background:rgba(6,6,6,.96)!important;color:var(--lux-gold)!important;padding:8px 22px 0!important;border-bottom:1px solid var(--lux-gold)!important;box-shadow:0 7px 30px rgba(0,0,0,.6),0 1px 0 rgba(255,240,166,.15) inset!important;backdrop-filter:blur(14px);}
+.header-title-row{width:100%!important;display:flex!important;justify-content:center!important;align-items:center!important;padding:10px 10px 14px!important;border-bottom:1px solid rgba(212,175,55,.17)!important;}
+.header-branding{display:flex!important;align-items:center!important;justify-content:center!important;gap:18px!important;width:100%!important;min-width:0!important;}
+.logo-crop{width:66px!important;height:66px!important;flex:0 0 66px!important;border-radius:50%!important;overflow:hidden!important;background:#090909!important;border:2px solid var(--lux-gold)!important;box-shadow:0 0 0 4px rgba(212,175,55,.08),0 0 22px rgba(212,175,55,.18)!important;}
+.samandag-belediye-logo{display:block!important;width:295px!important;max-width:none!important;height:62px!important;object-fit:fill!important;filter:brightness(0) saturate(100%) invert(76%) sepia(49%) saturate(535%) hue-rotate(7deg) brightness(95%) contrast(92%)!important;}
+.header-title{flex:0 1 auto!important;max-width:calc(100% - 100px)!important;text-align:left!important;font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(27px,3.3vw,45px)!important;font-weight:900!important;font-style:italic!important;letter-spacing:1.1px!important;line-height:1.06!important;color:var(--lux-gold)!important;background:linear-gradient(180deg,#fff5bc 0%,#e8c85c 35%,#bd8c22 68%,#fff0a6 100%)!important;background-clip:text!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;text-shadow:0 4px 18px rgba(212,175,55,.12)!important;}
+.header-buttons-row{width:100%!important;display:flex!important;justify-content:center!important;padding:9px 0 11px!important;}
+.header-buttons{display:flex!important;justify-content:center!important;flex-wrap:wrap!important;gap:10px!important;}
+button,.hero-actions a{font-family:inherit;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease!important;}
+button{border-radius:10px!important;}
+button:hover{transform:translateY(-1px);}
+.header-buttons button,.login-btn,.membership-btn,.admin-menu-btn{border:1px solid var(--lux-gold)!important;border-radius:999px!important;padding:10px 18px!important;font-weight:800!important;letter-spacing:.15px;background:linear-gradient(135deg,#fff0a6,#d4af37 48%,#956913)!important;color:#151006!important;box-shadow:0 4px 15px rgba(212,175,55,.12)!important;}
+.header-buttons .membership-btn{background:transparent!important;color:var(--lux-gold-light)!important;}
+.header-buttons button:hover{box-shadow:0 0 22px rgba(212,175,55,.25)!important;}
+.container{max-width:1440px!important;margin:0 auto!important;padding:24px clamp(12px,2.5vw,34px) 48px!important;}
+.luxury-hero{position:relative;overflow:hidden;text-align:center;padding:clamp(34px,5vw,66px) 22px 28px;margin:4px 0 22px;border:1px solid rgba(212,175,55,.55);border-radius:22px;background:radial-gradient(ellipse at 50% 0%,rgba(151,105,20,.27),transparent 57%),linear-gradient(135deg,#18140b 0%,#090909 47%,#1b1508 100%);box-shadow:0 0 0 5px rgba(212,175,55,.035),0 18px 45px rgba(0,0,0,.4),inset 0 0 42px rgba(212,175,55,.045);}
+.luxury-hero:before,.luxury-hero:after{content:"✧  ✦  ✧";position:absolute;color:rgba(212,175,55,.28);font-size:23px;letter-spacing:10px;pointer-events:none;}
+.luxury-hero:before{top:13px;left:18px}.luxury-hero:after{bottom:10px;right:18px}
+.hero-kicker{color:var(--lux-gold);font-size:11px;font-weight:900;letter-spacing:3px;margin-bottom:14px;}
+.luxury-hero h1{margin:0 auto 13px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(31px,5vw,61px);line-height:1.08;font-weight:900;letter-spacing:-1.2px;color:#fff2bb;text-shadow:0 4px 24px rgba(212,175,55,.12);}
+.luxury-hero h1 span{display:inline-block;color:var(--lux-gold);background:linear-gradient(180deg,#fff3ad,#d4af37 55%,#a57415);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.luxury-hero p{margin:0 auto 24px;max-width:680px;color:#c8bea6;font-size:clamp(14px,1.5vw,18px);line-height:1.65;}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;}
+.hero-actions a{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:12px 22px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1px;}
+.hero-search-link{border:1px solid var(--lux-gold)!important;color:var(--lux-gold-light)!important;background:rgba(0,0,0,.25)!important;}
+.hero-post-link{border:1px solid #ffe9a0!important;color:#171106!important;background:linear-gradient(135deg,#fff2b0,#d4af37 54%,#9b6e18)!important;box-shadow:0 7px 22px rgba(212,175,55,.15)!important;}
+.hero-actions a:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(212,175,55,.2)!important;}
+.hero-bottom-line{display:flex;align-items:center;justify-content:center;gap:13px;margin:27px auto 0;color:#a18a4b;font-size:9px;letter-spacing:2.7px;font-weight:900;}
+.hero-bottom-line span{width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--lux-gold));}.hero-bottom-line span:last-child{transform:rotate(180deg)}
+.hero-ornament{position:absolute;top:50%;transform:translateY(-50%);font-size:clamp(50px,8vw,105px);color:rgba(212,175,55,.07);pointer-events:none}.hero-ornament-left{left:3%}.hero-ornament-right{right:3%}
+.trust-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 24px;}
+.trust-strip>div{display:grid;grid-template-columns:40px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;padding:14px 16px;border:1px solid rgba(212,175,55,.22);border-radius:14px;background:linear-gradient(135deg,rgba(25,22,15,.95),rgba(11,11,10,.95));box-shadow:inset 0 1px rgba(255,255,255,.025);}
+.trust-icon{grid-row:1/3;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;border:1px solid rgba(212,175,55,.4);color:var(--lux-gold);font-size:21px;background:rgba(212,175,55,.06);}
+.trust-strip strong{font-size:13px;color:#f5e6b2}.trust-strip small{font-size:11px;color:var(--lux-muted);margin-top:3px;}
+.form-box,.search-box{background:linear-gradient(145deg,#17150f,#0d0d0c)!important;border:1px solid var(--lux-border)!important;border-radius:16px!important;box-shadow:var(--lux-shadow),inset 0 1px rgba(255,255,255,.025)!important;color:var(--lux-text)!important;}
+.form-box{padding:16px!important;margin-bottom:18px!important;}
+.form-box h2{color:var(--lux-gold-light)!important;background:linear-gradient(100deg,#201a0c,#100f0c)!important;border:1px solid rgba(212,175,55,.38)!important;border-radius:12px!important;padding:16px 18px!important;font-size:18px!important;letter-spacing:.25px;}
+.form-box h2:hover{background:#211a0c!important;border-color:var(--lux-gold)!important;}
+.form-box h2:after{color:var(--lux-gold)!important;}
+input,textarea,select{background:#090909!important;color:#f6edda!important;border:1px solid rgba(212,175,55,.32)!important;border-radius:10px!important;outline:none!important;}
+input::placeholder,textarea::placeholder{color:#8f8775!important;}
+input:focus,textarea:focus,select:focus{border-color:var(--lux-gold)!important;box-shadow:0 0 0 3px rgba(212,175,55,.1)!important;}
+.form-box button,#ilanVerBtn{background:linear-gradient(135deg,#fff0a6,#d4af37 48%,#936714)!important;color:#151006!important;border:1px solid #f1d875!important;font-weight:900!important;box-shadow:0 6px 18px rgba(212,175,55,.12)!important;}
+.ilan-kategori-listesi,#ilanKullaniciDurumu{background:#12110d!important;color:#e8dfca!important;border:1px solid rgba(212,175,55,.22)!important;border-radius:12px!important;}
+.ilan-kategori-baslik{color:var(--lux-gold)!important;}
+.search-box{padding:9px!important;margin-bottom:16px!important;display:flex;gap:10px;}
+.search-box input{min-height:48px!important;border:0!important;box-shadow:none!important;background:transparent!important;font-size:16px!important;padding:12px 16px!important;}
+.categories{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:9px!important;margin:15px 0 26px!important;padding:13px!important;border:1px solid rgba(212,175,55,.18);border-radius:16px;background:rgba(12,12,11,.65);}
+.category-btn{padding:11px 17px!important;border:1px solid rgba(212,175,55,.38)!important;border-radius:999px!important;background:linear-gradient(145deg,#19170f,#0c0c0b)!important;color:#d9c98d!important;font-size:13px!important;font-weight:800!important;box-shadow:none!important;}
+.category-btn:hover,.category-btn.active{background:linear-gradient(135deg,#fff0a6,#d4af37 55%,#9c6c17)!important;color:#100d05!important;border-color:#ffe99a!important;box-shadow:0 4px 15px rgba(212,175,55,.17)!important;}
+#listings{gap:18px!important;}
+#listings .card,#listings .listing-card,#listings .ilan-card,#listings>div:not(.loading){border-color:rgba(212,175,55,.28)!important;}
+#listings .card,#listings .listing-card,#listings .ilan-card{background:linear-gradient(145deg,#18160f,#0d0d0c)!important;color:#f5ecd5!important;border:1px solid rgba(212,175,55,.3)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(0,0,0,.35)!important;overflow:hidden;}
+#listings .card h2,#listings .card h3,#listings .listing-card h2,#listings .listing-card h3,#listings .ilan-card h2,#listings .ilan-card h3{color:#f3df9b!important;}
+#listings .price,#listings .fiyat{color:var(--lux-gold)!important;font-weight:900!important;}
+#listings button{border:1px solid rgba(212,175,55,.45)!important;}
+.loading{color:var(--lux-gold-light)!important;padding:35px!important;text-align:center;border:1px dashed rgba(212,175,55,.35);border-radius:14px;background:rgba(15,14,10,.7);}
+.modal{background:rgba(0,0,0,.82)!important;backdrop-filter:blur(8px)!important;}
+.modal>div,.auth-modal-content,.membership-content,.modal-content{background:linear-gradient(145deg,#1a170f,#090909)!important;color:#f4ead2!important;border:1px solid rgba(212,175,55,.5)!important;border-radius:18px!important;box-shadow:0 25px 80px rgba(0,0,0,.75),0 0 30px rgba(212,175,55,.08)!important;}
+.modal h2,.modal h3,.membership-title,.auth-brand,.modal-title{color:var(--lux-gold-light)!important;}
+.modal p,.membership-subtitle{color:#c6bda7!important;}
+.modal-close{background:#201a0d!important;color:var(--lux-gold-light)!important;border:1px solid rgba(212,175,55,.4)!important;}
+.paketBtn,.modal button:not(.modal-close){background:linear-gradient(135deg,#fff0a6,#d4af37 52%,#956913)!important;color:#151006!important;border:1px solid #f2d975!important;font-weight:900!important;}
+.modal input,.modal textarea,.modal select{background:#080808!important;color:#f8f0de!important;}
+.gallery-arrow,.gallery-controls button{background:rgba(9,9,9,.85)!important;color:var(--lux-gold-light)!important;border:1px solid var(--lux-gold)!important;}
+@media(max-width:760px){
+ header{padding:6px 9px 0!important}.header-title-row{padding:8px 2px 10px!important}.header-branding{gap:9px!important}.logo-crop{width:43px!important;height:43px!important;flex-basis:43px!important}.samandag-belediye-logo{width:192px!important;height:41px!important}.header-title{font-size:clamp(19px,4.8vw,30px)!important;letter-spacing:.1px!important;max-width:calc(100% - 53px)!important;line-height:1.08!important}.header-buttons-row{padding:8px 0 9px!important}.header-buttons{gap:7px!important}.header-buttons button{padding:9px 12px!important;font-size:12px!important}.container{padding:15px 10px 32px!important}.luxury-hero{border-radius:16px;padding:36px 13px 22px;margin-top:0}.hero-kicker{font-size:9px;letter-spacing:1.7px}.luxury-hero h1{font-size:clamp(29px,8vw,43px);letter-spacing:-.7px}.luxury-hero p{font-size:13px;margin-bottom:19px}.hero-actions{gap:8px}.hero-actions a{font-size:10px;padding:11px 14px;min-height:42px}.hero-bottom-line{font-size:8px;letter-spacing:1.4px;gap:8px;margin-top:21px}.hero-bottom-line span{width:24px}.hero-ornament{font-size:45px}.trust-strip{grid-template-columns:1fr;gap:8px;margin-bottom:16px}.trust-strip>div{padding:11px 13px}.categories{justify-content:flex-start;gap:7px;padding:10px!important}.category-btn{padding:9px 12px!important;font-size:12px!important}.form-box{padding:10px!important}.search-box{padding:6px!important}.search-box input{font-size:14px!important}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
+
+/* BAŞLIK: büyük, tek ölçüde ve amblemle uyumlu */
+header{display:flex !important;flex-direction:column !important;align-items:stretch !important;gap:8px !important;padding:18px 22px 14px !important;}
+.header-title-row{width:100% !important;display:flex !important;align-items:center !important;justify-content:center !important;padding:8px 10px 12px !important;}
+.header-branding{width:100% !important;display:flex !important;flex-direction:row !important;align-items:center !important;justify-content:center !important;gap:22px !important;min-width:0 !important;}
+.logo-crop{width:82px !important;height:82px !important;flex:0 0 82px !important;overflow:hidden !important;border-radius:50% !important;border:2px solid #D4AF37 !important;background:#080808 !important;box-shadow:0 0 0 4px rgba(212,175,55,.13),0 0 24px rgba(212,175,55,.24) !important;}
+.samandag-belediye-logo{display:block !important;width:365px !important;max-width:none !important;height:78px !important;object-fit:fill !important;flex:none !important;filter:brightness(0) saturate(100%) invert(69%) sepia(56%) saturate(539%) hue-rotate(7deg) brightness(91%) contrast(89%) !important;}
+.header-title{display:block !important;flex:0 1 auto !important;width:auto !important;max-width:calc(100% - 112px) !important;margin:0 !important;text-align:center !important;font-family:Georgia,'Times New Roman',serif !important;font-size:clamp(34px,4.1vw,54px) !important;font-weight:900 !important;font-style:normal !important;letter-spacing:1.4px !important;line-height:1.05 !important;white-space:normal !important;text-transform:uppercase !important;color:#D4AF37 !important;background:linear-gradient(180deg,#FFF4B7 0%,#E2BD4D 40%,#A87919 78%,#F5D979 100%) !important;-webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important;text-shadow:0 2px 0 rgba(65,42,0,.35),0 5px 18px rgba(212,175,55,.18) !important;}
+.header-buttons-row{width:100% !important;display:flex !important;justify-content:center !important;}
+@media(max-width:700px){header{padding:12px 8px 10px !important;gap:6px !important}.header-title-row{padding:6px 4px 9px !important}.header-branding{gap:10px !important}.logo-crop{width:50px !important;height:50px !important;flex-basis:50px !important}.samandag-belediye-logo{width:222px !important;height:46px !important}.header-title{font-size:clamp(23px,5.5vw,34px) !important;letter-spacing:.25px !important;line-height:1.08 !important;max-width:calc(100% - 60px) !important}.header-buttons{justify-content:center !important;flex-wrap:wrap !important;}}
+@media(max-width:390px){.header-branding{gap:7px !important}.logo-crop{width:42px !important;height:42px !important;flex-basis:42px !important}.samandag-belediye-logo{width:187px !important;height:39px !important}.header-title{font-size:22px !important;letter-spacing:0 !important;max-width:calc(100% - 50px) !important;}}
+
+
+/* SON BASLIK TASARIMI — daha büyük, asil Cinzel yazı tipi ve uyumlu amblem */
+.header-title-row{
+  padding:18px 14px 16px !important;
+}
+.header-branding{
+  gap:22px !important;
+  justify-content:center !important;
+  align-items:center !important;
+}
+.logo-crop{
+  width:84px !important;
+  height:84px !important;
+  flex:0 0 84px !important;
+  border:2px solid #D4AF37 !important;
+  box-shadow:0 0 0 4px rgba(212,175,55,.12),0 0 24px rgba(212,175,55,.22) !important;
+}
+.samandag-belediye-logo{
+  width:375px !important;
+  height:80px !important;
+  max-width:none !important;
+  filter:brightness(0) saturate(100%) invert(75%) sepia(49%) saturate(550%) hue-rotate(7deg) brightness(94%) contrast(92%) !important;
+}
+.header-title{
+  flex:0 1 auto !important;
+  width:auto !important;
+  max-width:calc(100% - 115px) !important;
+  font-family:'Cinzel','Palatino Linotype',Georgia,serif !important;
+  font-size:clamp(40px,5.2vw,68px) !important;
+  font-weight:900 !important;
+  font-style:normal !important;
+  letter-spacing:1.5px !important;
+  line-height:1.03 !important;
+  text-align:center !important;
+  text-transform:uppercase !important;
+  color:#D4AF37 !important;
+  background:linear-gradient(180deg,#FFF5C4 0%,#F4D46A 25%,#C99625 55%,#FFEBA0 78%,#A87312 100%) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  text-shadow:0 2px 0 rgba(65,42,0,.35),0 5px 20px rgba(212,175,55,.24) !important;
+}
+@media(max-width:700px){
+  .header-title-row{padding:12px 7px 12px !important}
+  .header-branding{gap:10px !important}
+  .logo-crop{width:52px !important;height:52px !important;flex-basis:52px !important}
+  .samandag-belediye-logo{width:232px !important;height:48px !important}
+  .header-title{font-size:clamp(25px,6vw,38px) !important;letter-spacing:.2px !important;line-height:1.08 !important;max-width:calc(100% - 62px) !important}
+}
+@media(max-width:390px){
+  .header-branding{gap:7px !important}
+  .logo-crop{width:43px !important;height:43px !important;flex-basis:43px !important}
+  .samandag-belediye-logo{width:192px !important;height:40px !important}
+  .header-title{font-size:clamp(22px,6.2vw,28px) !important;letter-spacing:0 !important;max-width:calc(100% - 50px) !important}
+}
+
+/* İLAN ODAKLI TASARIM: ilanlar ön planda, diğer alanlar daha kompakt */
+.container{max-width:1500px !important;padding:12px 22px 30px !important;}
+.luxury-hero{padding:18px 22px !important;margin:0 0 12px !important;border-radius:14px !important;}
+.luxury-hero .hero-kicker{font-size:10px !important;letter-spacing:1.4px !important;margin-bottom:6px !important;}
+.luxury-hero h1{font-size:clamp(24px,3vw,38px) !important;line-height:1.08 !important;margin:4px 0 7px !important;}
+.luxury-hero p{font-size:13px !important;margin:5px 0 10px !important;}
+.luxury-hero .hero-actions{gap:8px !important;margin-top:8px !important;}
+.luxury-hero .hero-actions a{padding:8px 13px !important;font-size:12px !important;}
+.trust-strip{gap:8px !important;margin:0 0 12px !important;}
+.trust-strip>div{padding:8px 11px !important;grid-template-columns:28px 1fr !important;column-gap:7px !important;border-radius:10px !important;}
+.trust-icon{font-size:20px !important;}
+.trust-strip strong{font-size:12px !important;}
+.trust-strip small{font-size:10px !important;}
+.form-box{padding:9px 12px !important;margin-bottom:10px !important;gap:6px 9px !important;}
+.form-box h2{padding:7px 10px !important;font-size:15px !important;}
+.search-box{padding:8px !important;margin-bottom:9px !important;}
+.search-box input{height:46px !important;font-size:16px !important;border-radius:9px !important;}
+.categories{gap:6px !important;margin-bottom:12px !important;}
+.category-btn{padding:6px 10px !important;font-size:12px !important;border-radius:7px !important;}
+.listings-heading{display:flex;align-items:center;justify-content:center;gap:13px;text-align:center;margin:16px 0 14px;padding:14px 12px;border:1px solid rgba(212,175,55,.65);border-radius:12px;background:linear-gradient(110deg,#090909,#211a0a,#090909);box-shadow:0 5px 20px rgba(0,0,0,.18),inset 0 0 20px rgba(212,175,55,.05);color:#D4AF37;}
+.listings-heading>span{font-size:22px;color:#F5D778;text-shadow:0 0 12px rgba(212,175,55,.4);}
+.listings-heading strong{display:block;font-family:Georgia,'Times New Roman',serif;font-size:clamp(19px,2.1vw,27px);font-weight:900;letter-spacing:1.3px;line-height:1.15;}
+.listings-heading small{display:block;margin-top:4px;color:#d6d0bf;font-size:11px;letter-spacing:.3px;}
+#listings{grid-template-columns:repeat(auto-fill,minmax(min(100%,285px),1fr)) !important;gap:20px !important;align-items:stretch;}
+#listings .card{border:1px solid rgba(184,134,11,.5) !important;border-radius:12px !important;box-shadow:0 5px 18px rgba(0,0,0,.09) !important;transition:transform .18s ease,box-shadow .18s ease !important;}
+#listings .card:hover{transform:translateY(-4px) !important;box-shadow:0 12px 28px rgba(184,134,11,.18) !important;}
+#listings .card-image{height:300px !important;background:#f1eee6 !important;}
+#listings .card-title{font-size:18px !important;font-weight:800 !important;line-height:1.35 !important;}
+#listings .price{font-size:23px !important;font-weight:900 !important;color:#9a6b12 !important;}
+#listings .card-body{padding:14px !important;}
+@media(max-width:700px){
+ .container{padding:9px 10px 24px !important;}
+ .luxury-hero{padding:13px 12px !important;margin-bottom:9px !important;}
+ .luxury-hero h1{font-size:clamp(23px,6vw,31px) !important;}
+ .luxury-hero p{font-size:12px !important;}
+ .trust-strip{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:5px !important;margin-bottom:9px !important;}
+ .trust-strip>div{display:flex !important;flex-direction:column !important;text-align:center !important;gap:3px !important;padding:7px 4px !important;}
+ .trust-strip small{font-size:9px !important;}.trust-strip strong{font-size:10px !important;}
+ .categories{gap:5px !important;}.category-btn{padding:6px 8px !important;font-size:11px !important;}
+ .listings-heading{margin:12px 0 10px;padding:11px 7px;gap:8px;}
+ .listings-heading strong{font-size:19px;letter-spacing:.5px;}.listings-heading small{font-size:10px;}
+ #listings{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:9px !important;}
+ #listings .card-image{height:clamp(135px,42vw,220px) !important;}
+ #listings .card-body{padding:9px !important;}#listings .card-title{font-size:14px !important;}#listings .price{font-size:18px !important;}
+}
+@media(max-width:370px){#listings{grid-template-columns:1fr !important;}#listings .card-image{height:220px !important;}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -1855,7 +2166,10 @@ select option{background:#FFF4A9 !important;color:#000 !important}
 <header>
 
  <div class="header-title-row">
-  <div class="header-title">🛍️ SAMANDAĞ PAZARI</div>
+  <div class="header-branding">
+   <div class="logo-crop" aria-label="Amblem"><img class="samandag-belediye-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/03/Samanda%C4%9F_Belediyesi_logo.png" alt="Amblem" loading="eager"></div>
+   <div class="header-title">SAMANDAĞ 2. EL PAZARI</div>
+  </div>
  </div>
 
  <div class="header-buttons-row">
@@ -1880,6 +2194,21 @@ select option{background:#FFF4A9 !important;color:#000 !important}
 
 
 <div class="container">
+
+ <!-- GÖSTERİŞLİ VİTRİN ALANI -->
+ <section class="luxury-hero" aria-label="Samandağ 2. El Pazarı tanıtım">
+   <div class="hero-ornament hero-ornament-left">✦</div>
+   <div class="hero-kicker">✧ SAMANDAĞ’IN ALIŞVERİŞ BULUŞMA NOKTASI ✧</div>
+   <h1>Aradığını Bul. <span>Değerini Kazan.</span></h1>
+   <p>Al, sat, keşfet… Samandağ’da alışverişin yeni ve gösterişli adresi.</p>
+   <div class="hero-actions">
+     <a href="#searchInput" class="hero-search-link">⌕ İLANLARI KEŞFET</a>
+     <a href="#ilanFormBaslik" class="hero-post-link">＋ ÜCRETSİZ İLAN VER</a>
+   </div>
+   <div class="hero-bottom-line"><span></span><b>GÜVENİLİR • YEREL • KOLAY</b><span></span></div>
+   <div class="hero-ornament hero-ornament-right">✦</div>
+ </section>
+
 
  <!-- İLAN FORMU -->
 
@@ -1997,6 +2326,8 @@ select option{background:#FFF4A9 !important;color:#000 !important}
 
  </div>
 
+
+ <div class="listings-heading"><span>✦</span><div><strong>ÖNE ÇIKAN İLANLAR</strong><small>Samandağ’daki güncel fırsatları keşfet</small></div><span>✦</span></div>
 
  <div id="listings">
 
