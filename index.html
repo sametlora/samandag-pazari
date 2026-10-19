@@ -1,1359 +1,641 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Samandağ 2. El Pazarı - Türkiye'nin Yerel Pazarı</title>
-
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-/* =========================================================
-   1. RESET & VARIABLES
-    Sahibinden-inspired Palette with High Contrast Yellow & Dark Navy
-   ========================================================= */
-:root {
-  --sh-yellow: #ffe600;
-  --sh-yellow-hover: #ffd800;
-  --sh-yellow-dark: #ccb700;
-  --sh-navy: #0b1220;
-  --sh-navy-light: #152238;
-  --sh-gray-bg: #f2f4f7;
-  --sh-card-border: #e2e8f0;
-  --sh-text-dark: #1e293b;
-  --sh-text-muted: #64748b;
-  --sh-price-red: #d97706;
-  --sh-green: #16a34a;
-  --sh-blue: #2563eb;
-  --sh-purple: #7c3aed;
-  --sh-danger: #dc2626;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--sh-gray-bg);
-  color: var(--sh-text-dark);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* =========================================================
-   2. TOP HEADER (SAHIBINDEN STYLE)
-   ========================================================= */
-header {
-  background: var(--sh-navy);
-  border-bottom: 4px solid var(--sh-yellow);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-}
-
-.header-top-bar {
-  max-width: 1380px;
-  margin: 0 auto;
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.header-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
-.brand-badge {
-  background: var(--sh-yellow);
-  color: #000;
-  font-weight: 900;
-  font-size: 13px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.header-title {
-  font-size: 28px;
-  font-weight: 900;
-  color: var(--sh-yellow);
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.header-buttons {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.header-buttons button {
-  width: auto;
-  margin: 0;
-  padding: 9px 16px;
-  font-size: 13px;
-  font-weight: 700;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.login-btn {
-  background: var(--sh-yellow) !important;
-  color: #000 !important;
-  box-shadow: 0 2px 8px rgba(255, 230, 0, 0.3);
-}
-
-.login-btn:hover {
-  background: var(--sh-yellow-hover) !important;
-  transform: translateY(-1px);
-}
-
-.membership-btn {
-  background: var(--sh-navy-light) !important;
-  color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-.membership-btn:hover {
-  background: #1f304e !important;
-  border-color: var(--sh-yellow) !important;
-}
-
-.admin-menu-btn {
-  background: var(--sh-purple) !important;
-  color: #fff !important;
-}
-
-.logout-btn {
-  background: #334155 !important;
-  color: #fff !important;
-}
-
-.logout-btn:hover {
-  background: var(--sh-danger) !important;
-}
-
-/* =========================================================
-   3. CONTAINER & LAYOUT STRUCTURE
-   ========================================================= */
-.container {
-  max-width: 1380px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* =========================================================
-   4. STICKY SEARCH & CATEGORY BAR
-   ========================================================= */
-.search-bar-wrapper {
-  background: #fff;
-  border: 1px solid var(--sh-card-border);
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  position: sticky;
-  top: 68px;
-  z-index: 900;
-}
-
-.search-input-group {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-input-group input {
-  width: 100%;
-  height: 46px;
-  padding: 10px 16px 10px 42px;
-  font-size: 15px;
-  border: 2px solid var(--sh-card-border);
-  border-radius: var(--radius-sm);
-  background: #fafafa;
-  transition: all 0.2s ease;
-}
-
-.search-input-group input:focus {
-  outline: none;
-  border-color: var(--sh-yellow-dark);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 230, 0, 0.25);
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  font-size: 18px;
-  color: var(--sh-text-muted);
-  pointer-events: none;
-}
-
-.categories-scroll {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 4px 0 8px;
-  margin-bottom: 20px;
-  scrollbar-width: thin;
-}
-
-.categories-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.categories-scroll::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-.category-btn {
-  width: auto;
-  white-space: nowrap;
-  padding: 8px 16px;
-  background: #fff;
-  color: var(--sh-text-dark);
-  border: 1px solid var(--sh-card-border);
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-}
-
-.category-btn:hover {
-  border-color: var(--sh-yellow-dark);
-  background: #fffdf0;
-  color: #000;
-}
-
-.category-btn.active {
-  background: var(--sh-navy);
-  color: var(--sh-yellow);
-  border-color: var(--sh-navy);
-  box-shadow: 0 4px 10px rgba(11, 18, 32, 0.2);
-}
-
-/* =========================================================
-   5. ILAN VERME FORMU (COLLAPSIBLE ACCORDION)
-   ========================================================= */
-.form-box {
-  background: #fff;
-  border: 2px solid var(--sh-yellow);
-  border-radius: var(--radius-md);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-
-.form-box h2 {
-  margin: 0;
-  background: var(--sh-navy);
-  color: var(--sh-yellow);
-  font-size: 16px;
-  font-weight: 800;
-  padding: 14px 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  user-select: none;
-  transition: background 0.2s ease;
-}
-
-.form-box h2:hover {
-  background: var(--sh-navy-light);
-}
-
-.form-box h2:after {
-  content: "＋  İlan Ver";
-  font-size: 14px;
-  font-weight: 800;
-  background: var(--sh-yellow);
-  color: #000;
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-
-.form-box.open h2:after {
-  content: "− Kapat";
-  background: #e2e8f0;
-  color: #333;
-}
-
-.ilan-form-icerik {
-  display: none;
-  padding: 18px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  align-items: start;
-  background: #fff;
-}
-
-.form-box.open .ilan-form-icerik {
-  display: grid;
-}
-
-.ilan-kategori-listesi {
-  grid-column: 1 / -1;
-  background: #fffdf0;
-  border: 1px solid #fde047;
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  margin-bottom: 6px;
-}
-
-.ilan-kategori-baslik {
-  font-size: 13px;
-  font-weight: 800;
-  color: #854d0e;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-
-.ilan-kategori-listesi ul {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px 12px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ilan-kategori-listesi li {
-  font-size: 12px;
-  color: #334155;
-  background: #fff;
-  padding: 6px 10px;
-  border: 1px solid #fef08a;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-#ilanKullaniciDurumu {
-  grid-column: 1 / -1 !important;
-  margin-bottom: 4px !important;
-  padding: 10px 14px !important;
-  border: 1px solid #e2e8f0;
-  border-left: 4px solid var(--sh-blue);
-  background: #f8fafc;
-  font-size: 13px;
-  border-radius: 4px;
-}
-
-.form-box #baslik { grid-column: span 2; }
-.form-box #aciklama { grid-column: 1 / -1; min-height: 80px; }
-.form-box #fotograflar { grid-column: span 3; }
-.form-box #ilanVerBtn {
-  grid-column: span 1;
-  background: var(--sh-yellow);
-  color: #000;
-  font-weight: 900;
-  border: 1px solid var(--sh-yellow-dark);
-  height: 42px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-}
-
-.form-box #ilanVerBtn:hover {
-  background: var(--sh-yellow-hover);
-}
-
-input, textarea, select, button {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--sh-card-border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  background: #fff;
-  font-family: inherit;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--sh-navy-light);
-  box-shadow: 0 0 0 2px rgba(11, 18, 32, 0.1);
-}
-
-/* =========================================================
-   6. LISTINGS GRID & CARD STYLING
-   ========================================================= */
-#listings {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: #fff;
-  border: 1px solid var(--sh-card-border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  position: relative;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-  border-color: var(--sh-yellow-dark);
-}
-
-.card-image {
-  height: 220px;
-  background: #e2e8f0;
-  position: relative;
-  cursor: pointer;
-  overflow: hidden;
-}
-
-.card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.card:hover .card-image img {
-  transform: scale(1.04);
-}
-
-.photo-count {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  background: rgba(11, 18, 32, 0.85);
-  color: var(--sh-yellow);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 800;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.card-body {
-  padding: 14px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.card-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--sh-navy);
-  margin-bottom: 6px;
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.price {
-  color: var(--sh-price-red);
-  font-size: 18px;
-  font-weight: 900;
-  margin-bottom: 8px;
-}
-
-.description {
-  color: var(--sh-text-muted);
-  font-size: 13px;
-  line-height: 1.4;
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  flex-grow: 1;
-}
-
-.info {
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 600;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 8px;
-  margin-top: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.contact-buttons, .owner-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.contact-buttons a, .owner-buttons button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  padding: 9px 12px;
-  border-radius: var(--radius-sm);
-  font-weight: 800;
-  font-size: 13px;
-  color: #fff;
-  transition: opacity 0.2s ease, transform 0.1s ease;
-  flex: 1;
-  text-align: center;
-  border: none;
-  cursor: pointer;
-}
-
-.contact-buttons a:hover, .owner-buttons button:hover {
-  opacity: 0.9;
-}
-
-.contact-buttons .phone {
-  background: var(--sh-green);
-}
-
-.contact-buttons .whatsapp-btn {
-  background: #10b981;
-}
-
-.owner-buttons .edit-btn {
-  background: #f59e0b;
-}
-
-.owner-buttons .delete-btn {
-  background: var(--sh-danger);
-}
-
-.loading {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--sh-text-muted);
-  font-weight: 700;
-  font-size: 16px;
-}
-
-.empty {
-  background: #fff;
-  padding: 50px 20px;
-  text-align: center;
-  border-radius: var(--radius-md);
-  color: var(--sh-text-muted);
-  border: 1px solid var(--sh-card-border);
-}
-
-/* =========================================================
-   7. MODAL STYLING (AUTH, MEMBERSHIP, GALLERY)
-   ========================================================= */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(11, 18, 32, 0.82);
-  backdrop-filter: blur(4px);
-  z-index: 9999;
-  display: none;
-  flex-direction: column;
-}
-
-.modal.active {
-  display: flex;
-}
-
-.simple-modal {
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.simple-modal-content {
-  background: #fff;
-  color: var(--sh-text-dark);
-  width: 100%;
-  max-width: 460px;
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-/* AUTH MODAL SPECIFIC */
-.auth-modal-content {
-  background: #fff;
-  width: 100%;
-  max-width: 420px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-.auth-top {
-  background: var(--sh-navy);
-  padding: 24px;
-  text-align: center;
-  border-bottom: 3px solid var(--sh-yellow);
-}
-
-.auth-brand {
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--sh-yellow);
-}
-
-.auth-sub {
-  margin-top: 4px;
-  color: #94a3b8;
-  font-size: 12px;
-}
-
-.auth-form {
-  padding: 24px;
-}
-
-.auth-label {
-  display: block;
-  color: var(--sh-text-dark);
-  font-size: 12px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.auth-input {
-  width: 100%;
-  height: 44px;
-  margin-bottom: 14px;
-  border: 1px solid var(--sh-card-border);
-  border-radius: var(--radius-sm);
-  background: #f8fafc;
-  padding: 0 12px;
-}
-
-.auth-input:focus {
-  outline: none;
-  border-color: var(--sh-navy);
-  background: #fff;
-}
-
-.auth-main-btn {
-  width: 100%;
-  height: 44px;
-  margin-bottom: 10px;
-  background: var(--sh-yellow);
-  color: #000;
-  font-weight: 800;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
-.auth-register-btn {
-  width: 100%;
-  height: 44px;
-  background: #fff;
-  color: var(--sh-navy);
-  border: 2px solid var(--sh-navy);
-  font-weight: 800;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
-.auth-status {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  margin-bottom: 16px;
-  font-size: 13px;
-}
-
-.auth-close-btn {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  z-index: 10;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  margin: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-/* MEMBERSHIP MODAL */
-.membership-content {
-  background: #fff;
-  color: var(--sh-text-dark);
-  width: 100%;
-  max-width: 900px;
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.membership-title {
-  text-align: center;
-  margin-bottom: 6px;
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--sh-navy);
-}
-
-.membership-subtitle {
-  text-align: center;
-  color: var(--sh-text-muted);
-  margin-bottom: 24px;
-  font-size: 14px;
-}
-
-.trial-box {
-  background: #f0fdf4;
-  border: 2px solid #86efac;
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.trial-box strong {
-  color: #166534;
-  font-size: 18px;
-}
-
-.plans {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.plan {
-  border: 2px solid var(--sh-card-border);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  text-align: center;
-  position: relative;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-}
-
-.plan.popular {
-  border-color: var(--sh-yellow-dark);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  background: #fffdf0;
-}
-
-.popular-label {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--sh-navy);
-  color: var(--sh-yellow);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.plan h3 {
-  margin-top: 6px;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.plan-price {
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--sh-price-red);
-  margin: 12px 0;
-}
-
-.plan-info {
-  color: var(--sh-text-muted);
-  line-height: 1.6;
-  font-size: 13px;
-  flex-grow: 1;
-}
-
-.plan button {
-  margin-top: 16px;
-  background: var(--sh-navy);
-  color: var(--sh-yellow);
-  font-weight: 800;
-  border: none;
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-}
-
-.bank-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius-md);
-  padding: 16px;
-  margin-top: 16px;
-}
-
-.bank-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid #e2e8f0;
-  font-size: 13px;
-}
-
-.bank-row:last-child { border-bottom: 0; }
-.bank-row b { color: var(--sh-navy); }
-
-/* GALLERY MODAL */
-.modal-header {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  color: #fff;
-  background: rgba(11, 18, 32, 0.95);
-  z-index: 20;
-}
-
-.modal-title {
-  font-size: 16px;
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.close-btn {
-  width: auto;
-  margin: 0;
-  padding: 6px 14px;
-  background: var(--sh-danger);
-  color: #fff;
-  font-size: 16px;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-}
-
-.gallery-main {
-  flex: 1;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.gallery-main img {
-  max-width: 90%;
-  max-height: 75vh;
-  object-fit: contain;
-  user-select: none;
-}
-
-.gallery-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 28px;
-  border-radius: var(--radius-sm);
-  border: none;
-  cursor: pointer;
-  z-index: 25;
-}
-
-.gallery-arrow:hover { background: rgba(255, 255, 255, 0.4); }
-.gallery-prev { left: 16px; }
-.gallery-next { right: 16px; }
-
-.thumbnails {
-  height: 84px;
-  background: rgba(11, 18, 32, 0.95);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  overflow-x: auto;
-}
-
-.thumbnail {
-  height: 64px;
-  width: 64px;
-  min-width: 64px;
-  object-fit: cover;
-  border-radius: 4px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-.thumbnail.active {
-  border-color: var(--sh-yellow);
-  opacity: 1;
-}
-
-/* =========================================================
-   8. RESPONSIVE MEDIA QUERIES
-   ========================================================= */
-@media (max-width: 900px) {
-  .plans { grid-template-columns: 1fr; }
-  .form-box .ilan-form-icerik { grid-template-columns: repeat(2, 1fr); }
-  .form-box #baslik, .form-box #fotograflar, .form-box #ilanVerBtn { grid-column: 1 / -1; }
-  .ilan-kategori-listesi ul { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 700px) {
-  .header-top-bar {
-    padding: 10px 12px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-  .header-brand { justify-content: center; }
-  .header-title { font-size: 24px; text-align: center; }
-  .header-buttons { justify-content: center; width: 100%; }
-  .header-buttons button { flex: 1; font-size: 12px; padding: 8px 6px; }
-  
-  .container { padding: 12px; }
-  .search-bar-wrapper { top: 110px; }
-  
-  #listings {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  
-  .form-box .ilan-form-icerik { grid-template-columns: 1fr; }
-  .bank-row { flex-direction: column; gap: 4px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samandağ 2. El Pazarı</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sahibinden: {
+                            yellow: '#ffe600',
+                            yellowHover: '#e6cf00',
+                            blue: '#1e3a8a',
+                            navy: '#0b1220',
+                            orange: '#f58220',
+                            bg: '#f4f6f9',
+                            card: '#ffffff',
+                            text: '#222222',
+                            muted: '#666666',
+                            border: '#e2e8f0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f6f9;
+            color: #222222;
+        }
+        .shb-yellow-btn {
+            background-color: #ffe600;
+            color: #111111;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .shb-yellow-btn:hover {
+            background-color: #e6cf00;
+            transform: translateY(-1px);
+        }
+        .shb-navy-header {
+            background: linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
+        }
+        .shb-badge-vip {
+            background: linear-gradient(45deg, #f58220, #ffe600);
+            color: #000;
+            font-weight: 800;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col bg-slate-100">
 
-<!-- TOP HEADER -->
-<header>
-  <div class="header-top-bar">
-    <a href="#" class="header-brand">
-      <span class="brand-badge">PAZAR</span>
-      <h1 class="header-title">Samandağ 2. El Pazarı</h1>
-    </a>
-    <div class="header-buttons" id="headerButtons">
-      <button class="login-btn" onclick="openAuthModal()">Giriş Yap / Üye Ol</button>
-      <button class="membership-btn" onclick="openMembershipModal()">Mağaza Aç</button>
-    </div>
-  </div>
-</header>
+    <!-- Top Header Bar -->
+    <header class="shb-navy-header text-white sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+                    <div class="bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-lg text-xl tracking-wider shadow">
+                        S2E
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                            Samandağ 2. El Pazarı
+                            <span class="text-xs font-normal bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30">Hatay</span>
+                        </h1>
+                        <p class="text-xs text-slate-300 hidden sm:block">Güvenli Alışverişin ve İkinci Elin Adresi</p>
+                    </div>
+                </div>
 
-<div class="container">
+                <!-- Header Actions / User Menu -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleFormAccordion()" class="shb-yellow-btn px-4 py-2 rounded-lg text-sm flex items-center space-x-2 shadow-sm border border-yellow-300">
+                        <i class="fa-solid font-bold fa-plus text-base"></i>
+                        <span class="hidden sm:inline">Ücretsiz İlan Ver</span>
+                    </button>
 
-  <!-- STICKY SEARCH & CATEGORY SELECTOR -->
-  <div class="search-bar-wrapper">
-    <div class="search-input-group">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="İlan başlığı, ürün veya açıklama ara..." oninput="filterListings()">
-    </div>
-  </div>
-
-  <div class="categories-scroll" id="categoryButtons">
-    <button class="category-btn active" onclick="selectCategory('Tümü', this)">Tümü</button>
-    <button class="category-btn" onclick="selectCategory('Emlak', this)">🏠 Emlak</button>
-    <button class="category-btn" onclick="selectCategory('Vasıta', this)">🚗 Vasıta</button>
-    <button class="category-btn" onclick="selectCategory('Elektronik', this)">📱 Elektronik</button>
-    <button class="category-btn" onclick="selectCategory('Ev Eşyası', this)">🛋️ Ev Eşyası</button>
-    <button class="category-btn" onclick="selectCategory('Giyim & Moda', this)">👕 Giyim</button>
-    <button class="category-btn" onclick="selectCategory('Diğer', this)">📦 Diğer</button>
-  </div>
-
-  <!-- COLLAPSIBLE CREATE LISTING FORM -->
-  <div class="form-box" id="formBox">
-    <h2 onclick="toggleForm()">Hızlı İlan Oluştur</h2>
-    <div class="ilan-form-icerik">
-      <div id="ilanKullaniciDurumu">Yükleniyor...</div>
-      
-      <div class="ilan-kategori-listesi">
-        <div class="ilan-kategori-baslik">Popüler Kategori Rehberi</div>
-        <ul>
-          <li>Konut / Arsa</li>
-          <li>Otomobil / Motosiklet</li>
-          <li>Telefon / Bilgisayar</li>
-          <li>Mobilya / Beyaz Eşya</li>
-        </ul>
-      </div>
-
-      <input type="text" id="baslik" placeholder="İlan Başlığı (Örn: Temiz iPhone 13 128GB)" required>
-      <input type="number" id="fiyat" placeholder="Fiyat (TL)" required>
-      
-      <select id="kategori">
-        <option value="Emlak">Emlak</option>
-        <option value="Vasıta">Vasıta</option>
-        <option value="Elektronik">Elektronik</option>
-        <option value="Ev Eşyası">Ev Eşyası</option>
-        <option value="Giyim & Moda">Giyim & Moda</option>
-        <option value="Diğer" selected>Diğer</option>
-      </select>
-
-      <input type="tel" id="telefon" placeholder="Telefon No (05xx...)" required>
-      <textarea id="aciklama" placeholder="İlan açıklaması ve detaylarını buraya yazabilirsiniz..."></textarea>
-      
-      <input type="file" id="fotograflar" multiple accept="image/*">
-      <button type="button" id="ilanVerBtn" onclick="submitListing()">İlanı Yayınla</button>
-    </div>
-  </div>
-
-  <!-- LISTINGS DISPLAY GRID -->
-  <div id="listings">
-    <div class="loading">İlanlar yükleniyor, lütfen bekleyin...</div>
-  </div>
-
-</div>
-
-<!-- AUTHENTICATION MODAL -->
-<div class="modal simple-modal" id="authModal">
-  <div class="auth-modal-content">
-    <button class="auth-close-btn" onclick="closeAuthModal()">✕</button>
-    <div class="auth-top">
-      <div class="auth-brand">Samandağ Pazarı</div>
-      <div class="auth-sub">Giriş Yapın veya Ücretsiz Hesap Oluşturun</div>
-    </div>
-    <div class="auth-form">
-      <div class="auth-status" id="authStatusBox">Oturum durumu kontrol ediliyor...</div>
-      <label class="auth-label">E-Posta Adresi</label>
-      <input type="email" id="authEmail" class="auth-input" placeholder="ornek@email.com">
-      
-      <label class="auth-label">Şifre</label>
-      <input type="password" id="authPassword" class="auth-input" placeholder="••••••••">
-
-      <button class="auth-main-btn" onclick="handleLogin()">Giriş Yap</button>
-      <button class="auth-register-btn" onclick="handleRegister()">Yeni Üyelik Oluştur</button>
-      <div class="auth-info">Giriş yaparak kullanım koşullarını kabul etmiş olursunuz.</div>
-    </div>
-  </div>
-</div>
-
-<!-- STORE & MEMBERSHIP MODAL -->
-<div class="modal simple-modal" id="membershipModal">
-  <div class="membership-content">
-    <button class="close-btn" style="position:absolute; right:15px; top:15px;" onclick="closeMembershipModal()">✕</button>
-    <h2 class="membership-title">Magaza Üyelik Paketleri</h2>
-    <p class="membership-subtitle">İlanlarınızı öne çıkarın ve kurumsal mağazanızı açın</p>
-
-    <div class="trial-box">
-      <strong>🎉 Yeni Üyelere Özel: 14 Gün Ücretsiz Deneme!</strong>
-    </div>
-
-    <div class="plans">
-      <div class="plan">
-        <h3>Bireysel</h3>
-        <div class="plan-price">Ücretsiz</div>
-        <div class="plan-info">
-          • 3 İlan Hakkı<br>
-          • Standart Gösterim<br>
-          • Direct Mesajlaşma
+                    <div id="authContainer" class="flex items-center space-x-2">
+                        <button onclick="openAuthModal()" id="loginBtn" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-700 transition">
+                            <i class="fa-regular fa-user mr-1.5"></i> Giriş Yap
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button onclick="selectPlan('Bireysel')">Başla</button>
-      </div>
+    </header>
 
-      <div class="plan popular">
-        <span class="popular-label">En Çok Tercih Edilen</span>
-        <h3>Pro Mağaza</h3>
-        <div class="plan-price">299 TL <span>/ay</span></div>
-        <div class="plan-info">
-          • Sınırsız İlan<br>
-          • Öne Çıkarılan Rozet<br>
-          • WhatsApp Entegrasyonu
-        </div>
-        <button onclick="selectPlan('Pro Mağaza')">Hemen Katıl</button>
-      </div>
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
 
-      <div class="plan">
-        <h3>Kurumsal</h3>
-        <div class="plan-price">599 TL <span>/ay</span></div>
-        <div class="plan-info">
-          • Sınırsız İlan + Dopings<br>
-          • Öncelikli Listeleme<br>
-          • 7/24 Destek
+        <!-- Announcement Banner -->
+        <div class="bg-gradient-to-r from-amber-500/10 via-amber-400/20 to-amber-500/10 border border-amber-400/40 rounded-xl p-4 mb-6 flex items-center justify-between shadow-sm">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-400 text-slate-900 p-2.5 rounded-lg font-bold">
+                    <i class="fa-solid fa-bullhorn text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm sm:text-base">Samandağ Halkına Özel Ücretsiz İlan Platformu</h3>
+                    <p class="text-xs sm:text-sm text-slate-600">Eşyalarınızı saniyeler içinde ilan verin, komşularınızla kolayca iletişime geçin.</p>
+                </div>
+            </div>
+            <button onclick="openMembershipModal()" class="hidden md:flex items-center space-x-1 text-xs font-semibold bg-slate-900 text-amber-300 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+                <i class="fa-solid fa-crown text-amber-400 mr-1"></i> VIP Mağaza Ol
+            </button>
         </div>
-        <button onclick="selectPlan('Kurumsal')">İletişime Geç</button>
-      </div>
+
+        <!-- Collapsible Post Form (İlan Ver) -->
+        <div id="formAccordion" class="hidden mb-8 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden transition-all duration-300">
+            <div class="bg-slate-900 px-6 py-4 text-white flex justify-between items-center border-b border-slate-800">
+                <h2 class="text-lg font-bold flex items-center space-x-2 text-amber-400">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Yeni İlan Oluştur</span>
+                </h2>
+                <button onclick="toggleFormAccordion()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <form id="postForm" onsubmit="handlePostSubmit(event)" class="p-6 space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">İlan Başlığı *</label>
+                        <input type="text" id="postTitle" required placeholder="Örn: Temiz Kullanılmış iPhone 11 128GB" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Kategori *</label>
+                        <select id="postCategory" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition bg-white">
+                            <option value="">Kategori Seçiniz</option>
+                            <option value="Vasıta">Vasıta (Araba, Motor,vb.)</option>
+                            <option value="Emlak">Emlak (Kiralık, Satılık)</option>
+                            <option value="Elektronik">Elektronik & Ev Aletleri</option>
+                            <option value="Ev Eşyası">Ev & Mobilya</option>
+                            <option value="Giyim">Giyim & Aksesuar</option>
+                            <option value="İş İlanları">İş İlanları</option>
+                            <option value="Diğer">Diğer Kategoriler</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Fiyat (TL) *</label>
+                        <input type="number" id="postPrice" required placeholder="Örn: 4500" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">İletişim Telefonu *</label>
+                        <input type="tel" id="postPhone" placeholder="05XX XXX XX XX" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Detaylı Açıklama</label>
+                    <textarea id="postDescription" rows="3" placeholder="Ürünün durumu, kullanım süresi veya detaylarını yazınız..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Görseller (En fazla 4 adet)</label>
+                    <input type="file" id="postImages" multiple accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-amber-100 transition">
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="toggleFormAccordion()" class="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-lg text-sm font-semibold transition">İptal</button>
+                    <button type="submit" id="submitBtn" class="shb-yellow-btn px-6 py-2.5 rounded-lg text-sm font-bold shadow">İlanı Yayınla</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search & Category Navigation Bar -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <!-- Search Box -->
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="filterListings()" placeholder="Kelime veya ilan no ile ara..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition bg-slate-50 focus:bg-white">
+                </div>
+
+                <!-- Category Pills -->
+                <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
+                    <button onclick="setCategoryFilter('all')" class="cat-btn active bg-slate-900 text-amber-400 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap shadow-sm border border-slate-800 transition">
+                        Tüm İlanlar
+                    </button>
+                    <button onclick="setCategoryFilter('Vasıta')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
+                        Vasıta
+                    </button>
+                    <button onclick="setCategoryFilter('Emlak')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
+                        Emlak
+                    </button>
+                    <button onclick="setCategoryFilter('Elektronik')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
+                        Elektronik
+                    </button>
+                    <button onclick="setCategoryFilter('Ev Eşyası')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
+                        Ev Eşyası
+                    </button>
+                    <button onclick="setCategoryFilter('Giyim')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
+                        Giyim
+                    </button>
+                    <button onclick="setCategoryFilter('İş İlanları')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
+                        İş İlanları
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listings Section Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
+                <span>Güncel İlanlar</span>
+                <span id="listingCount" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-semibold">0</span>
+            </h2>
+            <div class="text-xs text-slate-500">
+                Sıralama: <span class="font-semibold text-slate-800">Yeniden Eskiye</span>
+            </div>
+        </div>
+
+        <!-- Listings Grid Container -->
+        <div id="listingsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <!-- Loading State -->
+            <div class="col-span-full py-12 text-center text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-amber-500"></i>
+                <p class="text-sm">İlanlar yükleniyor, lütfen bekleyin...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="bg-amber-400 text-slate-900 font-extrabold px-2 py-0.5 rounded text-sm">S2E</span>
+                <span class="font-semibold text-slate-200">Samandağ 2. El Pazarı</span>
+                <span>&copy; 2026 Tüm Hakları Saklıdır.</span>
+            </div>
+            <div class="flex space-x-4 text-slate-400">
+                <a href="#" class="hover:text-amber-400 transition">Gizlilik Politikası</a>
+                <a href="#" class="hover:text-amber-400 transition">Kullanım Şartları</a>
+                <a href="#" onclick="openMembershipModal(); return false;" class="text-amber-400 hover:underline">VIP Mağaza Üyeliği</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Gallery Modal -->
+    <div id="galleryModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-900 text-white">
+                <h3 id="galleryTitle" class="font-bold text-base truncate pr-4 text-amber-400">İlan Detayı</h3>
+                <button onclick="closeGalleryModal()" class="text-slate-400 hover:text-white transition p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-4 flex-1 overflow-y-auto bg-slate-950 flex flex-col items-center justify-center relative">
+                <img id="galleryMainImg" src="" alt="Görsel" class="max-h-[50vh] object-contain rounded-lg">
+                <div id="galleryThumbnails" class="flex space-x-2 mt-4 overflow-x-auto p-2 w-full justify-center"></div>
+            </div>
+            <div class="p-4 bg-white border-t border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
+                    <div id="galleryPrice" class="text-xl font-black text-amber-600">0 TL</div>
+                    <div id="galleryPhone" class="text-sm font-bold text-slate-800 mt-0.5"><i class="fa-solid fa-phone mr-1.5 text-amber-500"></i> -</div>
+                </div>
+                <a id="galleryCallBtn" href="#" class="shb-yellow-btn w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-center text-sm shadow">
+                    <i class="fa-solid fa-phone mr-2"></i> Satıcıyı Ara
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="bank-box">
-      <div style="font-weight:800; margin-bottom:8px;">Banka Havale / EFT Bilgileri</div>
-      <div class="bank-row"><span>Banka:</span> <b>Ziraat Bankası</b></div>
-      <div class="bank-row"><span>Alıcı:</span> <b>Samandağ Pazarı Hizmetleri</b></div>
-      <div class="bank-row"><span>IBAN:</span> <b>TR00 0000 0000 0000 0000 0000 00</b></div>
+    <!-- Auth / Login Modal -->
+    <div id="authModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+            <button onclick="closeAuthModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Giriş Yap / Kayıt Ol</h3>
+            <p class="text-xs text-slate-500 mb-6">İlan yayınlamak ve yönetmek için hesabınıza giriş yapın.</p>
+            
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">E-Posta Adresi</label>
+                    <input type="email" id="authEmail" required placeholder="ornek@mail.com" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Şifre</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                </div>
+                <button type="submit" class="shb-yellow-btn w-full py-3 rounded-xl font-bold text-sm shadow mt-2">
+                    Giriş Yap
+                </button>
+            </form>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- GALLERY MODAL -->
-<div class="modal" id="galleryModal">
-  <div class="modal-header">
-    <div class="modal-title" id="galleryTitle">İlan Fotoğrafları</div>
-    <button class="close-btn" onclick="closeGalleryModal()">✕ Kapat</button>
-  </div>
-  <div class="gallery-main">
-    <button class="gallery-arrow gallery-prev" onclick="prevPhoto()">‹</button>
-    <img id="galleryImage" src="" alt="Galeri">
-    <button class="gallery-arrow gallery-next" onclick="nextPhoto()">›</button>
-  </div>
-  <div class="thumbnails" id="galleryThumbnails"></div>
-</div>
+    <!-- Membership / VIP Payment Modal -->
+    <div id="membershipModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-slate-100">
+            <button onclick="closeMembershipModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="flex items-center space-x-2 text-amber-500 font-bold mb-1">
+                <i class="fa-solid fa-crown text-xl"></i>
+                <span>Samandağ VIP Mağaza Paketi</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-6">İlanlarınızı en üst sıraya taşıyın, özel rozetler kazanın ve satışlarınızı 5 kat artırın!</p>
+            
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 mb-5 space-y-3">
+                <div class="flex justify-between items-center text-sm border-b border-slate-200 pb-2">
+                    <span class="font-medium text-slate-700">Aylık VIP Mağaza Üyeliği</span>
+                    <span class="font-bold text-slate-900">150 TL / ay</span>
+                </div>
+                <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+                    <li>İlanlarınız sarı renkli öne çıkan çerçeve alır.</li>
+                    <li>Arama sonuçlarında en üst sırada yer alırsınız.</li>
+                    <li>Sınırsız resim yükleme ve VIP Mağaza rozeti.</li>
+                </ul>
+            </div>
 
-<script>
-/* =========================================================
-   SUPABASE INTEGRATION & APPLICATION LOGIC
-   ========================================================= */
-const SUPABASE_URL = "https://xyzcompany.supabase.co"; // Kendi Supabase URL'inizi ekleyin
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // Kendi Key'inizi ekleyin
-
-// Safely initialize supabase instance without variable redeclaration errors
-if (window.supabase && typeof window.supabase.createClient === 'function') {
-  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} else {
-  window.supabaseClient = null;
-}
-
-let allListings = [];
-let currentCategory = "Tümü";
-let activePhotos = [];
-let activePhotoIndex = 0;
-
-// APP INITIALIZATION
-window.onload = function() {
-  loadListings();
-  checkUserSession();
-};
-
-function toggleForm() {
-  const box = document.getElementById("formBox");
-  box.classList.toggle("open");
-}
-
-function selectCategory(cat, btn) {
-  currentCategory = cat;
-  document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  filterListings();
-}
-
-function filterListings() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
-  const filtered = allListings.filter(item => {
-    const matchesCat = (currentCategory === "Tümü" || item.kategori === currentCategory);
-    const matchesSearch = item.baslik.toLowerCase().includes(query) || 
-                          (item.aciklama && item.aciklama.toLowerCase().includes(query));
-    return matchesCat && matchesSearch;
-  });
-  renderListings(filtered);
-}
-
-function renderListings(data) {
-  const container = document.getElementById("listings");
-  if (!data || data.length === 0) {
-    container.innerHTML = `<div class="empty" style="grid-column: 1/-1;">Aradığınız kriterlere uygun ilan bulunamadı.</div>`;
-    return;
-  }
-
-  container.innerHTML = data.map(item => {
-    const photos = item.fotograflar || ["https://placehold.co/600x400/10182f/ffe600?text=Gorsel+Yok"];
-    const cover = photos[0];
-    const phoneClean = item.telefon ? item.telefon.replace(/[^0-9]/g, '') : '';
-    
-    return `
-      <div class="card">
-        <div class="card-image" onclick="openGallery(${JSON.stringify(photos).replace(/"/g, '&quot;')}, '${escapeHtml(item.baslik)}')">
-          <img src="${cover}" alt="${escapeHtml(item.baslik)}" onerror="this.src='https://placehold.co/600x400/10182f/ffe600?text=Hata'">
-          ${photos.length > 1 ? `<div class="photo-count">📷 1/${photos.length}</div>` : ''}
+            <form id="paymentForm" onsubmit="handlePaymentSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Kart Üzerindeki İsim</label>
+                    <input type="text" required placeholder="Ahmet Yılmaz" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Kart Numarası</label>
+                    <input type="text" maxlength="19" required placeholder="0000 0000 0000 0000" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Son Kullanma (AA/YY)</label>
+                        <input type="text" maxlength="5" required placeholder="12/28" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">CVC / CVV</label>
+                        <input type="text" maxlength="3" required placeholder="123" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                    </div>
+                </div>
+                <button type="submit" class="shb-yellow-btn w-full py-3 rounded-xl font-bold text-sm shadow mt-2">
+                    150 TL Öde ve Mağazayı Aç
+                </button>
+            </form>
         </div>
-        <div class="card-body">
-          <div class="card-title">${escapeHtml(item.baslik)}</div>
-          <div class="price">${Number(item.fiyat).toLocaleString('tr-TR')} TL</div>
-          <div class="description">${escapeHtml(item.aciklama || '')}</div>
-          <div class="info">
-            <span>🏷️ ${escapeHtml(item.kategori || 'Diğer')}</span>
-            <span>📅 ${new Date(item.created_at || Date.now()).toLocaleDateString('tr-TR')}</span>
-          </div>
-          <div class="contact-buttons">
-            ${phoneClean ? `<a href="tel:${phoneClean}" class="phone">📞 Ara</a>` : ''}
-            ${phoneClean ? `<a href="https://wa.me/90${phoneClean}?text=Merhaba, ${encodeURIComponent(item.baslik)} ilaniniz hakkinda bilgi almak istiyorum." target="_blank" class="whatsapp-btn">💬 WhatsApp</a>` : ''}
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
+    </div>
 
-async function loadListings() {
-  const container = document.getElementById("listings");
-  try {
-    if (!window.supabaseClient) throw new Error("Supabase client not initialized");
-    const { data, error } = await window.supabaseClient.from('ilanlar').select('*').order('created_at', { ascending: false });
-    if (error) throw error;
-    allListings = data || [];
-    renderListings(allListings);
-  } catch (e) {
-    console.warn("Demoveri gösteriliyor:", e);
-    // DEMO DATA FALLBACK
-    allListings = [
-      { id: 1, baslik: "Samandağ Deniz Manzaralı Satılık 3+1 Daire", fiyat: 3250000, kategori: "Emlak", telefon: "05320000000", aciklama: "Merkezi konumda, lüks kaplamalı, geniş ferah daire.", fotograflar: ["https://placehold.co/600x400/0b1220/ffe600?text=Emlak+Daire"], created_at: new Date().toISOString() },
-      { id: 2, baslik: "Temiz 2020 Model Otomobil Düşük Kilometre", fiyat: 890000, kategori: "Vasıta", telefon: "05330000000", aciklama: "Bakımları yeni yapılmış, masrafsız aile aracı.", fotograflar: ["https://placehold.co/600x400/152238/ffe600?text=Vasita+Araba"], created_at: new Date().toISOString() },
-      { id: 3, baslik: "iPhone 13 Pro 128 GB Garanti Devam Ediyor", fiyat: 34500, kategori: "Elektronik", telefon: "05340000000", aciklama: "Çiziksiz, kılıfı ve kutusu ile verilecektir.", fotograflar: ["https://placehold.co/600x400/1e293b/ffe600?text=iPhone+13"], created_at: new Date().toISOString() }
-    ];
-    renderListings(allListings);
-  }
-}
+    <!-- JavaScript Logic & Supabase Integration -->
+    <script>
+        // Global Supabase Safe Initializer
+        const SUPABASE_URL = 'https://xyzcompany.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5emNvbXBhbnkiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY3MDA0MDAwMCwiZXhwIjoxOTg1NjE2MDAwfQ.placeholder_key';
 
-async function checkUserSession() {
-  const statusDiv = document.getElementById("ilanKullaniciDurumu");
-  const authStatusBox = document.getElementById("authStatusBox");
-  
-  if (!window.supabaseClient) {
-    statusDiv.innerHTML = "<strong>Durum:</strong> Misafir Kullanıcı (Demo Modu)";
-    if(authStatusBox) authStatusBox.innerHTML = "Demo Modu aktif.";
-    return;
-  }
-  
-  const { data: { session } } = await window.supabaseClient.auth.getSession();
-  if (session && session.user) {
-    statusDiv.innerHTML = `<strong>Giriş Yapıldı:</strong> ${session.user.email}`;
-    if(authStatusBox) authStatusBox.innerHTML = `Oturum Açık: <b>${session.user.email}</b>`;
-  } else {
-    statusDiv.innerHTML = `<strong>Durum:</strong> İlan vermek için giriş yapabilirsiniz.`;
-    if(authStatusBox) authStatusBox.innerHTML = "Giriş yapılmadı.";
-  }
-}
+        // Prevent redeclaration errors
+        if (!window.supabaseClient) {
+            try {
+                if (typeof supabase !== 'undefined' && supabase.createClient) {
+                    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                }
+            } catch (err) {
+                console.warn('Supabase initialization fallback activated:', err);
+            }
+        }
 
-async function submitListing() {
-  const baslik = document.getElementById("baslik").value;
-  const fiyat = document.getElementById("fiyat").value;
-  const kategori = document.getElementById("kategori").value;
-  const telefon = document.getElementById("telefon").value;
-  const aciklama = document.getElementById("aciklama").value;
+        // Application State
+        let allListings = [
+            {
+                id: 1,
+                title: 'Renault Megane 1.5 dCi Touch - Temiz Masrafsız',
+                category: 'Vasıta',
+                price: 685000,
+                phone: '0532 111 22 33',
+                description: '2017 Model, bakımları yeni yapıldı. Sol çamurluk boyalı harici hatasız.',
+                images: ['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=600&q=80'],
+                created_at: new Date().toISOString(),
+                is_vip: true
+            },
+            {
+                id: 2,
+                title: 'Samandağ Deniz Mah. 3+1 Lüks Daire',
+                category: 'Emlak',
+                price: 2450000,
+                phone: '0533 444 55 66',
+                description: 'Deniz manzaralı, asansörlü, site içerisinde geniş 3+1 sıfır daire.',
+                images: ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80'],
+                created_at: new Date().toISOString(),
+                is_vip: false
+            },
+            {
+                id: 3,
+                title: 'iPhone 13 Pro Max 256GB - Garanti Devam Ediyor',
+                category: 'Elektronik',
+                price: 42000,
+                phone: '0535 777 88 99',
+                description: 'Pil sağlığı %89, kutu fatura mevcut. Çiziksiz sorunsuz cihaz.',
+                images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80'],
+                created_at: new Date().toISOString(),
+                is_vip: false
+            }
+        ];
+        
+        let currentCategory = 'all';
+        let searchQuery = '';
 
-  if (!baslik || !fiyat || !telefon) {
-    alert("Lütfen başlık, fiyat ve telefon alanlarını doldurun.");
-    return;
-  }
+        // DOM Loaded Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderListings();
+        });
 
-  const newListing = {
-    id: Date.now(),
-    baslik,
-    fiyat: Number(fiyat),
-    kategori,
-    telefon,
-    aciklama,
-    fotograflar: ["https://placehold.co/600x400/0b1220/ffe600?text=Yeni+Ilan"],
-    created_at: new Date().toISOString()
-  };
+        // Toggle Form Accordion
+        function toggleFormAccordion() {
+            const accordion = document.getElementById('formAccordion');
+            accordion.classList.toggle('hidden');
+            if (!accordion.classList.contains('hidden')) {
+                accordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
 
-  allListings.unshift(newListing);
-  renderListings(allListings);
-  alert("İlanınız başarıyla eklendi!");
-  toggleForm();
-}
+        // Filter Handlers
+        function setCategoryFilter(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-amber-400', 'border-slate-800');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+            event.currentTarget.classList.remove('bg-slate-100', 'text-slate-700');
+            event.currentTarget.classList.add('bg-slate-900', 'text-amber-400', 'border-slate-800');
+            renderListings();
+        }
 
-// MODAL CONTROLS
-function openAuthModal() { document.getElementById("authModal").classList.add("active"); }
-function closeAuthModal() { document.getElementById("authModal").classList.remove("active"); }
+        function filterListings() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            renderListings();
+        }
 
-function openMembershipModal() { document.getElementById("membershipModal").classList.add("active"); }
-function closeMembershipModal() { document.getElementById("membershipModal").classList.remove("active"); }
+        function resetFilters() {
+            currentCategory = 'all';
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            renderListings();
+        }
 
-function handleLogin() { alert("Giriş yapılıyor..."); closeAuthModal(); }
-function handleRegister() { alert("Kayıt oluşturuluyor..."); closeAuthModal(); }
-function selectPlan(plan) { alert(plan + " paketi seçildi. Ödeme sayfasına yönlendiriliyorsunuz."); }
+        // Render Listing Cards
+        function renderListings() {
+            const grid = document.getElementById('listingsGrid');
+            const countEl = document.getElementById('listingCount');
 
-// GALLERY CONTROLS
-function openGallery(photos, title) {
-  activePhotos = photos;
-  activePhotoIndex = 0;
-  document.getElementById("galleryTitle").innerText = title;
-  updateGallery();
-  document.getElementById("galleryModal").classList.add("active");
-}
+            let filtered = allListings.filter(item => {
+                const matchCat = currentCategory === 'all' || item.category === item.category;
+                const matchSearch = !searchQuery || 
+                    item.title.toLowerCase().includes(searchQuery) || 
+                    item.description.toLowerCase().includes(searchQuery);
+                return matchCat && matchSearch;
+            });
 
-function updateGallery() {
-  const img = document.getElementById("galleryImage");
-  img.src = activePhotos[activePhotoIndex];
-  
-  const thumbsContainer = document.getElementById("galleryThumbnails");
-  thumbsContainer.innerHTML = activePhotos.map((src, i) => `
-    <img src="${src}" class="thumbnail ${i === activePhotoIndex ? 'active' : ''}" onclick="setPhotoIndex(${i})">
-  `).join('');
-}
+            if (countEl) countEl.innerText = filtered.length;
 
-function setPhotoIndex(i) {
-  activePhotoIndex = i;
-  updateGallery();
-}
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center bg-white rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
+                        <h3 class="text-base font-bold text-slate-700">Aramanıza Uygun İlan Bulunamadı</h3>
+                        <p class="text-xs text-slate-500 mt-1">Farklı bir arama terimi deneyebilir veya ilk ilanı siz verebilirsiniz.</p>
+                    </div>
+                `;
+                return;
+            }
 
-function prevPhoto() {
-  if (activePhotoIndex > 0) activePhotoIndex--;
-  else activePhotoIndex = activePhotos.length - 1;
-  updateGallery();
-}
+            grid.innerHTML = filtered.map(item => `
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-md border ${item.is_vip ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} overflow-hidden flex flex-col transition duration-200 group">
+                    <div class="relative h-48 bg-slate-100 overflow-hidden cursor-pointer" onclick="openGalleryModal(${item.id})">
+                        <img src="${item.images && item.images[0] ? item.images[0] : 'https://placehold.co/600x400/e2e8f0/64748b?text=Görsel+Yok'}" 
+                             alt="${item.title}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                             onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Görsel+Yok'">
+                        
+                        ${item.is_vip ? `
+                            <span class="absolute top-2 left-2 shb-badge-vip px-2.5 py-1 rounded-md text-[10px] uppercase shadow-md flex items-center gap-1">
+                                <i class="fa-solid fa-crown text-xs"></i> VIP İlan
+                            </span>
+                        ` : ''}
 
-function nextPhoto() {
-  if (activePhotoIndex < activePhotos.length - 1) activePhotoIndex++;
-  else activePhotoIndex = 0;
-  updateGallery();
-}
+                        <span class="absolute bottom-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded text-[10px] font-medium backdrop-blur-sm">
+                            <i class="fa-regular fa-image mr-1"></i> ${item.images ? item.images.length : 1}
+                        </span>
+                    </div>
 
-function closeGalleryModal() {
-  document.getElementById("galleryModal").classList.remove("active");
-}
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2 mb-1">
+                                <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">${item.category}</span>
+                                <span class="text-[10px] text-slate-400">Samandağ</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-sm line-clamp-2 hover:text-amber-600 transition cursor-pointer" onclick="openGalleryModal(${item.id})">
+                                ${item.title}
+                            </h3>
+                        </div>
 
-function escapeHtml(str) {
-  return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-</script>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                            <div class="text-base font-black text-amber-600">
+                                ${Number(item.price).toLocaleString('tr-TR')} TL
+                            </div>
+                            <a href="tel:${item.phone}" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-2 rounded-lg text-xs font-semibold transition" title="Satıcıyı Ara">
+                                <i class="fa-solid fa-phone text-amber-500"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
+        // Post Form Submission Handler
+        function handlePostSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('postTitle').value;
+            const category = document.getElementById('postCategory').value;
+            const price = document.getElementById('postPrice').value;
+            const phone = document.getElementById('postPhone').value;
+            const description = document.getElementById('postDescription').value;
+            const files = document.getElementById('postImages').files;
+
+            let imageUrls = [];
+            if (files && files.length > 0) {
+                for (let i = 0; i < Math.min(files.length, 4); i++) {
+                    imageUrls.push(URL.createObjectURL(files[i]));
+                }
+            } else {
+                imageUrls.push('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80');
+            }
+
+            const newListing = {
+                id: Date.now(),
+                title,
+                category,
+                price: parseFloat(price),
+                phone,
+                description,
+                images: imageUrls,
+                created_at: new Date().toISOString(),
+                is_vip: false
+            };
+
+            allListings.unshift(newListing);
+            renderListings();
+            document.getElementById('postForm').reset();
+            toggleFormAccordion();
+
+            // Quick notification highlight
+            alert('İlanınız başarıyla eklendi ve yayına alındı!');
+        }
+
+        // Modal Handlers
+        function openGalleryModal(id) {
+            const item = allListings.find(x => x.id === id);
+            if (!item) return;
+
+            document.getElementById('galleryTitle').innerText = item.title;
+            document.getElementById('galleryPrice').innerText = Number(item.price).toLocaleString('tr-TR') + ' TL';
+            document.getElementById('galleryPhone').innerHTML = `<i class="fa-solid fa-phone mr-1.5 text-amber-500"></i> ${item.phone}`;
+            document.getElementById('galleryCallBtn').href = `tel:${item.phone}`;
+
+            const mainImg = document.getElementById('galleryMainImg');
+            mainImg.src = item.images && item.images[0] ? item.images[0] : 'https://placehold.co/600x400/e2e8f0/64748b?text=G%C3%B6rsel+Yok';
+
+            const thumbsContainer = document.getElementById('galleryThumbnails');
+            thumbsContainer.innerHTML = '';
+
+            if (item.images && item.images.length > 1) {
+                item.images.forEach((imgUrl, idx) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgUrl;
+                    thumb.className = `w-14 h-14 object-cover rounded-lg border-2 cursor-pointer transition ${idx === 0 ? 'border-amber-400 scale-105' : 'border-transparent opacity-70 hover:opacity-100'}`;
+                    thumb.onclick = () => {
+                        mainImg.src = imgUrl;
+                        document.querySelectorAll('#galleryThumbnails img').forEach(t => t.classList.remove('border-amber-400', 'scale-105'));
+                        thumb.classList.add('border-amber-400', 'scale-105');
+                    };
+                    thumbsContainer.appendChild(thumb);
+                });
+            }
+
+            document.getElementById('galleryModal').classList.remove('hidden');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').classList.add('hidden');
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const container = document.getElementById('authContainer');
+            
+            container.innerHTML = `
+                <div class="flex items-center space-x-2 bg-slate-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700">
+                    <i class="fa-solid fa-user-circle text-amber-400 text-sm"></i>
+                    <span class="truncate max-w-[100px] sm:max-w-none">${email}</span>
+                </div>
+            `;
+            closeAuthModal();
+        }
+
+        function openMembershipModal() {
+            document.getElementById('membershipModal').classList.remove('hidden');
+        }
+
+        function closeMembershipModal() {
+            document.getElementById('membershipModal').classList.add('hidden');
+        }
+
+        function handlePaymentSubmit(e) {
+            e.preventDefault();
+            alert('Tebrikler! VIP Mağaza üyeliğiniz aktif edildi.');
+            closeMembershipModal();
+        }
+    </script>
 </body>
 </html>
