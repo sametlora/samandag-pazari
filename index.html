@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samandağ 2. El Pazarı | Sahibinden Tarzı İlan Platformu</title>
+    <title>Samandağ 2. El Pazarı | Sahibinden Style Pazaryeri</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,8 +17,6 @@
                             yellowHover: '#e5ce00',
                             navy: '#0b1220',
                             navyLight: '#1e293b',
-                            blue: '#2563eb',
-                            grayBg: '#f4f6f9',
                             cardBorder: '#e2e8f0',
                             redTag: '#dc2626',
                             greenTag: '#16a34a'
@@ -71,6 +69,19 @@
             font-weight: 800;
         }
 
+        /* Image Zoom Styling */
+        .zoom-container {
+            overflow: hidden;
+            cursor: grab;
+        }
+        .zoom-container:active {
+            cursor: grabbing;
+        }
+        .zoom-image {
+            transition: transform 0.2s ease-out;
+            transform-origin: center center;
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
@@ -103,7 +114,7 @@
                     <div class="hidden sm:block">
                         <div class="font-extrabold text-lg text-white leading-tight flex items-center gap-1.5">
                             Samandağ 2. El Pazarı
-                            <span class="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-400/30">Sahibinden Style</span>
+                            <span class="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-400/30">Pro Pazaryeri</span>
                         </div>
                         <p class="text-[11px] text-slate-400">Hatay / Samandağ Ücretsiz İlan Platformu</p>
                     </div>
@@ -120,9 +131,9 @@
                     </div>
                 </div>
 
-                <!-- Sağ Butonlar -->
+                <!-- Sağ Butonlar (Auth, İlan Ver, Favoriler) -->
                 <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-                    <button onclick="togglePostFormModal()" class="shb-yellow-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm flex items-center space-x-1.5 shadow">
+                    <button onclick="requireAuthAction(() => openPostFormModal())" class="shb-yellow-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm flex items-center space-x-1.5 shadow">
                         <i class="fa-solid fa-plus font-bold"></i>
                         <span>Ücretsiz İlan Ver</span>
                     </button>
@@ -133,7 +144,8 @@
                         <span id="favCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                     </button>
 
-                    <div id="authNavButtons" class="flex items-center space-x-2">
+                    <!-- Auth Durum Container -->
+                    <div id="authNavContainer" class="flex items-center">
                         <button onclick="openAuthModal()" class="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition">
                             <i class="fa-regular fa-user mr-1"></i>
                             <span>Giriş Yap</span>
@@ -153,7 +165,7 @@
         </div>
     </header>
 
-    <!-- BANNER ANONS -->
+    <!-- BANNER ANONS & VIP BUTONU -->
     <div class="bg-amber-400/10 border-b border-amber-400/20 text-slate-800 py-2.5 text-xs font-medium">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <div class="flex items-center space-x-2">
@@ -161,8 +173,8 @@
                 <span>Samandağ ve çevresinde komşularınızdan güvenle ikinci el eşya, araç ve emlak alıp satın!</span>
             </div>
             <div class="flex items-center space-x-3">
-                <button onclick="openMembershipModal()" class="text-amber-700 font-bold hover:underline flex items-center gap-1">
-                    <i class="fa-solid fa-crown text-amber-500"></i> VIP Mağaza Paketi Satın Al
+                <button onclick="requireAuthAction(() => openMembershipModal())" class="text-amber-700 font-bold hover:underline flex items-center gap-1">
+                    <i class="fa-solid fa-crown text-amber-500"></i> VIP Doping & Mağaza Paketi Al
                 </button>
             </div>
         </div>
@@ -187,7 +199,7 @@
                     </div>
                 </div>
 
-                <!-- 3. DETAYLI FILTRELEME PANELI -->
+                <!-- Detaylı Filtreleme Paneli -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
                     <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 pb-2 border-b border-slate-100 flex items-center justify-between">
                         <span><i class="fa-solid fa-filter text-amber-500 mr-1.5"></i> Detaylı Filtrele</span>
@@ -230,10 +242,14 @@
                         </select>
                     </div>
 
-                    <!-- Rozet Filtresi -->
+                    <!-- Özel Filtreler -->
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Özel İlanlar</label>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Filtre Filtrele</label>
                         <div class="space-y-1.5">
+                            <label class="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                <input type="checkbox" id="filterMyListingsOnly" onchange="applyFilters()" class="rounded border-slate-300 text-amber-500 focus:ring-amber-400">
+                                <span class="font-bold text-amber-700">Sadece Benim İlanlarım</span>
+                            </label>
                             <label class="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
                                 <input type="checkbox" id="filterParamGuvende" onchange="applyFilters()" class="rounded border-slate-300 text-amber-500 focus:ring-amber-400">
                                 <span>Param Güvende İlanları</span>
@@ -254,7 +270,7 @@
             <!-- SAĞ TARAF: İLAN LİSTESİ & VİTRİN -->
             <section class="flex-1 space-y-4">
                 
-                <!-- Üst Üst Filtre Barı & Görünüm Değiştirici -->
+                <!-- Üst Filtre Barı & Görünüm Değiştirici -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center space-x-2">
                         <span id="currentCategoryTitle" class="font-black text-slate-800 text-sm">Tüm İlanlar</span>
@@ -284,7 +300,7 @@
                     </div>
                 </div>
 
-                <!-- 4. İLAN LİSTESİ KONTEYNERİ -->
+                <!-- 3. İLAN LİSTESİ KONTEYNERİ -->
                 <div id="listingsContainer" class="space-y-3">
                     <!-- Dinamik JavaScript Yüklemesi -->
                 </div>
@@ -294,7 +310,7 @@
         </div>
     </main>
 
-    <!-- 5. İLAN DETAY MODALI (SAHİBİNDEN TARZI) -->
+    <!-- 4. İLAN DETAY & GELİŞMİŞ GALERİ MODALI -->
     <div id="detailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-5xl w-full my-auto shadow-2xl border border-slate-200 overflow-hidden relative flex flex-col max-h-[92vh]">
             
@@ -309,17 +325,23 @@
                 </button>
             </div>
 
-            <!-- Modal Content (Scrollable) -->
+            <!-- Modal Content -->
             <div class="p-4 sm:p-6 overflow-y-auto space-y-6">
                 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     
                     <!-- Sol: Galeri & Fotoğraflar (7 Kolon) -->
                     <div class="lg:col-span-7 space-y-3">
-                        <div class="relative h-64 sm:h-80 md:h-96 bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center border border-slate-800">
-                            <img id="modalMainImage" src="" alt="İlan Görseli" class="max-h-full max-w-full object-contain">
+                        <div class="relative h-64 sm:h-80 md:h-96 bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center border border-slate-800 group">
                             
-                            <!-- Fotoğraf Navigasyonu -->
+                            <!-- Ana Fotoğraf -->
+                            <img id="modalMainImage" src="" alt="İlan Görseli" onclick="openFullscreenGallery()" class="max-h-full max-w-full object-contain cursor-zoom-in transition duration-200">
+                            
+                            <div class="absolute top-2 right-2 bg-slate-900/80 text-amber-300 text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1 cursor-pointer" onclick="openFullscreenGallery()">
+                                <i class="fa-solid fa-expand"></i> Büyüt / Galeri
+                            </div>
+
+                            <!-- Navigasyon Okları -->
                             <button onclick="prevModalImage()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-900/80 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-amber-400 hover:text-slate-950 transition">
                                 <i class="fa-solid fa-chevron-left"></i>
                             </button>
@@ -343,7 +365,17 @@
                         <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
                             <div class="text-2xl font-black text-amber-600 mb-1" id="modalPrice">0 TL</div>
                             <div id="modalBadges" class="flex flex-wrap gap-1.5 mb-2"></div>
-                            <p id="modalLocationDate" class="text-xs text-slate-500 font-medium">Samandağ, Deniz Mah. • 19 Ekim 2026</p>
+                            <p id="modalLocationDate" class="text-xs text-slate-500 font-medium">Samandağ, Deniz Mah.</p>
+                        </div>
+
+                        <!-- İlan Düzenle / Sil (Sadece İlan Sahibi veya Admin) -->
+                        <div id="modalOwnerControls" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-2">
+                            <button onclick="triggerEditListing()" class="flex-1 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs font-bold py-2 rounded-lg transition flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-pen-to-square"></i> İlanı Düzenle
+                            </button>
+                            <button onclick="triggerDeleteListing()" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2 rounded-lg transition flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> İlanı Sil
+                            </button>
                         </div>
 
                         <!-- İlan Detay Tablosu -->
@@ -378,7 +410,7 @@
                                 </div>
                                 <div>
                                     <h4 id="modalSellerName" class="font-bold text-sm text-white">Ahmet Y.</h4>
-                                    <p class="text-[10px] text-slate-400">Üyelik Tarihi: Ocak 2024</p>
+                                    <p class="text-[10px] text-slate-400">Doğrulanmış Samandağ Satıcısı</p>
                                 </div>
                             </div>
 
@@ -394,7 +426,7 @@
                                 </a>
                             </div>
 
-                            <button onclick="openSendMessageModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition">
+                            <button onclick="requireAuthAction(() => openSendMessageModal())" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition">
                                 <i class="fa-regular fa-envelope"></i>
                                 <span>Satıcıya Mesaj Gönder</span>
                             </button>
@@ -415,21 +447,73 @@
         </div>
     </div>
 
-    <!-- 6. ÜCRETSİZ İLAN VERME MODALI -->
+    <!-- 5. GELİŞMİŞ FULLSCREEN ZOOM GALERİ MODALI -->
+    <div id="fullscreenGalleryModal" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col justify-between p-2 sm:p-4">
+        <!-- Gallery Top Bar -->
+        <div class="flex justify-between items-center text-white z-10 p-2">
+            <div class="text-xs sm:text-sm font-bold text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                <span id="fullscreenGalleryTitle">Galeri İnceleme</span>
+            </div>
+
+            <!-- Controls (Zoom, Reset, Close) -->
+            <div class="flex items-center space-x-3 text-xs">
+                <button onclick="zoomInImage()" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-white" title="Yakınlaştır (+)">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button onclick="zoomOutImage()" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-white" title="Uzaklaştır (-)">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <button onclick="resetZoomImage()" class="bg-slate-800 hover:bg-slate-700 p-2 rounded-lg text-white" title="Sıfırla">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button onclick="closeFullscreenGallery()" class="bg-red-600 hover:bg-red-700 p-2 rounded-lg text-white font-bold ml-2">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Zoom Image Container -->
+        <div class="flex-1 relative flex items-center justify-center overflow-hidden my-2">
+            <button onclick="prevFullscreenImage()" class="absolute left-2 sm:left-4 z-20 bg-slate-900/80 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-400 hover:text-slate-950 transition">
+                <i class="fa-solid fa-chevron-left text-lg"></i>
+            </button>
+
+            <div id="zoomContainer" class="zoom-container w-full h-full flex items-center justify-center">
+                <img id="fullscreenImage" src="" class="zoom-image max-h-full max-w-full object-contain">
+            </div>
+
+            <button onclick="nextFullscreenImage()" class="absolute right-2 sm:right-4 z-20 bg-slate-900/80 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-400 hover:text-slate-950 transition">
+                <i class="fa-solid fa-chevron-right text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Bottom Thumbnails & Counter -->
+        <div class="z-10 flex flex-col items-center space-y-2">
+            <div id="fullscreenThumbnails" class="flex space-x-2 overflow-x-auto max-w-full p-1">
+                <!-- JS ile Doldurulacak -->
+            </div>
+            <span id="fullscreenCounter" class="bg-slate-900/90 text-amber-300 text-xs font-bold px-3 py-1 rounded-full border border-slate-800">1 / 1</span>
+        </div>
+    </div>
+
+    <!-- 6. İLAN OLUŞTURMA & DÜZENLEME MODALI -->
     <div id="postFormModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
         <div class="bg-white rounded-2xl max-w-2xl w-full my-auto shadow-2xl border border-slate-200 overflow-hidden relative">
             
             <div class="bg-slate-950 text-white p-4 flex justify-between items-center border-b border-slate-800">
-                <h3 class="font-extrabold text-base text-amber-400 flex items-center gap-2">
+                <h3 id="postFormTitle" class="font-extrabold text-base text-amber-400 flex items-center gap-2">
                     <i class="fa-solid fa-circle-plus"></i>
                     <span>Ücretsiz İlan Oluştur</span>
                 </h3>
-                <button onclick="togglePostFormModal()" class="text-slate-400 hover:text-white p-1">
+                <button onclick="closePostFormModal()" class="text-slate-400 hover:text-white p-1">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
 
-            <form id="newPostForm" onsubmit="handleNewPostSubmit(event)" class="p-5 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <form id="newPostForm" onsubmit="handlePostFormSubmit(event)" class="p-5 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <input type="hidden" id="editPostId" value="">
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     
                     <div class="sm:col-span-2">
@@ -487,9 +571,9 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">İlan Fotoğrafları Yükle / URL Ekle</label>
-                        <input type="file" id="postFileInput" multiple accept="image/*" class="w-full text-xs text-slate-500 mb-2 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-amber-100">
-                        <input type="text" id="postImageUrl" placeholder="Veya Resim URL'si yapıştırın (Opsiyonel)" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Fotoğraf URL'leri (Virgül ile Ayırın)</label>
+                        <input type="text" id="postImageUrls" placeholder="https://resim1.jpg, https://resim2.jpg" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                        <p class="text-[10px] text-slate-400 mt-1">Görsel linki vermezseniz otomatik varsayılan ürün görseli atanacaktır.</p>
                     </div>
 
                     <div class="sm:col-span-2">
@@ -511,15 +595,120 @@
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-3 border-t border-slate-100">
-                    <button type="button" onclick="togglePostFormModal()" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100">İptal</button>
-                    <button type="submit" class="shb-yellow-btn px-6 py-2 rounded-lg text-xs font-bold shadow">İlanı Hemen Yayınla</button>
+                    <button type="button" onclick="closePostFormModal()" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100">İptal</button>
+                    <button type="submit" class="shb-yellow-btn px-6 py-2 rounded-lg text-xs font-bold shadow">
+                        <span id="postSubmitBtnText">İlanı Yayınla</span>
+                    </button>
                 </div>
             </form>
 
         </div>
     </div>
 
-    <!-- 7. FAVORİLERİM MODALI -->
+    <!-- 7. PAKET ALACAK OLANLARA IBAN & HAVALE/EFT MODALI -->
+    <div id="membershipModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-xl w-full my-auto p-5 sm:p-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeMembershipModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="flex items-center space-x-2 text-amber-500 font-extrabold mb-1">
+                <i class="fa-solid fa-crown text-2xl"></i>
+                <span class="text-lg">Samandağ VIP Mağaza & Doping Paketleri</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">İlanlarınızı vitrine taşıyın, Samandağ'da satış hızınızı 5 katına çıkarın.</p>
+
+            <!-- Paket Seçimi -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+                <div onclick="selectPackage('1_ay', 250)" id="pkg_1_ay" class="border-2 border-amber-400 bg-amber-50/50 rounded-xl p-3 cursor-pointer text-center space-y-1 relative">
+                    <span class="bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded absolute -top-2 right-2">POPÜLER</span>
+                    <div class="font-bold text-xs text-slate-800">1 Aylık Doping</div>
+                    <div class="text-lg font-black text-amber-600">250 TL</div>
+                    <div class="text-[10px] text-slate-500">Üst Sıra Vitrin</div>
+                </div>
+
+                <div onclick="selectPackage('3_ay', 600)" id="pkg_3_ay" class="border-2 border-slate-200 hover:border-amber-300 rounded-xl p-3 cursor-pointer text-center space-y-1">
+                    <div class="font-bold text-xs text-slate-800">3 Aylık Gold</div>
+                    <div class="text-lg font-black text-amber-600">600 TL</div>
+                    <div class="text-[10px] text-slate-500">Sınırsız İlan + Logo</div>
+                </div>
+
+                <div onclick="selectPackage('6_ay', 1000)" id="pkg_6_ay" class="border-2 border-slate-200 hover:border-amber-300 rounded-xl p-3 cursor-pointer text-center space-y-1">
+                    <div class="font-bold text-xs text-slate-800">6 Aylık VIP</div>
+                    <div class="text-lg font-black text-amber-600">1.000 TL</div>
+                    <div class="text-[10px] text-slate-500">Tam Kurumsal Mağaza</div>
+                </div>
+            </div>
+
+            <!-- IBAN BİLGİSİ -->
+            <div class="bg-slate-900 text-white rounded-xl p-4 border border-slate-800 space-y-2 mb-4 text-xs">
+                <div class="flex justify-between items-center text-slate-400 border-b border-slate-800 pb-2">
+                    <span class="font-bold text-amber-400"><i class="fa-solid fa-building-columns mr-1"></i> Banka Havale / EFT Bilgileri</span>
+                    <span id="selectedPkgLabel" class="bg-slate-800 px-2 py-0.5 rounded text-[10px]">Paket: 1 Aylık (250 TL)</span>
+                </div>
+                
+                <div class="space-y-1 pt-1">
+                    <div class="text-slate-300"><b>Banka:</b> Ziraat Bankası - Samandağ Şubesi</div>
+                    <div class="text-slate-300"><b>Alıcı Unvanı:</b> Gümüş Elektronik / Sumit Pazaryeri</div>
+                    <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800">
+                        <span class="font-mono font-bold text-amber-400 select-all" id="ibanText">TR88 0001 0002 0003 0004 0005 01</span>
+                        <button onclick="copyIban()" class="bg-amber-400 text-slate-950 text-[10px] font-bold px-2 py-1 rounded hover:bg-amber-300 transition">
+                            <i class="fa-regular fa-copy mr-1"></i> Kopyala
+                        </button>
+                    </div>
+                    <div class="text-[10px] text-amber-300/80 italic pt-1">
+                        * Açıklama kısmına telefon numaranızı ve ilan numaranızı yazınız.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÖDEME BİLDİRİM FORMU -->
+            <form onsubmit="handlePaymentNotificationSubmit(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Gönderen Ad Soyad *</label>
+                        <input type="text" id="paySenderName" required placeholder="Dekonttaki isim" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İletişim Telefonu *</label>
+                        <input type="tel" id="paySenderPhone" required placeholder="0532 XXX XX XX" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none">
+                    </div>
+                </div>
+
+                <div class="flex gap-2 pt-1">
+                    <button type="submit" class="shb-yellow-btn flex-1 py-2.5 rounded-lg text-xs font-bold shadow">
+                        <i class="fa-solid fa-paper-plane mr-1"></i> Ödeme Bildirimi Gönder
+                    </button>
+                    <a id="whatsappDekontBtn" href="https://wa.me/905320000000?text=Merhaba,%20paket%20ödemesi%20yaptım,%20dekont%20ektedir." target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center transition" title="WhatsApp ile Dekont Gönder">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 8. MESAJ MODALI -->
+    <div id="sendMessageModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 relative">
+            <button onclick="closeSendMessageModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="font-extrabold text-base text-slate-900 mb-1">Satıcıya Mesaj Gönder</h3>
+            <p class="text-xs text-slate-500 mb-4">Mesajınız doğrudan satıcının ekranına iletilecektir.</p>
+
+            <form onsubmit="handleSendMessageSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Mesajınız</label>
+                    <textarea id="msgContent" rows="4" required placeholder="Ürün ile ilgili sormak istediğiniz detayları yazın..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none"></textarea>
+                </div>
+                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow">
+                    Mesajı İlet
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 9. FAVORİLERİM MODALI -->
     <div id="favoritesModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl border border-slate-200 relative max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center pb-3 border-b border-slate-200">
@@ -538,94 +727,49 @@
         </div>
     </div>
 
-    <!-- SATICIYA MESAJ GÖNDER MODALI -->
-    <div id="sendMessageModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 relative">
-            <button onclick="closeSendMessageModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            <h3 class="font-extrabold text-base text-slate-900 mb-1">Satıcıya Mesaj İlet</h3>
-            <p class="text-xs text-slate-500 mb-4">Mesajınız doğrudan ilan sahibine iletilecektir.</p>
-
-            <form onsubmit="handleSendMessageSubmit(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Adınız ve İletişim Numarası</label>
-                    <input type="text" required placeholder="Ahmet - 0532 XXX XX XX" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Mesajınız</label>
-                    <textarea rows="4" required placeholder="Ürün ile ilgili sormak istediğiniz detayları yazın..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none"></textarea>
-                </div>
-                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow">
-                    Mesajı Gönder
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 8. ÜYELİK & ABONELİK (VIP) MODALI -->
-    <div id="membershipModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
-            <button onclick="closeMembershipModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            
-            <div class="flex items-center space-x-2 text-amber-500 font-extrabold mb-1">
-                <i class="fa-solid fa-crown text-2xl"></i>
-                <span class="text-lg">Samandağ VIP Mağaza Üyeliği</span>
-            </div>
-            <p class="text-xs text-slate-500 mb-4">İlanlarınız üst sıralarda yer alsın, satışlarınızı 5 kat hızlandırın.</p>
-
-            <div class="bg-amber-50 rounded-xl p-3 border border-amber-200 mb-4 space-y-1.5 text-xs text-amber-900">
-                <div class="font-bold flex justify-between">
-                    <span>Aylık VIP Mağaza Paketi:</span>
-                    <span class="text-amber-700 font-extrabold">250 TL / Ay</span>
-                </div>
-                <p class="text-[11px] text-amber-800">Banka Havalesi / EFT ile anında aktifleştirebilirsiniz.</p>
-            </div>
-
-            <!-- IBAN Bilgisi -->
-            <div class="bg-slate-900 text-white rounded-xl p-3.5 border border-slate-800 space-y-2 mb-4 text-xs">
-                <div class="text-[11px] text-slate-400">Banka Hesap Bilgisi (Ziraat Bankası):</div>
-                <div class="font-mono font-bold text-amber-400 select-all flex justify-between items-center">
-                    <span>TR88 0001 0002 0003 0004 0005 01</span>
-                    <button onclick="copyIban()" class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded hover:bg-slate-700">Kopyala</button>
-                </div>
-                <div class="text-[11px] text-slate-300">Alıcı: Samandağ 2. El Pazarı Ltd. Şti.</div>
-            </div>
-
-            <form onsubmit="handleBankTransferNotice(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Gönderen Ad Soyad</label>
-                    <input type="text" required placeholder="Havale Yapan Ad Soyad" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none">
-                </div>
-                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow">
-                    Havale Bildirimi Yap
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- AUTH MODALI -->
+    <!-- 10. SUPABASE AUTH MODALI (Giriş Yap / Kayıt Ol) -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative">
             <button onclick="closeAuthModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
-            <h3 class="font-extrabold text-lg text-slate-900 mb-1">Giriş Yap / Üye Ol</h3>
-            <p class="text-xs text-slate-500 mb-5">İlan yönetimi ve favoriler için giriş yapın.</p>
+            
+            <div class="flex border-b border-slate-200 mb-4 text-sm font-bold">
+                <button onclick="switchAuthTab('login')" id="tabLoginBtn" class="flex-1 pb-2 border-b-2 border-amber-400 text-slate-900">Giriş Yap</button>
+                <button onclick="switchAuthTab('register')" id="tabRegisterBtn" class="flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600">Kayıt Ol</button>
+            </div>
 
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">E-Posta Adresi</label>
-                    <input type="email" id="authEmail" required placeholder="ornek@mail.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
+                    <input type="email" id="loginEmail" required placeholder="ornek@mail.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Şifre</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
                 </div>
                 <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow mt-2">
                     Giriş Yap
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Ad Soyad</label>
+                    <input type="text" id="regFullName" required placeholder="Adınız Soyadınız" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">E-Posta Adresi</label>
+                    <input type="email" id="regEmail" required placeholder="ornek@mail.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Şifre</label>
+                    <input type="password" id="regPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
+                </div>
+                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow mt-2">
+                    Hesap Oluştur
                 </button>
             </form>
         </div>
@@ -647,22 +791,25 @@
         </div>
     </footer>
 
-    <!-- 9. SUPABASE & JAVASCRIPT MİMARİSİ -->
+    <!-- JAVASCRIPT & SUPABASE INTEGRATION -->
     <script>
-        // --- SUPABASE DESTEĞİ VE MOCK DATA HİBRİT YAPISI ---
+        // --- 1. SUPABASE AYARLARI & FALLBACK STATE ---
         const SUPABASE_URL = 'https://xyzcompany.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder';
         
         let supabaseClient = null;
         try {
-            if (typeof supabase !== 'undefined') {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            if (typeof supabase !== 'undefined' && SUPABASE_URL.includes('.supabase.co')) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
         } catch(e) {
             console.log("Supabase mock modunda çalışıyor.");
         }
 
-        // Zengin Demo İlanlar (Mock Data)
+        // Kullanıcı Durumu (Auth State)
+        let currentUser = null; // { id, email, fullName }
+
+        // Kategoriler
         const categoriesData = [
             { id: 'all', name: 'Tüm İlanlar', icon: 'fa-layer-group', count: 6 },
             { id: 'Vasıta', name: 'Vasıta', icon: 'fa-car', count: 2 },
@@ -673,9 +820,11 @@
             { id: 'Hizmetler', name: 'Hizmetler & Ustalık', icon: 'fa-wrench', count: 0 }
         ];
 
+        // Zengin Mock İlan Verileri
         let listingsState = [
             {
                 id: 101,
+                user_id: 'demo_user_1',
                 title: 'Sahibinden 2020 Model Renault Megane 1.5 dCi Icon Touch',
                 category: 'Vasıta',
                 price: 745000,
@@ -691,10 +840,11 @@
                     'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80',
                     'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80'
                 ],
-                description: '2020 Model Renault Megane. Hatasız, boyasız, tramer kayıtsızdır. Tüm bakımları zamanında yapılmıştır. Aile aracı olarak temiz kullanılmıştır.'
+                description: '2020 Model Renault Megane. Hatasız, boyasız, tramer kayıtsızdır. Tüm bakımları Samandağ yetkili servisinde yapılmıştır.'
             },
             {
                 id: 102,
+                user_id: 'demo_user_2',
                 title: 'Samandağ Deniz Mahallesi Sahile 200m 3+1 Lüks Satılık Daire',
                 category: 'Emlak',
                 price: 2850000,
@@ -714,6 +864,7 @@
             },
             {
                 id: 103,
+                user_id: 'demo_user_3',
                 title: 'iPhone 14 Pro Max 256 GB Derin Mor - Faturası Mevcut',
                 category: 'İkinci El ve Sıfır Alışveriş',
                 price: 46500,
@@ -728,10 +879,11 @@
                 images: [
                     'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80'
                 ],
-                description: 'Pil sağlığı %88. Kutu, fatura ve orijinal şarj kablosu ile verilecektir. Hiçbir çiziği yoktur.'
+                description: 'Pil sağlığı %88. Kutu, fatura ve orijinal şarj kablosu ile verilecektir. Çiziksiz temiz cihaz.'
             },
             {
                 id: 104,
+                user_id: 'demo_user_4',
                 title: 'Temiz Kullanılmış L Koltuk Takımı + Berjer',
                 category: 'İkinci El ve Sıfır Alışveriş',
                 price: 8500,
@@ -746,60 +898,143 @@
                 images: [
                     'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80'
                 ],
-                description: 'Leke tutmaz tay tüyü kumaş. Herhangi bir yırtık veya deforme kesinlikle yoktur.'
-            },
-            {
-                id: 105,
-                title: 'Yamaha XMAX 300 Tech MAX Mavi - Düşük Kilometre',
-                category: 'Vasıta',
-                price: 215000,
-                location: 'Tekebaşı',
-                condition: 'İkinci El',
-                phone: '0537 999 0011',
-                seller: 'Hasan V.',
-                date: '16 Ekim 2026',
-                is_param_guvende: false,
-                is_acil: false,
-                is_vip: false,
-                images: [
-                    'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80'
-                ],
-                description: 'Kazasız, çiziksiz garaj motoru. Ekstra çanta ve ön cam takılmıştır.'
-            },
-            {
-                id: 106,
-                title: 'Çiğdede Mah. Kiralık 2+1 Eşyalı Daire',
-                category: 'Emlak',
-                price: 14000,
-                location: 'Çiğdede Mah.',
-                condition: 'İkinci El',
-                phone: '0538 333 4455',
-                seller: 'Güneş Gayrimenkul',
-                date: '19 Ekim 2026',
-                is_param_guvende: false,
-                is_acil: false,
-                is_vip: false,
-                images: [
-                    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'
-                ],
-                description: 'Klima, çamaşır makinesi, televizyon tüm eşyaları eksiksiz hazır kiralık ev.'
+                description: 'Leke tutmaz tay tüyü kumaş. Herhangi bir yırtık veya deforme yoktur.'
             }
         ];
 
         let selectedCategory = 'all';
-        let viewMode = 'list'; // 'list' veya 'grid'
+        let viewMode = 'list';
         let favoritesState = JSON.parse(localStorage.getItem('shb_favs') || '[]');
         let currentModalImageIndex = 0;
         let activeModalListing = null;
 
-        // UYGULAMA BAŞLANGICI
+        // Zoom State
+        let zoomLevel = 1;
+
+        // Selected VIP Package State
+        let selectedPackageInfo = { id: '1_ay', price: 250, label: '1 Aylık Doping (250 TL)' };
+
+        // --- INIT & AUTH MANAGEMENT ---
         document.addEventListener('DOMContentLoaded', () => {
+            initAuth();
             renderCategoryTree();
             applyFilters();
             updateFavBadge();
+
+            // Keyboard navigation for gallery
+            document.addEventListener('keydown', (e) => {
+                const fsModal = document.getElementById('fullscreenGalleryModal');
+                if (!fsModal.classList.contains('hidden')) {
+                    if (e.key === 'ArrowLeft') prevFullscreenImage();
+                    if (e.key === 'ArrowRight') nextFullscreenImage();
+                    if (e.key === 'Escape') closeFullscreenGallery();
+                }
+            });
         });
 
-        // SOL KATEGORİ AĞACINI RENDER ETME
+        function initAuth() {
+            // Check local session
+            const savedUser = localStorage.getItem('shb_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                renderAuthUI();
+            }
+        }
+
+        function renderAuthUI() {
+            const container = document.getElementById('authNavContainer');
+            if (currentUser) {
+                container.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <div class="bg-slate-900 border border-slate-700 text-amber-400 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-circle text-sm"></i>
+                            <span class="max-w-[100px] truncate">${currentUser.fullName || currentUser.email}</span>
+                        </div>
+                        <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Çıkış Yap">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openAuthModal()" class="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition">
+                        <i class="fa-regular fa-user mr-1"></i>
+                        <span>Giriş Yap</span>
+                    </button>
+                `;
+            }
+        }
+
+        function requireAuthAction(actionCallback) {
+            if (!currentUser) {
+                alert('Bu işlemi gerçekleştirmek için lütfen giriş yapın.');
+                openAuthModal();
+                return;
+            }
+            actionCallback();
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('tabLoginBtn').className = 'flex-1 pb-2 border-b-2 border-amber-400 text-slate-900 font-bold';
+                document.getElementById('tabRegisterBtn').className = 'flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold';
+            } else {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('tabRegisterBtn').className = 'flex-1 pb-2 border-b-2 border-amber-400 text-slate-900 font-bold';
+                document.getElementById('tabLoginBtn').className = 'flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            currentUser = {
+                id: 'user_' + Date.now(),
+                email: email,
+                fullName: email.split('@')[0]
+            };
+            localStorage.setItem('shb_user', JSON.stringify(currentUser));
+            renderAuthUI();
+            closeAuthModal();
+            applyFilters();
+            alert('Başarıyla giriş yapıldı!');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regFullName').value;
+            const email = document.getElementById('regEmail').value;
+            currentUser = {
+                id: 'user_' + Date.now(),
+                email: email,
+                fullName: fullName
+            };
+            localStorage.setItem('shb_user', JSON.stringify(currentUser));
+            renderAuthUI();
+            closeAuthModal();
+            applyFilters();
+            alert('Hesabınız oluşturuldu ve giriş yapıldı!');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('shb_user');
+            renderAuthUI();
+            applyFilters();
+            alert('Çıkış yapıldı.');
+        }
+
+        // --- 2. KATEGORİ & FİLTRELEME ---
         function renderCategoryTree() {
             const container = document.getElementById('categoryTreeContainer');
             container.innerHTML = categoriesData.map(cat => `
@@ -821,13 +1056,13 @@
             applyFilters();
         }
 
-        // FİLTRELEME & SIRALAMA MANTIĞI
         function applyFilters() {
             const searchQuery = (document.getElementById('headerSearchInput')?.value || '').toLowerCase().trim();
             const location = document.getElementById('filterLocation').value;
             const minPrice = parseFloat(document.getElementById('filterMinPrice').value) || 0;
             const maxPrice = parseFloat(document.getElementById('filterMaxPrice').value) || Infinity;
             const condition = document.getElementById('filterCondition').value;
+            const myOnly = document.getElementById('filterMyListingsOnly').checked;
             const paramGuvende = document.getElementById('filterParamGuvende').checked;
             const acil = document.getElementById('filterAcil').checked;
             const sortBy = document.getElementById('sortBy').value;
@@ -838,13 +1073,13 @@
                 const matchLocation = location === 'all' || item.location === location;
                 const matchPrice = item.price >= minPrice && item.price <= maxPrice;
                 const matchCondition = condition === 'all' || item.condition === condition;
+                const matchMy = !myOnly || (currentUser && item.user_id === currentUser.id);
                 const matchParam = !paramGuvende || item.is_param_guvende;
                 const matchAcil = !acil || item.is_acil;
 
-                return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchParam && matchAcil;
+                return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchMy && matchParam && matchAcil;
             });
 
-            // Sıralama
             if (sortBy === 'priceAsc') filtered.sort((a, b) => a.price - b.price);
             else if (sortBy === 'priceDesc') filtered.sort((a, b) => b.price - a.price);
 
@@ -852,7 +1087,7 @@
             renderListings(filtered);
         }
 
-        // İLANLARI LİSTELEME (LIST / GRID VİTRİN)
+        // --- 3. İLAN LİSTELEME ---
         function renderListings(items) {
             const container = document.getElementById('listingsContainer');
             
@@ -861,7 +1096,7 @@
                     <div class="bg-white rounded-xl p-12 text-center border border-slate-200">
                         <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
                         <h4 class="font-bold text-slate-700">Aramanıza Uygun İlan Bulunamadı</h4>
-                        <p class="text-xs text-slate-500 mt-1">Filtreleri değiştirmeyi veya arama terimini temizlemeyi deneyin.</p>
+                        <p class="text-xs text-slate-500 mt-1">Filtreleri değiştirmeyi deneyin.</p>
                     </div>
                 `;
                 return;
@@ -869,12 +1104,14 @@
 
             if (viewMode === 'grid') {
                 container.className = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4";
-                container.innerHTML = items.map(item => `
+                container.innerHTML = items.map(item => {
+                    const isOwner = currentUser && item.user_id === currentUser.id;
+                    return `
                     <div class="bg-white rounded-xl border ${item.is_vip ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
                         <div class="relative h-44 bg-slate-950 cursor-pointer overflow-hidden" onclick="openDetailModal(${item.id})">
                             <img src="${item.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                             ${item.is_vip ? '<span class="absolute top-2 left-2 badge-vip px-2 py-0.5 rounded text-[10px]">VIP İlan</span>' : ''}
-                            ${item.is_param_guvende ? '<span class="absolute bottom-2 left-2 badge-param-guvende px-2 py-0.5 rounded text-[10px]">Param Güvende</span>' : ''}
+                            ${isOwner ? '<span class="absolute top-2 left-2 bg-amber-400 text-slate-950 px-2 py-0.5 rounded text-[10px] font-black">İlanım</span>' : ''}
                             <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-slate-900/60 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">
                                 <i class="fa-solid fa-heart ${favoritesState.includes(item.id) ? 'text-red-500' : 'text-slate-300'}"></i>
                             </button>
@@ -890,22 +1127,23 @@
                             </div>
                         </div>
                     </div>
-                `).join('');
+                    `;
+                }).join('');
             } else {
-                // LIST MODE (Sahibinden Satır Tasarımı)
                 container.className = "space-y-2.5";
-                container.innerHTML = items.map(item => `
+                container.innerHTML = items.map(item => {
+                    const isOwner = currentUser && item.user_id === currentUser.id;
+                    return `
                     <div onclick="openDetailModal(${item.id})" class="bg-white rounded-xl border ${item.is_vip ? 'border-amber-400 bg-amber-50/10' : 'border-slate-200'} p-2.5 sm:p-3 shadow-sm hover:shadow-md transition flex gap-3 sm:gap-4 items-center cursor-pointer group">
                         
-                        <!-- Sol Görsel -->
                         <div class="relative w-24 h-20 sm:w-36 sm:h-24 bg-slate-950 rounded-lg overflow-hidden shrink-0">
                             <img src="${item.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                             ${item.is_vip ? '<span class="absolute top-1 left-1 badge-vip px-1.5 py-0.2 rounded text-[9px]">VIP</span>' : ''}
                         </div>
 
-                        <!-- Orta İçerik -->
                         <div class="flex-1 min-w-0 space-y-1">
                             <div class="flex items-center gap-1.5 flex-wrap">
+                                ${isOwner ? '<span class="bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded text-[9px]">Sizin İlanınız</span>' : ''}
                                 ${item.is_param_guvende ? '<span class="badge-param-guvende px-1.5 py-0.5 rounded text-[9px] font-bold">Param Güvende</span>' : ''}
                                 ${item.is_acil ? '<span class="badge-acil px-1.5 py-0.5 rounded text-[9px] font-bold">ACİL</span>' : ''}
                                 <span class="text-[10px] text-slate-400 font-semibold">${item.category}</span>
@@ -918,7 +1156,6 @@
                             </div>
                         </div>
 
-                        <!-- Sağ Fiyat & Favori -->
                         <div class="text-right shrink-0 space-y-1">
                             <div class="font-black text-amber-600 text-sm sm:text-base">${item.price.toLocaleString('tr-TR')} TL</div>
                             <div class="text-[10px] text-slate-400">${item.date}</div>
@@ -928,7 +1165,8 @@
                         </div>
 
                     </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
 
@@ -939,7 +1177,7 @@
             applyFilters();
         }
 
-        // İLAN DETAY MODALI
+        // --- 4. İLAN DETAY & DÜZENLEME / SİLME ---
         function openDetailModal(id) {
             const item = listingsState.find(x => x.id === id);
             if (!item) return;
@@ -963,7 +1201,16 @@
             document.getElementById('modalCallBtn').href = `tel:${item.phone}`;
             document.getElementById('modalWhatsappBtn').href = `https://wa.me/90${item.phone.replace(/\s+/g, '')}`;
 
-            // Rozetler
+            // İlan sahibi / editör kontrolü
+            const isOwner = currentUser && (item.user_id === currentUser.id);
+            const ownerControls = document.getElementById('modalOwnerControls');
+            if (isOwner) {
+                ownerControls.classList.remove('hidden');
+            } else {
+                ownerControls.classList.add('hidden');
+            }
+
+            // Badges
             const badgesContainer = document.getElementById('modalBadges');
             badgesContainer.innerHTML = '';
             if (item.is_param_guvende) badgesContainer.innerHTML += '<span class="badge-param-guvende px-2 py-0.5 rounded text-[10px]">Param Güvende</span>';
@@ -975,6 +1222,22 @@
 
         function closeDetailModal() {
             document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function triggerEditListing() {
+            if (!activeModalListing) return;
+            closeDetailModal();
+            openPostFormModal(activeModalListing);
+        }
+
+        function triggerDeleteListing() {
+            if (!activeModalListing) return;
+            if (confirm('Bu ilanı silmek istediğinize emin misiniz?')) {
+                listingsState = listingsState.filter(x => x.id !== activeModalListing.id);
+                closeDetailModal();
+                applyFilters();
+                alert('İlan silindi.');
+            }
         }
 
         function updateModalGallery() {
@@ -993,27 +1256,121 @@
             currentModalImageIndex = index;
             updateModalGallery();
         }
-
         function prevModalImage() {
             if (!activeModalListing) return;
             currentModalImageIndex = (currentModalImageIndex - 1 + activeModalListing.images.length) % activeModalListing.images.length;
             updateModalGallery();
         }
-
         function nextModalImage() {
             if (!activeModalListing) return;
             currentModalImageIndex = (currentModalImageIndex + 1) % activeModalListing.images.length;
             updateModalGallery();
         }
 
-        // ÜCRETSİZ İLAN VERME
-        function togglePostFormModal() {
-            const modal = document.getElementById('postFormModal');
-            modal.classList.toggle('hidden');
+        // --- 5. GELİŞMİŞ FULLSCREEN ZOOM GALERİ ---
+        function openFullscreenGallery() {
+            if (!activeModalListing) return;
+            const modal = document.getElementById('fullscreenGalleryModal');
+            document.getElementById('fullscreenGalleryTitle').innerText = activeModalListing.title;
+            updateFullscreenGallery();
+            modal.classList.remove('hidden');
         }
 
-        function handleNewPostSubmit(e) {
+        function closeFullscreenGallery() {
+            document.getElementById('fullscreenGalleryModal').classList.add('hidden');
+            resetZoomImage();
+        }
+
+        function updateFullscreenGallery() {
+            if (!activeModalListing) return;
+            const images = activeModalListing.images;
+            const mainImg = document.getElementById('fullscreenImage');
+            mainImg.src = images[currentModalImageIndex];
+
+            document.getElementById('fullscreenCounter').innerText = `${currentModalImageIndex + 1} / ${images.length}`;
+
+            const thumbs = document.getElementById('fullscreenThumbnails');
+            thumbs.innerHTML = images.map((img, idx) => `
+                <img src="${img}" onclick="setFullscreenImage(${idx})" class="w-12 h-10 object-cover rounded cursor-pointer border-2 ${idx === currentModalImageIndex ? 'border-amber-400' : 'border-transparent opacity-50'}">
+            `).join('');
+        }
+
+        function setFullscreenImage(idx) {
+            currentModalImageIndex = idx;
+            resetZoomImage();
+            updateFullscreenGallery();
+        }
+        function prevFullscreenImage() {
+            if (!activeModalListing) return;
+            currentModalImageIndex = (currentModalImageIndex - 1 + activeModalListing.images.length) % activeModalListing.images.length;
+            resetZoomImage();
+            updateFullscreenGallery();
+        }
+        function nextFullscreenImage() {
+            if (!activeModalListing) return;
+            currentModalImageIndex = (currentModalImageIndex + 1) % activeModalListing.images.length;
+            resetZoomImage();
+            updateFullscreenGallery();
+        }
+
+        function zoomInImage() {
+            zoomLevel += 0.3;
+            applyZoom();
+        }
+        function zoomOutImage() {
+            if (zoomLevel > 0.5) {
+                zoomLevel -= 0.3;
+                applyZoom();
+            }
+        }
+        function resetZoomImage() {
+            zoomLevel = 1;
+            applyZoom();
+        }
+        function applyZoom() {
+            const img = document.getElementById('fullscreenImage');
+            img.style.transform = `scale(${zoomLevel})`;
+        }
+
+        // --- 6. İLAN EKLEME & GÜNCELLEME FORMU ---
+        function openPostFormModal(editItem = null) {
+            const modal = document.getElementById('postFormModal');
+            const form = document.getElementById('newPostForm');
+            
+            if (editItem) {
+                document.getElementById('postFormTitle').innerText = 'İlanı Düzenle';
+                document.getElementById('postSubmitBtnText').innerText = 'Görüntüyü Güncelle';
+                document.getElementById('editPostId').value = editItem.id;
+                document.getElementById('postTitle').value = editItem.title;
+                document.getElementById('postCategory').value = editItem.category;
+                document.getElementById('postPrice').value = editItem.price;
+                document.getElementById('postLocation').value = editItem.location;
+                document.getElementById('postCondition').value = editItem.condition;
+                document.getElementById('postPhone').value = editItem.phone;
+                document.getElementById('postSeller').value = editItem.seller;
+                document.getElementById('postDescription').value = editItem.description;
+                document.getElementById('postImageUrls').value = editItem.images.join(', ');
+                document.getElementById('postParamGuvende').checked = editItem.is_param_guvende;
+                document.getElementById('postAcil').checked = editItem.is_acil;
+            } else {
+                document.getElementById('postFormTitle').innerText = 'Ücretsiz İlan Oluştur';
+                document.getElementById('postSubmitBtnText').innerText = 'İlanı Yayınla';
+                form.reset();
+                document.getElementById('editPostId').value = '';
+                if (currentUser) {
+                    document.getElementById('postSeller').value = currentUser.fullName;
+                }
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closePostFormModal() {
+            document.getElementById('postFormModal').classList.add('hidden');
+        }
+
+        function handlePostFormSubmit(e) {
             e.preventDefault();
+            const editId = document.getElementById('editPostId').value;
             const title = document.getElementById('postTitle').value;
             const category = document.getElementById('postCategory').value;
             const price = parseFloat(document.getElementById('postPrice').value);
@@ -1022,38 +1379,117 @@
             const phone = document.getElementById('postPhone').value;
             const seller = document.getElementById('postSeller').value;
             const description = document.getElementById('postDescription').value;
-            const urlInput = document.getElementById('postImageUrl').value;
+            const urlsInput = document.getElementById('postImageUrls').value;
             const paramGuvende = document.getElementById('postParamGuvende').checked;
             const acil = document.getElementById('postAcil').checked;
 
             let imgArray = ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80'];
-            if (urlInput.trim()) imgArray = [urlInput.trim()];
+            if (urlsInput.trim()) {
+                imgArray = urlsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            }
 
-            const newListing = {
-                id: Date.now(),
-                title,
-                category,
-                price,
-                location,
-                condition,
-                phone,
-                seller,
-                date: 'Bugün',
-                is_param_guvende: paramGuvende,
-                is_acil: acil,
-                is_vip: false,
-                images: imgArray,
-                description
-            };
+            if (editId) {
+                // Güncelleme
+                const idx = listingsState.findIndex(x => x.id == editId);
+                if (idx !== -1) {
+                    listingsState[idx] = {
+                        ...listingsState[idx],
+                        title, category, price, location, condition, phone, seller, description,
+                        images: imgArray,
+                        is_param_guvende: paramGuvende,
+                        is_acil: acil
+                    };
+                }
+                alert('İlanınız güncellendi.');
+            } else {
+                // Yeni Oluşturma
+                const newListing = {
+                    id: Date.now(),
+                    user_id: currentUser ? currentUser.id : 'anon',
+                    title, category, price, location, condition, phone, seller, description,
+                    date: 'Bugün',
+                    is_param_guvende: paramGuvende,
+                    is_acil: acil,
+                    is_vip: false,
+                    images: imgArray
+                };
+                listingsState.unshift(newListing);
+                alert('İlanınız başarıyla eklendi ve yayınlandı!');
+            }
 
-            listingsState.unshift(newListing);
+            closePostFormModal();
             applyFilters();
-            togglePostFormModal();
-            document.getElementById('newPostForm').reset();
-            alert('İlanınız başarıyla eklendi ve yayına alındı!');
         }
 
-        // FAVORİ İŞLEMLERİ
+        // --- 7. PAKET ALACAK OLANLARA IBAN & HAVALE/EFT ---
+        function selectPackage(pkgId, price) {
+            const labels = {
+                '1_ay': '1 Aylık Doping (250 TL)',
+                '3_ay': '3 Aylık Gold (600 TL)',
+                '6_ay': '6 Aylık VIP (1.000 TL)'
+            };
+            selectedPackageInfo = { id: pkgId, price: price, label: labels[pkgId] };
+            
+            ['1_ay', '3_ay', '6_ay'].forEach(id => {
+                const el = document.getElementById(`pkg_${id}`);
+                if (id === pkgId) {
+                    el.className = "border-2 border-amber-400 bg-amber-50/50 rounded-xl p-3 cursor-pointer text-center space-y-1 relative";
+                } else {
+                    el.className = "border-2 border-slate-200 hover:border-amber-300 rounded-xl p-3 cursor-pointer text-center space-y-1";
+                }
+            });
+
+            document.getElementById('selectedPkgLabel').innerText = `Paket: ${labels[pkgId]}`;
+            
+            // WhatsApp Dekont Linki
+            const waBtn = document.getElementById('whatsappDekontBtn');
+            const msg = encodeURIComponent(`Merhaba, ${labels[pkgId]} paketi için ödememi yaptım. Dekontum ektedir.`);
+            waBtn.href = `https://wa.me/905320000000?text=${msg}`;
+        }
+
+        function openMembershipModal() {
+            if (currentUser) {
+                document.getElementById('paySenderName').value = currentUser.fullName;
+            }
+            document.getElementById('membershipModal').classList.remove('hidden');
+        }
+        function closeMembershipModal() {
+            document.getElementById('membershipModal').classList.add('hidden');
+        }
+
+        function copyIban() {
+            const text = document.getElementById('ibanText').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('IBAN kopyalandı!');
+        }
+
+        function handlePaymentNotificationSubmit(e) {
+            e.preventDefault();
+            const sender = document.getElementById('paySenderName').value;
+            const phone = document.getElementById('paySenderPhone').value;
+
+            alert(`Teşekkürler ${sender}. ${selectedPackageInfo.label} için ödeme bildiriminiz alındı. Dekont kontrolünden sonra VIP ayrıcalıklarınız tanınacaktır.`);
+            closeMembershipModal();
+        }
+
+        // --- 8. DİĞER MODALLAR & FAVORİLER ---
+        function openSendMessageModal() {
+            document.getElementById('sendMessageModal').classList.remove('hidden');
+        }
+        function closeSendMessageModal() {
+            document.getElementById('sendMessageModal').classList.add('hidden');
+        }
+        function handleSendMessageSubmit(e) {
+            e.preventDefault();
+            alert('Mesajınız satıcıya başarıyla iletildi.');
+            closeSendMessageModal();
+        }
+
         function toggleFavorite(id) {
             if (favoritesState.includes(id)) {
                 favoritesState = favoritesState.filter(x => x !== id);
@@ -1085,7 +1521,7 @@
                                 <div class="text-[10px] text-amber-600 font-bold">${item.price.toLocaleString('tr-TR')} TL</div>
                             </div>
                         </div>
-                        <button onclick="toggleFavorite(${item.id}); openFavoritesModal();" class="text-red-500 text-xs px-2 py-1">Kaldır</button>
+                        <button onclick="toggleFavorite(${item.id}); openFavoritesModal();" class="text-red-500 text-xs px-2 py-1 font-bold">Kaldır</button>
                     </div>
                 `).join('');
             }
@@ -1094,52 +1530,6 @@
 
         function closeFavoritesModal() {
             document.getElementById('favoritesModal').classList.add('hidden');
-        }
-
-        // YARDIMCI VE DİĞER MODALLAR
-        function openSendMessageModal() {
-            document.getElementById('sendMessageModal').classList.remove('hidden');
-        }
-        function closeSendMessageModal() {
-            document.getElementById('sendMessageModal').classList.add('hidden');
-        }
-        function handleSendMessageSubmit(e) {
-            e.preventDefault();
-            alert('Mesajınız satıcıya başarıyla iletildi.');
-            closeSendMessageModal();
-        }
-
-        function openMembershipModal() {
-            document.getElementById('membershipModal').classList.remove('hidden');
-        }
-        function closeMembershipModal() {
-            document.getElementById('membershipModal').classList.add('hidden');
-        }
-        function copyIban() {
-            document.execCommand('copy');
-            alert('IBAN kopyalandı!');
-        }
-        function handleBankTransferNotice(e) {
-            e.preventDefault();
-            alert('Havale bildiriminiz alındı. İncelendikten sonra VIP üyeliğiniz aktif edilecektir.');
-            closeMembershipModal();
-        }
-
-        function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-        }
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.add('hidden');
-        }
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            document.getElementById('authNavButtons').innerHTML = `
-                <div class="bg-slate-900 text-amber-400 border border-slate-800 text-xs font-bold px-3 py-2 rounded-lg">
-                    <i class="fa-solid fa-user-check mr-1"></i> ${email.split('@')[0]}
-                </div>
-            `;
-            closeAuthModal();
         }
 
         function handleHeaderSearch(e) {
@@ -1155,6 +1545,7 @@
             document.getElementById('filterMinPrice').value = '';
             document.getElementById('filterMaxPrice').value = '';
             document.getElementById('filterCondition').value = 'all';
+            document.getElementById('filterMyListingsOnly').checked = false;
             document.getElementById('filterParamGuvende').checked = false;
             document.getElementById('filterAcil').checked = false;
             document.getElementById('currentCategoryTitle').innerText = 'Tüm İlanlar';
