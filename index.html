@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Samandağ 2. El Pazarı</title>
+    <title>Samandağ 2. El Pazarı | Sahibinden Tarzı İlan Platformu</title>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,59 +12,72 @@
             theme: {
                 extend: {
                     colors: {
-                        sahibinden: {
+                        shb: {
                             yellow: '#ffe600',
-                            yellowHover: '#e6cf00',
-                            blue: '#1e3a8a',
+                            yellowHover: '#e5ce00',
                             navy: '#0b1220',
-                            orange: '#f58220',
-                            bg: '#f4f6f9',
-                            card: '#ffffff',
-                            text: '#222222',
-                            muted: '#666666',
-                            border: '#e2e8f0'
+                            navyLight: '#1e293b',
+                            blue: '#2563eb',
+                            grayBg: '#f4f6f9',
+                            cardBorder: '#e2e8f0',
+                            redTag: '#dc2626',
+                            greenTag: '#16a34a'
                         }
                     }
                 }
             }
         }
     </script>
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #f4f6f9;
-            color: #222222;
+            color: #1e293b;
         }
+
         .shb-yellow-btn {
             background-color: #ffe600;
-            color: #111111;
+            color: #0b1220;
             font-weight: 700;
             transition: all 0.2s ease;
         }
         .shb-yellow-btn:hover {
-            background-color: #e6cf00;
+            background-color: #e5ce00;
             transform: translateY(-1px);
         }
-        .shb-navy-header {
-            background: linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
+
+        .badge-param-guvende {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
         }
-        .shb-badge-vip {
-            background: linear-gradient(45deg, #f58220, #ffe600);
+
+        .badge-acil {
+            background: linear-gradient(135deg, #dc2626, #f87171);
+            color: white;
+        }
+
+        .badge-vip {
+            background: linear-gradient(135deg, #d97706, #ffe600);
             color: #000;
             font-weight: 800;
         }
-        /* Custom scrollbars */
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f1f5f9;
         }
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
@@ -74,567 +88,1078 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-100">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- Top Header Bar -->
-    <header class="shb-navy-header text-white sticky top-0 z-40 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo & Title -->
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
-                    <div class="bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-lg text-xl tracking-wider shadow">
+    <!-- 1. HEADER & UST NAVIGASYON -->
+    <header class="bg-slate-950 text-white sticky top-0 z-40 border-b border-slate-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-2 sm:gap-4">
+                
+                <!-- Logo & Slogan -->
+                <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="resetAllFilters()">
+                    <div class="bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded text-xl tracking-wider">
                         S2E
                     </div>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    <div class="hidden sm:block">
+                        <div class="font-extrabold text-lg text-white leading-tight flex items-center gap-1.5">
                             Samandağ 2. El Pazarı
-                            <span class="text-xs font-normal bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30">Hatay</span>
-                        </h1>
-                        <p class="text-xs text-slate-300 hidden sm:block">Güvenli Alışverişin ve İkinci Elin Adresi</p>
+                            <span class="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-400/30">Sahibinden Style</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Hatay / Samandağ Ücretsiz İlan Platformu</p>
                     </div>
                 </div>
 
-                <!-- Header Actions / User Menu -->
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleFormAccordion()" class="shb-yellow-btn px-4 py-2 rounded-lg text-sm flex items-center space-x-2 shadow-sm border border-yellow-300">
-                        <i class="fa-solid font-bold fa-plus text-base"></i>
-                        <span class="hidden sm:inline">Ücretsiz İlan Ver</span>
-                    </button>
-
-                    <div id="authContainer" class="flex items-center space-x-2">
-                        <button onclick="openAuthModal()" id="loginBtn" class="bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-lg text-sm font-medium border border-slate-700 transition">
-                            <i class="fa-regular fa-user mr-1.5"></i> Giriş Yap
+                <!-- Arama Barı (Desktop) -->
+                <div class="flex-1 max-w-xl mx-2 hidden md:block">
+                    <div class="relative">
+                        <input type="text" id="headerSearchInput" onkeyup="handleHeaderSearch(event)" placeholder="Kelime, ilan no veya marka ile ara..." class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-10 pr-20 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
+                        <button onclick="executeSearch()" class="absolute right-1 top-1 bottom-1 bg-amber-400 text-slate-950 text-xs font-bold px-3 rounded hover:bg-amber-300 transition">
+                            Ara
                         </button>
                     </div>
+                </div>
+
+                <!-- Sağ Butonlar -->
+                <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                    <button onclick="togglePostFormModal()" class="shb-yellow-btn px-3.5 py-2 rounded-lg text-xs sm:text-sm flex items-center space-x-1.5 shadow">
+                        <i class="fa-solid fa-plus font-bold"></i>
+                        <span>Ücretsiz İlan Ver</span>
+                    </button>
+
+                    <button onclick="openFavoritesModal()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm relative transition">
+                        <i class="fa-solid fa-heart text-red-500"></i>
+                        <span class="hidden md:inline ml-1">Favorilerim</span>
+                        <span id="favCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </button>
+
+                    <div id="authNavButtons" class="flex items-center space-x-2">
+                        <button onclick="openAuthModal()" class="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition">
+                            <i class="fa-regular fa-user mr-1"></i>
+                            <span>Giriş Yap</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobil Arama Barı -->
+            <div class="block md:hidden pb-3">
+                <div class="relative">
+                    <input type="text" id="headerSearchInputMobile" onkeyup="handleHeaderSearch(event)" placeholder="Samandağ'da ilan ara..." class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-9 pr-16 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-400">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                    <button onclick="executeSearch()" class="absolute right-1 top-1 bottom-1 bg-amber-400 text-slate-950 text-xs font-bold px-2.5 rounded">Ara</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
-
-        <!-- Announcement Banner -->
-        <div class="bg-gradient-to-r from-amber-500/10 via-amber-400/20 to-amber-500/10 border border-amber-400/40 rounded-xl p-4 mb-6 flex items-center justify-between shadow-sm">
-            <div class="flex items-center space-x-3">
-                <div class="bg-amber-400 text-slate-900 p-2.5 rounded-lg font-bold">
-                    <i class="fa-solid fa-bullhorn text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="font-bold text-slate-900 text-sm sm:text-base">Samandağ Halkına Özel Ücretsiz İlan Platformu</h3>
-                    <p class="text-xs sm:text-sm text-slate-600">Eşyalarınızı saniyeler içinde ilan verin, komşularınızla kolayca iletişime geçin.</p>
-                </div>
-            </div>
-            <button onclick="openMembershipModal()" class="hidden md:flex items-center space-x-1 text-xs font-semibold bg-slate-900 text-amber-300 px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-                <i class="fa-solid fa-crown text-amber-400 mr-1"></i> VIP Mağaza Ol
-            </button>
-        </div>
-
-        <!-- Collapsible Post Form (İlan Ver) -->
-        <div id="formAccordion" class="hidden mb-8 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden transition-all duration-300">
-            <div class="bg-slate-900 px-6 py-4 text-white flex justify-between items-center border-b border-slate-800">
-                <h2 class="text-lg font-bold flex items-center space-x-2 text-amber-400">
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span>Yeni İlan Oluştur</span>
-                </h2>
-                <button onclick="toggleFormAccordion()" class="text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <form id="postForm" onsubmit="handlePostSubmit(event)" class="p-6 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">İlan Başlığı *</label>
-                        <input type="text" id="postTitle" required placeholder="Örn: Temiz Kullanılmış iPhone 11 128GB" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Kategori *</label>
-                        <select id="postCategory" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition bg-white">
-                            <option value="">Kategori Seçiniz</option>
-                            <option value="Vasıta">Vasıta (Araba, Motor,vb.)</option>
-                            <option value="Emlak">Emlak (Kiralık, Satılık)</option>
-                            <option value="Elektronik">Elektronik & Ev Aletleri</option>
-                            <option value="Ev Eşyası">Ev & Mobilya</option>
-                            <option value="Giyim">Giyim & Aksesuar</option>
-                            <option value="İş İlanları">İş İlanları</option>
-                            <option value="Diğer">Diğer Kategoriler</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Fiyat (TL) *</label>
-                        <input type="number" id="postPrice" required placeholder="Örn: 4500" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">İletişim Telefonu *</label>
-                        <input type="tel" id="postPhone" placeholder="05XX XXX XX XX" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Detaylı Açıklama</label>
-                    <textarea id="postDescription" rows="3" placeholder="Ürünün durumu, kullanım süresi veya detaylarını yazınız..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition"></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Görseller (En fazla 4 adet)</label>
-                    <input type="file" id="postImages" multiple accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-amber-100 transition">
-                </div>
-
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="toggleFormAccordion()" class="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-lg text-sm font-semibold transition">İptal</button>
-                    <button type="submit" id="submitBtn" class="shb-yellow-btn px-6 py-2.5 rounded-lg text-sm font-bold shadow">İlanı Yayınla</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Search & Category Navigation Bar -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
-            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
-                <!-- Search Box -->
-                <div class="relative w-full md:w-96">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i>
-                    <input type="text" id="searchInput" oninput="filterListings()" placeholder="Kelime veya ilan no ile ara..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition bg-slate-50 focus:bg-white">
-                </div>
-
-                <!-- Category Pills -->
-                <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
-                    <button onclick="setCategoryFilter('all')" class="cat-btn active bg-slate-900 text-amber-400 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap shadow-sm border border-slate-800 transition">
-                        Tüm İlanlar
-                    </button>
-                    <button onclick="setCategoryFilter('Vasıta')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
-                        Vasıta
-                    </button>
-                    <button onclick="setCategoryFilter('Emlak')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
-                        Emlak
-                    </button>
-                    <button onclick="setCategoryFilter('Elektronik')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
-                        Elektronik
-                    </button>
-                    <button onclick="setCategoryFilter('Ev Eşyası')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
-                        Ev Eşyası
-                    </button>
-                    <button onclick="setCategoryFilter('Giyim')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
-                        Giyim
-                    </button>
-                    <button onclick="setCategoryFilter('İş İlanları')" class="cat-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition">
-                        İş İlanları
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Listings Section Header -->
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2">
-                <span>Güncel İlanlar</span>
-                <span id="listingCount" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-semibold">0</span>
-            </h2>
-            <div class="text-xs text-slate-500">
-                Sıralama: <span class="font-semibold text-slate-800">Yeniden Eskiye</span>
-            </div>
-        </div>
-
-        <!-- Listings Grid Container -->
-        <div id="listingsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            <!-- Loading State -->
-            <div class="col-span-full py-12 text-center text-slate-400">
-                <i class="fa-solid fa-spinner fa-spin text-3xl mb-3 text-amber-500"></i>
-                <p class="text-sm">İlanlar yükleniyor, lütfen bekleyin...</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <!-- BANNER ANONS -->
+    <div class="bg-amber-400/10 border-b border-amber-400/20 text-slate-800 py-2.5 text-xs font-medium">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
             <div class="flex items-center space-x-2">
-                <span class="bg-amber-400 text-slate-900 font-extrabold px-2 py-0.5 rounded text-sm">S2E</span>
-                <span class="font-semibold text-slate-200">Samandağ 2. El Pazarı</span>
-                <span>&copy; 2026 Tüm Hakları Saklıdır.</span>
+                <span class="bg-amber-400 text-slate-950 text-[10px] font-black px-1.5 py-0.5 rounded uppercase">Duyuru</span>
+                <span>Samandağ ve çevresinde komşularınızdan güvenle ikinci el eşya, araç ve emlak alıp satın!</span>
             </div>
-            <div class="flex space-x-4 text-slate-400">
-                <a href="#" class="hover:text-amber-400 transition">Gizlilik Politikası</a>
-                <a href="#" class="hover:text-amber-400 transition">Kullanım Şartları</a>
-                <a href="#" onclick="openMembershipModal(); return false;" class="text-amber-400 hover:underline">VIP Mağaza Üyeliği</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Image Gallery Modal -->
-    <div id="galleryModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-900 text-white">
-                <h3 id="galleryTitle" class="font-bold text-base truncate pr-4 text-amber-400">İlan Detayı</h3>
-                <button onclick="closeGalleryModal()" class="text-slate-400 hover:text-white transition p-1">
-                    <i class="fa-solid fa-xmark text-xl"></i>
+            <div class="flex items-center space-x-3">
+                <button onclick="openMembershipModal()" class="text-amber-700 font-bold hover:underline flex items-center gap-1">
+                    <i class="fa-solid fa-crown text-amber-500"></i> VIP Mağaza Paketi Satın Al
                 </button>
-            </div>
-            <div class="p-4 flex-1 overflow-y-auto bg-slate-950 flex flex-col items-center justify-center relative">
-                <img id="galleryMainImg" src="" alt="Görsel" class="max-h-[50vh] object-contain rounded-lg">
-                <div id="galleryThumbnails" class="flex space-x-2 mt-4 overflow-x-auto p-2 w-full justify-center"></div>
-            </div>
-            <div class="p-4 bg-white border-t border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                <div>
-                    <div id="galleryPrice" class="text-xl font-black text-amber-600">0 TL</div>
-                    <div id="galleryPhone" class="text-sm font-bold text-slate-800 mt-0.5"><i class="fa-solid fa-phone mr-1.5 text-amber-500"></i> -</div>
-                </div>
-                <a id="galleryCallBtn" href="#" class="shb-yellow-btn w-full sm:w-auto px-6 py-2.5 rounded-xl font-bold text-center text-sm shadow">
-                    <i class="fa-solid fa-phone mr-2"></i> Satıcıyı Ara
-                </a>
             </div>
         </div>
     </div>
 
-    <!-- Auth / Login Modal -->
-    <div id="authModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative border border-slate-100">
+    <!-- MAIN ICERIK KISMI -->
+    <main class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-5 flex-1 w-full">
+        <div class="flex flex-col lg:flex-row gap-5">
+
+            <!-- 2. SOL KATEGORİ AĞACI & DETAYLI FİLTRE PANELİ -->
+            <aside class="w-full lg:w-64 shrink-0 space-y-4">
+                
+                <!-- Sol Kategori Ağacı -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-950 text-white p-3 font-bold text-sm flex items-center justify-between">
+                        <span><i class="fa-solid fa-bars mr-2 text-amber-400"></i> KATEGORİLER</span>
+                        <button onclick="resetAllFilters()" class="text-[10px] text-amber-400 hover:underline font-normal">Sıfırla</button>
+                    </div>
+                    
+                    <div class="p-2 space-y-1 text-xs" id="categoryTreeContainer">
+                        <!-- Kategoriler JS ile dinamik doldurulacak -->
+                    </div>
+                </div>
+
+                <!-- 3. DETAYLI FILTRELEME PANELI -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 pb-2 border-b border-slate-100 flex items-center justify-between">
+                        <span><i class="fa-solid fa-filter text-amber-500 mr-1.5"></i> Detaylı Filtrele</span>
+                        <i class="fa-solid fa-sliders text-slate-400"></i>
+                    </h3>
+
+                    <!-- Mahalle / Konum -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Mahalle / Konum</label>
+                        <select id="filterLocation" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:ring-1 focus:ring-amber-400 focus:bg-white outline-none">
+                            <option value="all">Tüm Samandağ</option>
+                            <option value="Deniz Mah.">Deniz Mahallesi</option>
+                            <option value="Atatürk Mah.">Atatürk Mahallesi</option>
+                            <option value="Çiğdede Mah.">Çiğdede Mahallesi</option>
+                            <option value="Cemal Gürsel">Cemal Gürsel</option>
+                            <option value="Meydan">Meydan Mahallesi</option>
+                            <option value="Tekebaşı">Tekebaşı</option>
+                            <option value="Koyunoğlu">Koyunoğlu</option>
+                            <option value="Diğer">Diğer Mahalleler</option>
+                        </select>
+                    </div>
+
+                    <!-- Fiyat Aralığı -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Fiyat Aralığı (TL)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="filterMinPrice" oninput="applyFilters()" placeholder="Min" class="w-1/2 bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none focus:bg-white">
+                            <span class="text-slate-400">-</span>
+                            <input type="number" id="filterMaxPrice" oninput="applyFilters()" placeholder="Maks" class="w-1/2 bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none focus:bg-white">
+                        </div>
+                    </div>
+
+                    <!-- Durumu (Sıfır / İkinci El) -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Ürün Durumu</label>
+                        <select id="filterCondition" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:ring-1 focus:ring-amber-400 focus:bg-white outline-none">
+                            <option value="all">Farketmez</option>
+                            <option value="İkinci El">İkinci El</option>
+                            <option value="Sıfır">Sıfır / Henüz Kullanılmamış</option>
+                        </select>
+                    </div>
+
+                    <!-- Rozet Filtresi -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Özel İlanlar</label>
+                        <div class="space-y-1.5">
+                            <label class="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                <input type="checkbox" id="filterParamGuvende" onchange="applyFilters()" class="rounded border-slate-300 text-amber-500 focus:ring-amber-400">
+                                <span>Param Güvende İlanları</span>
+                            </label>
+                            <label class="flex items-center space-x-2 text-xs text-slate-600 cursor-pointer">
+                                <input type="checkbox" id="filterAcil" onchange="applyFilters()" class="rounded border-slate-300 text-amber-500 focus:ring-amber-400">
+                                <span>Acil İlanlar</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="resetAllFilters()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">
+                        Filtreleri Temizle
+                    </button>
+                </div>
+            </aside>
+
+            <!-- SAĞ TARAF: İLAN LİSTESİ & VİTRİN -->
+            <section class="flex-1 space-y-4">
+                
+                <!-- Üst Üst Filtre Barı & Görünüm Değiştirici -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center space-x-2">
+                        <span id="currentCategoryTitle" class="font-black text-slate-800 text-sm">Tüm İlanlar</span>
+                        <span id="totalListingBadge" class="bg-slate-100 text-slate-700 text-xs px-2.5 py-0.5 rounded-full font-bold border border-slate-200">0 İlan</span>
+                    </div>
+
+                    <div class="flex items-center space-x-3 text-xs">
+                        <!-- Sıralama -->
+                        <div class="flex items-center space-x-1">
+                            <span class="text-slate-500 hidden sm:inline">Sırala:</span>
+                            <select id="sortBy" onchange="applyFilters()" class="bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs font-medium outline-none">
+                                <option value="newest">En Yeniler</option>
+                                <option value="priceAsc">Fiyat: Düşükten Yükseğe</option>
+                                <option value="priceDesc">Fiyat: Yüksekten Düşüğe</option>
+                            </select>
+                        </div>
+
+                        <!-- Görünüm Seçenekleri -->
+                        <div class="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
+                            <button onclick="setViewMode('list')" id="btnViewList" class="px-2 py-1 rounded bg-white shadow text-slate-800" title="Liste Görünümü">
+                                <i class="fa-solid fa-list text-xs"></i>
+                            </button>
+                            <button onclick="setViewMode('grid')" id="btnViewGrid" class="px-2 py-1 rounded text-slate-500 hover:text-slate-800" title="Vitrin / Grid Görünümü">
+                                <i class="fa-solid fa-border-all text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. İLAN LİSTESİ KONTEYNERİ -->
+                <div id="listingsContainer" class="space-y-3">
+                    <!-- Dinamik JavaScript Yüklemesi -->
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 5. İLAN DETAY MODALI (SAHİBİNDEN TARZI) -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-5xl w-full my-auto shadow-2xl border border-slate-200 overflow-hidden relative flex flex-col max-h-[92vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-slate-950 text-white p-4 flex justify-between items-center border-b border-slate-800 shrink-0">
+                <div class="flex items-center space-x-2 overflow-hidden">
+                    <span id="modalCategoryBadge" class="bg-amber-400 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Kategori</span>
+                    <h2 id="modalTitle" class="font-bold text-sm sm:text-base text-amber-300 truncate">İlan Başlığı</h2>
+                </div>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white p-1 rounded-lg transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-6">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- Sol: Galeri & Fotoğraflar (7 Kolon) -->
+                    <div class="lg:col-span-7 space-y-3">
+                        <div class="relative h-64 sm:h-80 md:h-96 bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center border border-slate-800">
+                            <img id="modalMainImage" src="" alt="İlan Görseli" class="max-h-full max-w-full object-contain">
+                            
+                            <!-- Fotoğraf Navigasyonu -->
+                            <button onclick="prevModalImage()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-slate-900/80 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-amber-400 hover:text-slate-950 transition">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <button onclick="nextModalImage()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-900/80 text-white w-9 h-9 rounded-full flex items-center justify-center hover:bg-amber-400 hover:text-slate-950 transition">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+
+                            <span id="imageCounter" class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[11px] font-semibold px-2.5 py-1 rounded">1 / 1</span>
+                        </div>
+
+                        <!-- Küçük Önizlemeler (Thumbnails) -->
+                        <div id="modalThumbnails" class="flex space-x-2 overflow-x-auto pb-1">
+                            <!-- JS ile üretilir -->
+                        </div>
+                    </div>
+
+                    <!-- Sağ: İlan Detayları & Satıcı Bilgileri (5 Kolon) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        
+                        <!-- Fiyat & Başlık -->
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                            <div class="text-2xl font-black text-amber-600 mb-1" id="modalPrice">0 TL</div>
+                            <div id="modalBadges" class="flex flex-wrap gap-1.5 mb-2"></div>
+                            <p id="modalLocationDate" class="text-xs text-slate-500 font-medium">Samandağ, Deniz Mah. • 19 Ekim 2026</p>
+                        </div>
+
+                        <!-- İlan Detay Tablosu -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                            <div class="flex justify-between p-2.5 bg-slate-50 border-b border-slate-100">
+                                <span class="text-slate-500 font-medium">İlan No</span>
+                                <span id="modalListingNo" class="font-bold text-slate-800">#1029384</span>
+                            </div>
+                            <div class="flex justify-between p-2.5 bg-white border-b border-slate-100">
+                                <span class="text-slate-500 font-medium">İlan Tarihi</span>
+                                <span id="modalListingDate" class="font-bold text-slate-800"> Bugün</span>
+                            </div>
+                            <div class="flex justify-between p-2.5 bg-slate-50 border-b border-slate-100">
+                                <span class="text-slate-500 font-medium">Kategori</span>
+                                <span id="modalListingCategory" class="font-bold text-slate-800">Vasıta</span>
+                            </div>
+                            <div class="flex justify-between p-2.5 bg-white border-b border-slate-100">
+                                <span class="text-slate-500 font-medium">Durumu</span>
+                                <span id="modalListingCondition" class="font-bold text-slate-800">İkinci El</span>
+                            </div>
+                            <div class="flex justify-between p-2.5 bg-slate-50">
+                                <span class="text-slate-500 font-medium">Konum</span>
+                                <span id="modalListingAddress" class="font-bold text-slate-800">Hatay / Samandağ</span>
+                            </div>
+                        </div>
+
+                        <!-- İlan Sahibi Koyu Kart -->
+                        <div class="bg-slate-900 text-white rounded-xl p-4 border border-slate-800 space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-amber-400 text-slate-950 font-extrabold flex items-center justify-center text-base" id="modalSellerAvatar">
+                                    A
+                                </div>
+                                <div>
+                                    <h4 id="modalSellerName" class="font-bold text-sm text-white">Ahmet Y.</h4>
+                                    <p class="text-[10px] text-slate-400">Üyelik Tarihi: Ocak 2024</p>
+                                </div>
+                            </div>
+
+                            <!-- İletişim Butonları -->
+                            <div class="grid grid-cols-2 gap-2 pt-1">
+                                <a id="modalCallBtn" href="#" class="shb-yellow-btn py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1.5 shadow">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <span>Hemen Ara</span>
+                                </a>
+                                <a id="modalWhatsappBtn" href="#" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1.5 transition">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                                    <span>WhatsApp</span>
+                                </a>
+                            </div>
+
+                            <button onclick="openSendMessageModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition">
+                                <i class="fa-regular fa-envelope"></i>
+                                <span>Satıcıya Mesaj Gönder</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Detaylı Açıklama Tabı -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 space-y-2">
+                    <h3 class="font-extrabold text-sm text-slate-900 pb-2 border-b border-slate-200">İlan Açıklaması</h3>
+                    <p id="modalDescription" class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">
+                        İlan açıklaması burada yer alır...
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. ÜCRETSİZ İLAN VERME MODALI -->
+    <div id="postFormModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full my-auto shadow-2xl border border-slate-200 overflow-hidden relative">
+            
+            <div class="bg-slate-950 text-white p-4 flex justify-between items-center border-b border-slate-800">
+                <h3 class="font-extrabold text-base text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span>Ücretsiz İlan Oluştur</span>
+                </h3>
+                <button onclick="togglePostFormModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="newPostForm" onsubmit="handleNewPostSubmit(event)" class="p-5 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İlan Başlığı *</label>
+                        <input type="text" id="postTitle" required placeholder="Örn: Sahibinden Temiz 2020 Honda Civic" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kategori *</label>
+                        <select id="postCategory" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                            <option value="">Kategori Seçiniz</option>
+                            <option value="Vasıta">Vasıta (Araba, Motor)</option>
+                            <option value="Emlak">Emlak (Satılık, Kiralık Daire)</option>
+                            <option value="İkinci El ve Sıfır Alışveriş">İkinci El ve Sıfır Alışveriş</option>
+                            <option value="Yedek Parça & Aksesuar">Yedek Parça & Aksesuar</option>
+                            <option value="İş İlanları">İş İlanları</option>
+                            <option value="Hizmetler">Hizmetler & Ustalık</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Fiyat (TL) *</label>
+                        <input type="number" id="postPrice" required placeholder="Örn: 2500" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Mahalle / Konum *</label>
+                        <select id="postLocation" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                            <option value="Deniz Mah.">Deniz Mah.</option>
+                            <option value="Atatürk Mah.">Atatürk Mah.</option>
+                            <option value="Çiğdede Mah.">Çiğdede Mah.</option>
+                            <option value="Cemal Gürsel">Cemal Gürsel</option>
+                            <option value="Meydan">Meydan</option>
+                            <option value="Tekebaşı">Tekebaşı</option>
+                            <option value="Koyunoğlu">Koyunoğlu</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Ürün Durumu *</label>
+                        <select id="postCondition" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                            <option value="İkinci El">İkinci El</option>
+                            <option value="Sıfır">Sıfır</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İletişim Telefonu *</label>
+                        <input type="tel" id="postPhone" required placeholder="05XX XXX XX XX" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İlan Sahibi Ad Soyad *</label>
+                        <input type="text" id="postSeller" required placeholder="Adınız Soyadınız" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">İlan Fotoğrafları Yükle / URL Ekle</label>
+                        <input type="file" id="postFileInput" multiple accept="image/*" class="w-full text-xs text-slate-500 mb-2 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-amber-100">
+                        <input type="text" id="postImageUrl" placeholder="Veya Resim URL'si yapıştırın (Opsiyonel)" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Detaylı Açıklama</label>
+                        <textarea id="postDescription" rows="4" placeholder="Ürünün garantisi, durumu veya detaylarını yazınız..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white"></textarea>
+                    </div>
+
+                    <div class="sm:col-span-2 flex items-center space-x-4 pt-1">
+                        <label class="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer">
+                            <input type="checkbox" id="postParamGuvende" class="rounded text-amber-500">
+                            <span>Param Güvende Hizmetine Dahil Et</span>
+                        </label>
+                        <label class="flex items-center space-x-2 text-xs text-slate-700 cursor-pointer">
+                            <input type="checkbox" id="postAcil" class="rounded text-amber-500">
+                            <span>Acil İlan Etiketi Ekle</span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-3 border-t border-slate-100">
+                    <button type="button" onclick="togglePostFormModal()" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-100">İptal</button>
+                    <button type="submit" class="shb-yellow-btn px-6 py-2 rounded-lg text-xs font-bold shadow">İlanı Hemen Yayınla</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 7. FAVORİLERİM MODALI -->
+    <div id="favoritesModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl border border-slate-200 relative max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-200">
+                <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-red-500"></i>
+                    <span>Favori İlanlarım</span>
+                </h3>
+                <button onclick="closeFavoritesModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div id="favoritesListContainer" class="p-2 overflow-y-auto flex-1 space-y-3 mt-3">
+                <!-- JS ile Doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SATICIYA MESAJ GÖNDER MODALI -->
+    <div id="sendMessageModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-slate-200 relative">
+            <button onclick="closeSendMessageModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="font-extrabold text-base text-slate-900 mb-1">Satıcıya Mesaj İlet</h3>
+            <p class="text-xs text-slate-500 mb-4">Mesajınız doğrudan ilan sahibine iletilecektir.</p>
+
+            <form onsubmit="handleSendMessageSubmit(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Adınız ve İletişim Numarası</label>
+                    <input type="text" required placeholder="Ahmet - 0532 XXX XX XX" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Mesajınız</label>
+                    <textarea rows="4" required placeholder="Ürün ile ilgili sormak istediğiniz detayları yazın..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none"></textarea>
+                </div>
+                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow">
+                    Mesajı Gönder
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 8. ÜYELİK & ABONELİK (VIP) MODALI -->
+    <div id="membershipModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
+            <button onclick="closeMembershipModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="flex items-center space-x-2 text-amber-500 font-extrabold mb-1">
+                <i class="fa-solid fa-crown text-2xl"></i>
+                <span class="text-lg">Samandağ VIP Mağaza Üyeliği</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">İlanlarınız üst sıralarda yer alsın, satışlarınızı 5 kat hızlandırın.</p>
+
+            <div class="bg-amber-50 rounded-xl p-3 border border-amber-200 mb-4 space-y-1.5 text-xs text-amber-900">
+                <div class="font-bold flex justify-between">
+                    <span>Aylık VIP Mağaza Paketi:</span>
+                    <span class="text-amber-700 font-extrabold">250 TL / Ay</span>
+                </div>
+                <p class="text-[11px] text-amber-800">Banka Havalesi / EFT ile anında aktifleştirebilirsiniz.</p>
+            </div>
+
+            <!-- IBAN Bilgisi -->
+            <div class="bg-slate-900 text-white rounded-xl p-3.5 border border-slate-800 space-y-2 mb-4 text-xs">
+                <div class="text-[11px] text-slate-400">Banka Hesap Bilgisi (Ziraat Bankası):</div>
+                <div class="font-mono font-bold text-amber-400 select-all flex justify-between items-center">
+                    <span>TR88 0001 0002 0003 0004 0005 01</span>
+                    <button onclick="copyIban()" class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded hover:bg-slate-700">Kopyala</button>
+                </div>
+                <div class="text-[11px] text-slate-300">Alıcı: Samandağ 2. El Pazarı Ltd. Şti.</div>
+            </div>
+
+            <form onsubmit="handleBankTransferNotice(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Gönderen Ad Soyad</label>
+                    <input type="text" required placeholder="Havale Yapan Ad Soyad" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none">
+                </div>
+                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow">
+                    Havale Bildirimi Yap
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- AUTH MODALI -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 relative">
             <button onclick="closeAuthModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
-            <h3 class="text-xl font-extrabold text-slate-900 mb-1">Giriş Yap / Kayıt Ol</h3>
-            <p class="text-xs text-slate-500 mb-6">İlan yayınlamak ve yönetmek için hesabınıza giriş yapın.</p>
-            
-            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+            <h3 class="font-extrabold text-lg text-slate-900 mb-1">Giriş Yap / Üye Ol</h3>
+            <p class="text-xs text-slate-500 mb-5">İlan yönetimi ve favoriler için giriş yapın.</p>
+
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">E-Posta Adresi</label>
-                    <input type="email" id="authEmail" required placeholder="ornek@mail.com" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">E-Posta Adresi</label>
+                    <input type="email" id="authEmail" required placeholder="ornek@mail.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Şifre</label>
-                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Şifre</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none">
                 </div>
-                <button type="submit" class="shb-yellow-btn w-full py-3 rounded-xl font-bold text-sm shadow mt-2">
+                <button type="submit" class="shb-yellow-btn w-full py-2.5 rounded-lg text-xs font-bold shadow mt-2">
                     Giriş Yap
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Membership / VIP Payment Modal -->
-    <div id="membershipModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-slate-100">
-            <button onclick="closeMembershipModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-            <div class="flex items-center space-x-2 text-amber-500 font-bold mb-1">
-                <i class="fa-solid fa-crown text-xl"></i>
-                <span>Samandağ VIP Mağaza Paketi</span>
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded text-xs">S2E</span>
+                <span class="font-bold text-slate-200">Samandağ 2. El Pazarı</span>
+                <span>&copy; 2026 Tüm Hakları Saklıdır.</span>
             </div>
-            <p class="text-xs text-slate-500 mb-6">İlanlarınızı en üst sıraya taşıyın, özel rozetler kazanın ve satışlarınızı 5 kat artırın!</p>
-            
-            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 mb-5 space-y-3">
-                <div class="flex justify-between items-center text-sm border-b border-slate-200 pb-2">
-                    <span class="font-medium text-slate-700">Aylık VIP Mağaza Üyeliği</span>
-                    <span class="font-bold text-slate-900">150 TL / ay</span>
-                </div>
-                <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
-                    <li>İlanlarınız sarı renkli öne çıkan çerçeve alır.</li>
-                    <li>Arama sonuçlarında en üst sırada yer alırsınız.</li>
-                    <li>Sınırsız resim yükleme ve VIP Mağaza rozeti.</li>
-                </ul>
+            <div class="flex flex-wrap space-x-4">
+                <a href="#" class="hover:text-amber-400">Gizlilik Politikası</a>
+                <a href="#" class="hover:text-amber-400">Kullanım Şartları</a>
+                <a href="#" onclick="openMembershipModal(); return false;" class="text-amber-400 hover:underline">VIP Kurumsal Üyelik</a>
             </div>
-
-            <form id="paymentForm" onsubmit="handlePaymentSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Kart Üzerindeki İsim</label>
-                    <input type="text" required placeholder="Ahmet Yılmaz" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Kart Numarası</label>
-                    <input type="text" maxlength="19" required placeholder="0000 0000 0000 0000" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Son Kullanma (AA/YY)</label>
-                        <input type="text" maxlength="5" required placeholder="12/28" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">CVC / CVV</label>
-                        <input type="text" maxlength="3" required placeholder="123" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm">
-                    </div>
-                </div>
-                <button type="submit" class="shb-yellow-btn w-full py-3 rounded-xl font-bold text-sm shadow mt-2">
-                    150 TL Öde ve Mağazayı Aç
-                </button>
-            </form>
         </div>
-    </div>
+    </footer>
 
-    <!-- JavaScript Logic & Supabase Integration -->
+    <!-- 9. SUPABASE & JAVASCRIPT MİMARİSİ -->
     <script>
-        // Global Supabase Safe Initializer
+        // --- SUPABASE DESTEĞİ VE MOCK DATA HİBRİT YAPISI ---
         const SUPABASE_URL = 'https://xyzcompany.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5emNvbXBhbnkiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY3MDA0MDAwMCwiZXhwIjoxOTg1NjE2MDAwfQ.placeholder_key';
-
-        // Prevent redeclaration errors
-        if (!window.supabaseClient) {
-            try {
-                if (typeof supabase !== 'undefined' && supabase.createClient) {
-                    window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                }
-            } catch (err) {
-                console.warn('Supabase initialization fallback activated:', err);
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder';
+        
+        let supabaseClient = null;
+        try {
+            if (typeof supabase !== 'undefined') {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
+        } catch(e) {
+            console.log("Supabase mock modunda çalışıyor.");
         }
 
-        // Application State
-        let allListings = [
+        // Zengin Demo İlanlar (Mock Data)
+        const categoriesData = [
+            { id: 'all', name: 'Tüm İlanlar', icon: 'fa-layer-group', count: 6 },
+            { id: 'Vasıta', name: 'Vasıta', icon: 'fa-car', count: 2 },
+            { id: 'Emlak', name: 'Emlak', icon: 'fa-house', count: 2 },
+            { id: 'İkinci El ve Sıfır Alışveriş', name: 'İkinci El & Alışveriş', icon: 'fa-bag-shopping', count: 2 },
+            { id: 'Yedek Parça & Aksesuar', name: 'Yedek Parça & Aksesuar', icon: 'fa-gears', count: 0 },
+            { id: 'İş İlanları', name: 'İş İlanları', icon: 'fa-briefcase', count: 0 },
+            { id: 'Hizmetler', name: 'Hizmetler & Ustalık', icon: 'fa-wrench', count: 0 }
+        ];
+
+        let listingsState = [
             {
-                id: 1,
-                title: 'Renault Megane 1.5 dCi Touch - Temiz Masrafsız',
+                id: 101,
+                title: 'Sahibinden 2020 Model Renault Megane 1.5 dCi Icon Touch',
                 category: 'Vasıta',
-                price: 685000,
-                phone: '0532 111 22 33',
-                description: '2017 Model, bakımları yeni yapıldı. Sol çamurluk boyalı harici hatasız.',
-                images: ['https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=600&q=80'],
-                created_at: new Date().toISOString(),
-                is_vip: true
+                price: 745000,
+                location: 'Deniz Mah.',
+                condition: 'İkinci El',
+                phone: '0532 111 2233',
+                seller: 'Mehmet Can',
+                date: '19 Ekim 2026',
+                is_param_guvende: false,
+                is_acil: true,
+                is_vip: true,
+                images: [
+                    'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80'
+                ],
+                description: '2020 Model Renault Megane. Hatasız, boyasız, tramer kayıtsızdır. Tüm bakımları zamanında yapılmıştır. Aile aracı olarak temiz kullanılmıştır.'
             },
             {
-                id: 2,
-                title: 'Samandağ Deniz Mah. 3+1 Lüks Daire',
+                id: 102,
+                title: 'Samandağ Deniz Mahallesi Sahile 200m 3+1 Lüks Satılık Daire',
                 category: 'Emlak',
-                price: 2450000,
-                phone: '0533 444 55 66',
-                description: 'Deniz manzaralı, asansörlü, site içerisinde geniş 3+1 sıfır daire.',
-                images: ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=600&q=80'],
-                created_at: new Date().toISOString(),
-                is_vip: false
+                price: 2850000,
+                location: 'Deniz Mah.',
+                condition: 'Sıfır',
+                phone: '0533 444 5566',
+                seller: 'Samandağ Emlak',
+                date: '18 Ekim 2026',
+                is_param_guvende: false,
+                is_acil: false,
+                is_vip: true,
+                images: [
+                    'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
+                ],
+                description: 'Deniz manzaralı, asansörlü, kapalı otoparklı sıfır lüks daire. Krediye uygundur.'
             },
             {
-                id: 3,
-                title: 'iPhone 13 Pro Max 256GB - Garanti Devam Ediyor',
-                category: 'Elektronik',
-                price: 42000,
-                phone: '0535 777 88 99',
-                description: 'Pil sağlığı %89, kutu fatura mevcut. Çiziksiz sorunsuz cihaz.',
-                images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80'],
-                created_at: new Date().toISOString(),
-                is_vip: false
+                id: 103,
+                title: 'iPhone 14 Pro Max 256 GB Derin Mor - Faturası Mevcut',
+                category: 'İkinci El ve Sıfır Alışveriş',
+                price: 46500,
+                location: 'Atatürk Mah.',
+                condition: 'İkinci El',
+                phone: '0535 888 9900',
+                seller: 'Ali Yılmaz',
+                date: '19 Ekim 2026',
+                is_param_guvende: true,
+                is_acil: true,
+                is_vip: false,
+                images: [
+                    'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80'
+                ],
+                description: 'Pil sağlığı %88. Kutu, fatura ve orijinal şarj kablosu ile verilecektir. Hiçbir çiziği yoktur.'
+            },
+            {
+                id: 104,
+                title: 'Temiz Kullanılmış L Koltuk Takımı + Berjer',
+                category: 'İkinci El ve Sıfır Alışveriş',
+                price: 8500,
+                location: 'Çiğdede Mah.',
+                condition: 'İkinci El',
+                phone: '0536 222 3344',
+                seller: 'Zeynep K.',
+                date: '17 Ekim 2026',
+                is_param_guvende: true,
+                is_acil: false,
+                is_vip: false,
+                images: [
+                    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80'
+                ],
+                description: 'Leke tutmaz tay tüyü kumaş. Herhangi bir yırtık veya deforme kesinlikle yoktur.'
+            },
+            {
+                id: 105,
+                title: 'Yamaha XMAX 300 Tech MAX Mavi - Düşük Kilometre',
+                category: 'Vasıta',
+                price: 215000,
+                location: 'Tekebaşı',
+                condition: 'İkinci El',
+                phone: '0537 999 0011',
+                seller: 'Hasan V.',
+                date: '16 Ekim 2026',
+                is_param_guvende: false,
+                is_acil: false,
+                is_vip: false,
+                images: [
+                    'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80'
+                ],
+                description: 'Kazasız, çiziksiz garaj motoru. Ekstra çanta ve ön cam takılmıştır.'
+            },
+            {
+                id: 106,
+                title: 'Çiğdede Mah. Kiralık 2+1 Eşyalı Daire',
+                category: 'Emlak',
+                price: 14000,
+                location: 'Çiğdede Mah.',
+                condition: 'İkinci El',
+                phone: '0538 333 4455',
+                seller: 'Güneş Gayrimenkul',
+                date: '19 Ekim 2026',
+                is_param_guvende: false,
+                is_acil: false,
+                is_vip: false,
+                images: [
+                    'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'
+                ],
+                description: 'Klima, çamaşır makinesi, televizyon tüm eşyaları eksiksiz hazır kiralık ev.'
             }
         ];
-        
-        let currentCategory = 'all';
-        let searchQuery = '';
 
-        // DOM Loaded Init
+        let selectedCategory = 'all';
+        let viewMode = 'list'; // 'list' veya 'grid'
+        let favoritesState = JSON.parse(localStorage.getItem('shb_favs') || '[]');
+        let currentModalImageIndex = 0;
+        let activeModalListing = null;
+
+        // UYGULAMA BAŞLANGICI
         document.addEventListener('DOMContentLoaded', () => {
-            renderListings();
+            renderCategoryTree();
+            applyFilters();
+            updateFavBadge();
         });
 
-        // Toggle Form Accordion
-        function toggleFormAccordion() {
-            const accordion = document.getElementById('formAccordion');
-            accordion.classList.toggle('hidden');
-            if (!accordion.classList.contains('hidden')) {
-                accordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+        // SOL KATEGORİ AĞACINI RENDER ETME
+        function renderCategoryTree() {
+            const container = document.getElementById('categoryTreeContainer');
+            container.innerHTML = categoriesData.map(cat => `
+                <div onclick="selectCategory('${cat.id}')" class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${selectedCategory === cat.id ? 'bg-amber-400 text-slate-950 font-bold' : 'hover:bg-slate-100 text-slate-700'}">
+                    <div class="flex items-center space-x-2.5 truncate">
+                        <i class="fa-solid ${cat.icon} w-4 text-center"></i>
+                        <span class="truncate">${cat.name}</span>
+                    </div>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded ${selectedCategory === cat.id ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-500'} font-semibold">${cat.count}</span>
+                </div>
+            `).join('');
         }
 
-        // Filter Handlers
-        function setCategoryFilter(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('bg-slate-900', 'text-amber-400', 'border-slate-800');
-                btn.classList.add('bg-slate-100', 'text-slate-700');
+        function selectCategory(catId) {
+            selectedCategory = catId;
+            const catObj = categoriesData.find(c => c.id === catId);
+            document.getElementById('currentCategoryTitle').innerText = catObj ? catObj.name : 'Tüm İlanlar';
+            renderCategoryTree();
+            applyFilters();
+        }
+
+        // FİLTRELEME & SIRALAMA MANTIĞI
+        function applyFilters() {
+            const searchQuery = (document.getElementById('headerSearchInput')?.value || '').toLowerCase().trim();
+            const location = document.getElementById('filterLocation').value;
+            const minPrice = parseFloat(document.getElementById('filterMinPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('filterMaxPrice').value) || Infinity;
+            const condition = document.getElementById('filterCondition').value;
+            const paramGuvende = document.getElementById('filterParamGuvende').checked;
+            const acil = document.getElementById('filterAcil').checked;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filtered = listingsState.filter(item => {
+                const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
+                const matchSearch = !searchQuery || item.title.toLowerCase().includes(searchQuery) || item.description.toLowerCase().includes(searchQuery);
+                const matchLocation = location === 'all' || item.location === location;
+                const matchPrice = item.price >= minPrice && item.price <= maxPrice;
+                const matchCondition = condition === 'all' || item.condition === condition;
+                const matchParam = !paramGuvende || item.is_param_guvende;
+                const matchAcil = !acil || item.is_acil;
+
+                return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchParam && matchAcil;
             });
-            event.currentTarget.classList.remove('bg-slate-100', 'text-slate-700');
-            event.currentTarget.classList.add('bg-slate-900', 'text-amber-400', 'border-slate-800');
-            renderListings();
+
+            // Sıralama
+            if (sortBy === 'priceAsc') filtered.sort((a, b) => a.price - b.price);
+            else if (sortBy === 'priceDesc') filtered.sort((a, b) => b.price - a.price);
+
+            document.getElementById('totalListingBadge').innerText = filtered.length + ' İlan';
+            renderListings(filtered);
         }
 
-        function filterListings() {
-            searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-            renderListings();
-        }
-
-        function resetFilters() {
-            currentCategory = 'all';
-            searchQuery = '';
-            document.getElementById('searchInput').value = '';
-            renderListings();
-        }
-
-        // Render Listing Cards
-        function renderListings() {
-            const grid = document.getElementById('listingsGrid');
-            const countEl = document.getElementById('listingCount');
-
-            let filtered = allListings.filter(item => {
-                const matchCat = currentCategory === 'all' || item.category === item.category;
-                const matchSearch = !searchQuery || 
-                    item.title.toLowerCase().includes(searchQuery) || 
-                    item.description.toLowerCase().includes(searchQuery);
-                return matchCat && matchSearch;
-            });
-
-            if (countEl) countEl.innerText = filtered.length;
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-12 text-center bg-white rounded-xl border border-slate-200">
+        // İLANLARI LİSTELEME (LIST / GRID VİTRİN)
+        function renderListings(items) {
+            const container = document.getElementById('listingsContainer');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-xl p-12 text-center border border-slate-200">
                         <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
-                        <h3 class="text-base font-bold text-slate-700">Aramanıza Uygun İlan Bulunamadı</h3>
-                        <p class="text-xs text-slate-500 mt-1">Farklı bir arama terimi deneyebilir veya ilk ilanı siz verebilirsiniz.</p>
+                        <h4 class="font-bold text-slate-700">Aramanıza Uygun İlan Bulunamadı</h4>
+                        <p class="text-xs text-slate-500 mt-1">Filtreleri değiştirmeyi veya arama terimini temizlemeyi deneyin.</p>
                     </div>
                 `;
                 return;
             }
 
-            grid.innerHTML = filtered.map(item => `
-                <div class="bg-white rounded-xl shadow-sm hover:shadow-md border ${item.is_vip ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} overflow-hidden flex flex-col transition duration-200 group">
-                    <div class="relative h-48 bg-slate-100 overflow-hidden cursor-pointer" onclick="openGalleryModal(${item.id})">
-                        <img src="${item.images && item.images[0] ? item.images[0] : 'https://placehold.co/600x400/e2e8f0/64748b?text=Görsel+Yok'}" 
-                             alt="${item.title}" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                             onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Görsel+Yok'">
+            if (viewMode === 'grid') {
+                container.className = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4";
+                container.innerHTML = items.map(item => `
+                    <div class="bg-white rounded-xl border ${item.is_vip ? 'border-amber-400 ring-2 ring-amber-400/20' : 'border-slate-200'} overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+                        <div class="relative h-44 bg-slate-950 cursor-pointer overflow-hidden" onclick="openDetailModal(${item.id})">
+                            <img src="${item.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            ${item.is_vip ? '<span class="absolute top-2 left-2 badge-vip px-2 py-0.5 rounded text-[10px]">VIP İlan</span>' : ''}
+                            ${item.is_param_guvende ? '<span class="absolute bottom-2 left-2 badge-param-guvende px-2 py-0.5 rounded text-[10px]">Param Güvende</span>' : ''}
+                            <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-slate-900/60 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-heart ${favoritesState.includes(item.id) ? 'text-red-500' : 'text-slate-300'}"></i>
+                            </button>
+                        </div>
+                        <div class="p-3 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="text-[10px] text-slate-400 uppercase font-bold mb-0.5">${item.category} • ${item.location}</div>
+                                <h4 onclick="openDetailModal(${item.id})" class="font-bold text-xs text-slate-900 line-clamp-2 hover:text-amber-600 cursor-pointer mb-2">${item.title}</h4>
+                            </div>
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                                <span class="font-black text-amber-600 text-sm">${item.price.toLocaleString('tr-TR')} TL</span>
+                                <span class="text-[10px] text-slate-400">${item.date}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                // LIST MODE (Sahibinden Satır Tasarımı)
+                container.className = "space-y-2.5";
+                container.innerHTML = items.map(item => `
+                    <div onclick="openDetailModal(${item.id})" class="bg-white rounded-xl border ${item.is_vip ? 'border-amber-400 bg-amber-50/10' : 'border-slate-200'} p-2.5 sm:p-3 shadow-sm hover:shadow-md transition flex gap-3 sm:gap-4 items-center cursor-pointer group">
                         
-                        ${item.is_vip ? `
-                            <span class="absolute top-2 left-2 shb-badge-vip px-2.5 py-1 rounded-md text-[10px] uppercase shadow-md flex items-center gap-1">
-                                <i class="fa-solid fa-crown text-xs"></i> VIP İlan
-                            </span>
-                        ` : ''}
-
-                        <span class="absolute bottom-2 right-2 bg-slate-900/80 text-white px-2 py-0.5 rounded text-[10px] font-medium backdrop-blur-sm">
-                            <i class="fa-regular fa-image mr-1"></i> ${item.images ? item.images.length : 1}
-                        </span>
-                    </div>
-
-                    <div class="p-4 flex-1 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start gap-2 mb-1">
-                                <span class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">${item.category}</span>
-                                <span class="text-[10px] text-slate-400">Samandağ</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 text-sm line-clamp-2 hover:text-amber-600 transition cursor-pointer" onclick="openGalleryModal(${item.id})">
-                                ${item.title}
-                            </h3>
+                        <!-- Sol Görsel -->
+                        <div class="relative w-24 h-20 sm:w-36 sm:h-24 bg-slate-950 rounded-lg overflow-hidden shrink-0">
+                            <img src="${item.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            ${item.is_vip ? '<span class="absolute top-1 left-1 badge-vip px-1.5 py-0.2 rounded text-[9px]">VIP</span>' : ''}
                         </div>
 
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                            <div class="text-base font-black text-amber-600">
-                                ${Number(item.price).toLocaleString('tr-TR')} TL
+                        <!-- Orta İçerik -->
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${item.is_param_guvende ? '<span class="badge-param-guvende px-1.5 py-0.5 rounded text-[9px] font-bold">Param Güvende</span>' : ''}
+                                ${item.is_acil ? '<span class="badge-acil px-1.5 py-0.5 rounded text-[9px] font-bold">ACİL</span>' : ''}
+                                <span class="text-[10px] text-slate-400 font-semibold">${item.category}</span>
                             </div>
-                            <a href="tel:${item.phone}" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-2 rounded-lg text-xs font-semibold transition" title="Satıcıyı Ara">
-                                <i class="fa-solid fa-phone text-amber-500"></i>
-                            </a>
+                            <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate group-hover:text-amber-600 transition">${item.title}</h4>
+                            <div class="text-[11px] text-slate-500 flex items-center space-x-2">
+                                <span><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i>${item.location}</span>
+                                <span>•</span>
+                                <span>${item.condition}</span>
+                            </div>
                         </div>
+
+                        <!-- Sağ Fiyat & Favori -->
+                        <div class="text-right shrink-0 space-y-1">
+                            <div class="font-black text-amber-600 text-sm sm:text-base">${item.price.toLocaleString('tr-TR')} TL</div>
+                            <div class="text-[10px] text-slate-400">${item.date}</div>
+                            <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="text-slate-400 hover:text-red-500 text-sm p-1">
+                                <i class="fa-solid fa-heart ${favoritesState.includes(item.id) ? 'text-red-500' : ''}"></i>
+                            </button>
+                        </div>
+
                     </div>
-                </div>
+                `).join('');
+            }
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.getElementById('btnViewList').className = mode === 'list' ? 'px-2 py-1 rounded bg-white shadow text-slate-800' : 'px-2 py-1 rounded text-slate-500';
+            document.getElementById('btnViewGrid').className = mode === 'grid' ? 'px-2 py-1 rounded bg-white shadow text-slate-800' : 'px-2 py-1 rounded text-slate-500';
+            applyFilters();
+        }
+
+        // İLAN DETAY MODALI
+        function openDetailModal(id) {
+            const item = listingsState.find(x => x.id === id);
+            if (!item) return;
+            
+            activeModalListing = item;
+            currentModalImageIndex = 0;
+
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalPrice').innerText = item.price.toLocaleString('tr-TR') + ' TL';
+            document.getElementById('modalCategoryBadge').innerText = item.category;
+            document.getElementById('modalLocationDate').innerText = `Samandağ, ${item.location} • ${item.date}`;
+            document.getElementById('modalListingNo').innerText = `#${item.id}`;
+            document.getElementById('modalListingDate').innerText = item.date;
+            document.getElementById('modalListingCategory').innerText = item.category;
+            document.getElementById('modalListingCondition').innerText = item.condition;
+            document.getElementById('modalListingAddress').innerText = `Hatay / Samandağ / ${item.location}`;
+            document.getElementById('modalDescription').innerText = item.description;
+            document.getElementById('modalSellerName').innerText = item.seller;
+            document.getElementById('modalSellerAvatar').innerText = item.seller.charAt(0);
+            
+            document.getElementById('modalCallBtn').href = `tel:${item.phone}`;
+            document.getElementById('modalWhatsappBtn').href = `https://wa.me/90${item.phone.replace(/\s+/g, '')}`;
+
+            // Rozetler
+            const badgesContainer = document.getElementById('modalBadges');
+            badgesContainer.innerHTML = '';
+            if (item.is_param_guvende) badgesContainer.innerHTML += '<span class="badge-param-guvende px-2 py-0.5 rounded text-[10px]">Param Güvende</span>';
+            if (item.is_acil) badgesContainer.innerHTML += '<span class="badge-acil px-2 py-0.5 rounded text-[10px]">Acil İlan</span>';
+
+            updateModalGallery();
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function updateModalGallery() {
+            if (!activeModalListing) return;
+            const images = activeModalListing.images;
+            document.getElementById('modalMainImage').src = images[currentModalImageIndex];
+            document.getElementById('imageCounter').innerText = `${currentModalImageIndex + 1} / ${images.length}`;
+
+            const thumbs = document.getElementById('modalThumbnails');
+            thumbs.innerHTML = images.map((img, idx) => `
+                <img src="${img}" onclick="setModalImage(${idx})" class="w-14 h-12 object-cover rounded-lg cursor-pointer border-2 ${idx === currentModalImageIndex ? 'border-amber-400' : 'border-transparent opacity-60'}">
             `).join('');
         }
 
-        // Post Form Submission Handler
-        function handlePostSubmit(e) {
+        function setModalImage(index) {
+            currentModalImageIndex = index;
+            updateModalGallery();
+        }
+
+        function prevModalImage() {
+            if (!activeModalListing) return;
+            currentModalImageIndex = (currentModalImageIndex - 1 + activeModalListing.images.length) % activeModalListing.images.length;
+            updateModalGallery();
+        }
+
+        function nextModalImage() {
+            if (!activeModalListing) return;
+            currentModalImageIndex = (currentModalImageIndex + 1) % activeModalListing.images.length;
+            updateModalGallery();
+        }
+
+        // ÜCRETSİZ İLAN VERME
+        function togglePostFormModal() {
+            const modal = document.getElementById('postFormModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function handleNewPostSubmit(e) {
             e.preventDefault();
             const title = document.getElementById('postTitle').value;
             const category = document.getElementById('postCategory').value;
-            const price = document.getElementById('postPrice').value;
+            const price = parseFloat(document.getElementById('postPrice').value);
+            const location = document.getElementById('postLocation').value;
+            const condition = document.getElementById('postCondition').value;
             const phone = document.getElementById('postPhone').value;
+            const seller = document.getElementById('postSeller').value;
             const description = document.getElementById('postDescription').value;
-            const files = document.getElementById('postImages').files;
+            const urlInput = document.getElementById('postImageUrl').value;
+            const paramGuvende = document.getElementById('postParamGuvende').checked;
+            const acil = document.getElementById('postAcil').checked;
 
-            let imageUrls = [];
-            if (files && files.length > 0) {
-                for (let i = 0; i < Math.min(files.length, 4); i++) {
-                    imageUrls.push(URL.createObjectURL(files[i]));
-                }
-            } else {
-                imageUrls.push('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80');
-            }
+            let imgArray = ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80'];
+            if (urlInput.trim()) imgArray = [urlInput.trim()];
 
             const newListing = {
                 id: Date.now(),
                 title,
                 category,
-                price: parseFloat(price),
+                price,
+                location,
+                condition,
                 phone,
-                description,
-                images: imageUrls,
-                created_at: new Date().toISOString(),
-                is_vip: false
+                seller,
+                date: 'Bugün',
+                is_param_guvende: paramGuvende,
+                is_acil: acil,
+                is_vip: false,
+                images: imgArray,
+                description
             };
 
-            allListings.unshift(newListing);
-            renderListings();
-            document.getElementById('postForm').reset();
-            toggleFormAccordion();
-
-            // Quick notification highlight
+            listingsState.unshift(newListing);
+            applyFilters();
+            togglePostFormModal();
+            document.getElementById('newPostForm').reset();
             alert('İlanınız başarıyla eklendi ve yayına alındı!');
         }
 
-        // Modal Handlers
-        function openGalleryModal(id) {
-            const item = allListings.find(x => x.id === id);
-            if (!item) return;
-
-            document.getElementById('galleryTitle').innerText = item.title;
-            document.getElementById('galleryPrice').innerText = Number(item.price).toLocaleString('tr-TR') + ' TL';
-            document.getElementById('galleryPhone').innerHTML = `<i class="fa-solid fa-phone mr-1.5 text-amber-500"></i> ${item.phone}`;
-            document.getElementById('galleryCallBtn').href = `tel:${item.phone}`;
-
-            const mainImg = document.getElementById('galleryMainImg');
-            mainImg.src = item.images && item.images[0] ? item.images[0] : 'https://placehold.co/600x400/e2e8f0/64748b?text=G%C3%B6rsel+Yok';
-
-            const thumbsContainer = document.getElementById('galleryThumbnails');
-            thumbsContainer.innerHTML = '';
-
-            if (item.images && item.images.length > 1) {
-                item.images.forEach((imgUrl, idx) => {
-                    const thumb = document.createElement('img');
-                    thumb.src = imgUrl;
-                    thumb.className = `w-14 h-14 object-cover rounded-lg border-2 cursor-pointer transition ${idx === 0 ? 'border-amber-400 scale-105' : 'border-transparent opacity-70 hover:opacity-100'}`;
-                    thumb.onclick = () => {
-                        mainImg.src = imgUrl;
-                        document.querySelectorAll('#galleryThumbnails img').forEach(t => t.classList.remove('border-amber-400', 'scale-105'));
-                        thumb.classList.add('border-amber-400', 'scale-105');
-                    };
-                    thumbsContainer.appendChild(thumb);
-                });
+        // FAVORİ İŞLEMLERİ
+        function toggleFavorite(id) {
+            if (favoritesState.includes(id)) {
+                favoritesState = favoritesState.filter(x => x !== id);
+            } else {
+                favoritesState.push(id);
             }
-
-            document.getElementById('galleryModal').classList.remove('hidden');
+            localStorage.setItem('shb_favs', JSON.stringify(favoritesState));
+            updateFavBadge();
+            applyFilters();
         }
 
-        function closeGalleryModal() {
-            document.getElementById('galleryModal').classList.add('hidden');
+        function updateFavBadge() {
+            document.getElementById('favCountBadge').innerText = favoritesState.length;
         }
 
-        function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
+        function openFavoritesModal() {
+            const container = document.getElementById('favoritesListContainer');
+            const favItems = listingsState.filter(x => favoritesState.includes(x.id));
+
+            if (favItems.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Henüz favori ilanınız bulunmuyor.</p>';
+            } else {
+                container.innerHTML = favItems.map(item => `
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                        <div class="flex items-center space-x-3 truncate">
+                            <img src="${item.images[0]}" class="w-12 h-10 object-cover rounded">
+                            <div class="truncate">
+                                <h5 class="font-bold text-xs text-slate-900 truncate">${item.title}</h5>
+                                <div class="text-[10px] text-amber-600 font-bold">${item.price.toLocaleString('tr-TR')} TL</div>
+                            </div>
+                        </div>
+                        <button onclick="toggleFavorite(${item.id}); openFavoritesModal();" class="text-red-500 text-xs px-2 py-1">Kaldır</button>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('favoritesModal').classList.remove('hidden');
         }
 
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.add('hidden');
+        function closeFavoritesModal() {
+            document.getElementById('favoritesModal').classList.add('hidden');
         }
 
-        function handleAuthSubmit(e) {
+        // YARDIMCI VE DİĞER MODALLAR
+        function openSendMessageModal() {
+            document.getElementById('sendMessageModal').classList.remove('hidden');
+        }
+        function closeSendMessageModal() {
+            document.getElementById('sendMessageModal').classList.add('hidden');
+        }
+        function handleSendMessageSubmit(e) {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const container = document.getElementById('authContainer');
-            
-            container.innerHTML = `
-                <div class="flex items-center space-x-2 bg-slate-800 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-700">
-                    <i class="fa-solid fa-user-circle text-amber-400 text-sm"></i>
-                    <span class="truncate max-w-[100px] sm:max-w-none">${email}</span>
-                </div>
-            `;
-            closeAuthModal();
+            alert('Mesajınız satıcıya başarıyla iletildi.');
+            closeSendMessageModal();
         }
 
         function openMembershipModal() {
             document.getElementById('membershipModal').classList.remove('hidden');
         }
-
         function closeMembershipModal() {
             document.getElementById('membershipModal').classList.add('hidden');
         }
-
-        function handlePaymentSubmit(e) {
+        function copyIban() {
+            document.execCommand('copy');
+            alert('IBAN kopyalandı!');
+        }
+        function handleBankTransferNotice(e) {
             e.preventDefault();
-            alert('Tebrikler! VIP Mağaza üyeliğiniz aktif edildi.');
+            alert('Havale bildiriminiz alındı. İncelendikten sonra VIP üyeliğiniz aktif edilecektir.');
             closeMembershipModal();
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            document.getElementById('authNavButtons').innerHTML = `
+                <div class="bg-slate-900 text-amber-400 border border-slate-800 text-xs font-bold px-3 py-2 rounded-lg">
+                    <i class="fa-solid fa-user-check mr-1"></i> ${email.split('@')[0]}
+                </div>
+            `;
+            closeAuthModal();
+        }
+
+        function handleHeaderSearch(e) {
+            if (e.key === 'Enter') applyFilters();
+        }
+        function executeSearch() {
+            applyFilters();
+        }
+        function resetAllFilters() {
+            selectedCategory = 'all';
+            document.getElementById('headerSearchInput').value = '';
+            document.getElementById('filterLocation').value = 'all';
+            document.getElementById('filterMinPrice').value = '';
+            document.getElementById('filterMaxPrice').value = '';
+            document.getElementById('filterCondition').value = 'all';
+            document.getElementById('filterParamGuvende').checked = false;
+            document.getElementById('filterAcil').checked = false;
+            document.getElementById('currentCategoryTitle').innerText = 'Tüm İlanlar';
+            renderCategoryTree();
+            applyFilters();
         }
     </script>
 </body>
