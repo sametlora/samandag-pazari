@@ -1338,7 +1338,7 @@
                             ${item.is_vip ? '<span class="absolute top-2 left-2 badge-vip px-2 py-0.5 rounded text-[10px]">VIP İlan</span>' : ''}
                             ${isOwner ? '<span class="absolute top-2 left-2 bg-amber-400 text-slate-950 px-2 py-0.5 rounded text-[10px] font-black">İlanım</span>' : ''}
                             <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="absolute top-2 right-2 bg-slate-900/60 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs">
-                                <i class="fa-solid fa-heart ${favoritesState.includes(item.id) ? 'text-red-500' : 'text-slate-300'}"></i>
+                                <i class="fa-solid fa-heart ${favoritesState.some(favId => String(favId) === String(item.id)) ? 'text-red-500' : 'text-slate-300'}"></i>
                             </button>
                         </div>
                         <div class="p-3 flex-1 flex flex-col justify-between">
@@ -1385,7 +1385,7 @@
                             <div class="font-black text-amber-600 text-sm sm:text-base">${item.price.toLocaleString('tr-TR')} TL</div>
                             <div class="text-[10px] text-slate-400">${item.date}</div>
                             <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="text-slate-400 hover:text-red-500 text-sm p-1">
-                                <i class="fa-solid fa-heart ${favoritesState.includes(item.id) ? 'text-red-500' : ''}"></i>
+                                <i class="fa-solid fa-heart ${favoritesState.some(favId => String(favId) === String(item.id)) ? 'text-red-500' : ''}"></i>
                             </button>
                         </div>
 
@@ -2004,95 +2004,46 @@
             updateUnreadMessageBadge();
         }
 
-        
-async function toggleFavorite(id) {
-    if (!currentUser) {
-        alert('Favorilere eklemek için lütfen giriş yapın.');
-        openAuthModal();
-        return;
-    }
+        async function toggleFavorite(id) {
+            if (!currentUser) { alert('Favorilere eklemek için lütfen giriş yapın.'); openAuthModal(); return; }
+            const listing = listingsState.find(item => String(item.id) === String(id));
+            const existing = favoritesState.some(x => String(x) === String(id));
 
-    if (supabaseClient) {
-        // İlanın gerçekten veritabanında kayıtlı olduğunu doğrula.
-        const ilanId = Number(id);
-
-        if (!Number.isSafeInteger(ilanId) || ilanId <= 0) {
-            alert('Bu ilan henüz veritabanına kaydedilmemiş. Lütfen gerçek ilanı seçin.');
-            return;
-        }
-
-        const { data: ilan, error: ilanError } = await supabaseClient
-            .from('ilantable')
-            .select('id')
-            .eq('id', ilanId)
-            .maybeSingle();
-
-        if (ilanError) {
-            alert('İlan kontrol edilemedi: ' + ilanError.message);
-            return;
-        }
-
-        if (!ilan) {
-            alert('Bu ilan veritabanında bulunamadı. Örnek ilanlar favoriye eklenemez.');
-            return;
-        }
-
-        const { data: existingFavorite, error: favoriteError } = await supabaseClient
-            .from('favorites')
-            .select('id')
-            .eq('user_id', currentUser.id)
-            .eq('ilan_id', ilanId)
-            .maybeSingle();
-
-        if (favoriteError) {
-            alert('Favoriler kontrol edilemedi: ' + favoriteError.message);
-            return;
-        }
-
-        if (existingFavorite) {
-            const { error } = await supabaseClient
-                .from('favorites')
-                .delete()
-                .eq('user_id', currentUser.id)
-                .eq('ilan_id', ilanId);
-
-            if (error) {
-                alert('Favoriden kaldırılamadı: ' + error.message);
+            // Supabase favorites.ilan_id, ilantable.id alanina baglidir.
+            // Ornek/demo ve yalnizca tarayicida kayitli ilanlar veritabaninda olmadigi icin favoriye eklenemez.
+            if (supabaseClient && (!listing || !listing._supabase)) {
+                alert('Bu ilan veritabaninda kayıtlı değil; örnek/demo ilan olabilir. Favoriye eklemek için Supabase üzerinden yayımlanmış gerçek bir ilanı seçin.');
                 return;
             }
-        } else {
-            const { error } = await supabaseClient
-                .from('favorites')
-                .insert({
-                    user_id: currentUser.id,
-                    ilan_id: ilanId
-                });
 
-            if (error) {
-                alert('Favoriye eklenemedi: ' + error.message);
-                return;
+            if (supabaseClient) {
+                const numericId = Number(id);
+                if (!Number.isSafeInteger(numericId) || numericId <= 0) {
+                    alert('İlan kimliği geçersiz. Sayfayı yenileyip tekrar deneyin.');
+                    return;
+                }
+                if (existing) {
+                    const { error } = await supabaseClient.from('favorites').delete().eq('user_id', currentUser.id).eq('ilan_id', numericId);
+                    if (error) { alert('Favoriden kaldırılamadı: ' + error.message); return; }
+                } else {
+                    const { error } = await supabaseClient.from('favorites').insert({ user_id: currentUser.id, ilan_id: numericId });
+                    if (error) {
+                        console.error('Favoriye ekleme hatası:', { id: numericId, error: error.message });
+                        alert('Favoriye eklenemedi: ' + error.message + '\nİlan Supabase içindeki ilantable tablosunda kayıtlı olmalıdır.');
+                        return;
+                    }
+                }
+                // Favori listesini veritabanindan yeniden oku ve kartlari tekrar ciz.
+                await loadMemberFavorites();
+                updateFavBadge();
+                applyFilters();
+            } else {
+                if (existing) favoritesState = favoritesState.filter(x => String(x) !== String(id)); else favoritesState.push(String(id));
+                localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
+                updateFavBadge();
+                applyFilters();
             }
         }
-
-        await loadMemberFavorites();
-        updateFavBadge();
-        applyFilters();
-        return;
-    }
-
-    const existing = favoritesState.some(x => String(x) === String(id));
-
-    if (existing) {
-        favoritesState = favoritesState.filter(x => String(x) !== String(id));
-    } else {
-        favoritesState.push(String(id));
-    }
-
-    localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
-    updateFavBadge();
-    applyFilters();
-}
-
 
         function updateFavBadge() {
             const badge = document.getElementById('favCountBadge');
