@@ -2004,24 +2004,95 @@
             updateUnreadMessageBadge();
         }
 
-        async function toggleFavorite(id) {
-            if (!currentUser) { alert('Favorilere eklemek için lütfen giriş yapın.'); openAuthModal(); return; }
-            const existing = favoritesState.some(x => String(x) === String(id));
-            if (supabaseClient) {
-                if (existing) {
-                    const { error } = await supabaseClient.from('favorites').delete().eq('user_id', currentUser.id).eq('ilan_id', id);
-                    if (error) { alert('Favoriden kaldırılamadı: ' + error.message); return; }
-                } else {
-                    const { error } = await supabaseClient.from('favorites').insert({ user_id: currentUser.id, ilan_id: id });
-                    if (error) { alert('Favoriye eklenemedi: ' + error.message); return; }
-                }
-                await loadMemberFavorites();
-            } else {
-                if (existing) favoritesState = favoritesState.filter(x => String(x) !== String(id)); else favoritesState.push(String(id));
-                localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
-                updateFavBadge(); applyFilters();
+        
+async function toggleFavorite(id) {
+    if (!currentUser) {
+        alert('Favorilere eklemek için lütfen giriş yapın.');
+        openAuthModal();
+        return;
+    }
+
+    if (supabaseClient) {
+        // İlanın gerçekten veritabanında kayıtlı olduğunu doğrula.
+        const ilanId = Number(id);
+
+        if (!Number.isSafeInteger(ilanId) || ilanId <= 0) {
+            alert('Bu ilan henüz veritabanına kaydedilmemiş. Lütfen gerçek ilanı seçin.');
+            return;
+        }
+
+        const { data: ilan, error: ilanError } = await supabaseClient
+            .from('ilantable')
+            .select('id')
+            .eq('id', ilanId)
+            .maybeSingle();
+
+        if (ilanError) {
+            alert('İlan kontrol edilemedi: ' + ilanError.message);
+            return;
+        }
+
+        if (!ilan) {
+            alert('Bu ilan veritabanında bulunamadı. Örnek ilanlar favoriye eklenemez.');
+            return;
+        }
+
+        const { data: existingFavorite, error: favoriteError } = await supabaseClient
+            .from('favorites')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .eq('ilan_id', ilanId)
+            .maybeSingle();
+
+        if (favoriteError) {
+            alert('Favoriler kontrol edilemedi: ' + favoriteError.message);
+            return;
+        }
+
+        if (existingFavorite) {
+            const { error } = await supabaseClient
+                .from('favorites')
+                .delete()
+                .eq('user_id', currentUser.id)
+                .eq('ilan_id', ilanId);
+
+            if (error) {
+                alert('Favoriden kaldırılamadı: ' + error.message);
+                return;
+            }
+        } else {
+            const { error } = await supabaseClient
+                .from('favorites')
+                .insert({
+                    user_id: currentUser.id,
+                    ilan_id: ilanId
+                });
+
+            if (error) {
+                alert('Favoriye eklenemedi: ' + error.message);
+                return;
             }
         }
+
+        await loadMemberFavorites();
+        updateFavBadge();
+        applyFilters();
+        return;
+    }
+
+    const existing = favoritesState.some(x => String(x) === String(id));
+
+    if (existing) {
+        favoritesState = favoritesState.filter(x => String(x) !== String(id));
+    } else {
+        favoritesState.push(String(id));
+    }
+
+    localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
+    updateFavBadge();
+    applyFilters();
+}
+
 
         function updateFavBadge() {
             const badge = document.getElementById('favCountBadge');
