@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <!-- Samandağ Pazarı güncelleme: akıllı sıralamalı arama, fare tekerleğiyle zoom ve üye bazlı favori anahtarı -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Samandağ 2. El Pazarı | Sahibinden Style Pazaryeri</title>
@@ -123,7 +124,7 @@
                 <!-- Arama Barı (Desktop) -->
                 <div class="flex-1 max-w-xl mx-2 hidden md:block">
                     <div class="relative">
-                        <input type="text" id="headerSearchInput" onkeyup="handleHeaderSearch(event)" placeholder="Kelime, ilan no veya marka ile ara..." class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-10 pr-20 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition">
+                        <input type="text" id="headerSearchInput" onkeyup="handleHeaderSearch(event)" placeholder="Ürün ara… (harf farkları ve yazım hataları tolere edilir)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-10 pr-20 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
                         <button onclick="executeSearch()" class="absolute right-1 top-1 bottom-1 bg-amber-400 text-slate-950 text-xs font-bold px-3 rounded hover:bg-amber-300 transition">
                             Ara
@@ -144,6 +145,12 @@
                         <span id="favCountBadge" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                     </button>
 
+                    <button onclick="openListingNotifications()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm relative transition" title="Favori ilan bildirimleri">
+                        <i class="fa-solid fa-bell text-amber-400"></i>
+                        <span class="hidden md:inline ml-1">Bildirimler</span>
+                        <span id="listingNotificationBadge" class="hidden absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold min-w-4 h-4 px-1 rounded-full items-center justify-center">0</span>
+                    </button>
+
                     <!-- Auth Durum Container -->
                     <div id="authNavContainer" class="flex items-center">
                         <button onclick="openAuthModal()" class="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition">
@@ -157,7 +164,7 @@
             <!-- Mobil Arama Barı -->
             <div class="block md:hidden pb-3">
                 <div class="relative">
-                    <input type="text" id="headerSearchInputMobile" onkeyup="handleHeaderSearch(event)" placeholder="Samandağ'da ilan ara..." class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-9 pr-16 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-400">
+                    <input type="text" id="headerSearchInputMobile" onkeyup="handleHeaderSearch(event)" placeholder="Ürün ara… (yakın kelimeler de bulunur)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg pl-9 pr-16 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-amber-400">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
                     <button onclick="executeSearch()" class="absolute right-1 top-1 bottom-1 bg-amber-400 text-slate-950 text-xs font-bold px-2.5 rounded">Ara</button>
                 </div>
@@ -924,7 +931,12 @@
 
         let selectedCategory = 'all';
         let viewMode = 'list';
-        let favoritesState = JSON.parse(localStorage.getItem('shb_favs') || '[]');
+        let favoritesState = []; // Oturum açan üyeye göre yüklenir
+        let listingNotificationsState = [];
+        function favoritesStorageKey() { return 'shb_favs_user_' + (currentUser?.id || 'guest'); }
+        function notificationsStorageKey(userId = currentUser?.id || 'guest') { return 'shb_listing_notifications_' + userId; }
+        function loadMemberFavorites() { try { favoritesState = JSON.parse(localStorage.getItem(favoritesStorageKey()) || '[]'); if (!Array.isArray(favoritesState)) favoritesState = []; } catch (_) { favoritesState = []; } updateFavBadge(); }
+        function loadListingNotifications() { try { listingNotificationsState = JSON.parse(localStorage.getItem(notificationsStorageKey()) || '[]'); if (!Array.isArray(listingNotificationsState)) listingNotificationsState = []; } catch (_) { listingNotificationsState = []; } updateListingNotificationBadge(); }
         let currentModalImageIndex = 0;
         let activeModalListing = null;
         let selectedPostImages = []; // İlan formundaki seçili fotoğraf URL/dataURL listesi
@@ -938,11 +950,21 @@
         // --- INIT & AUTH MANAGEMENT ---
         document.addEventListener('DOMContentLoaded', () => {
             initAuth();
+            loadMemberFavorites();
+            loadListingNotifications();
             loadSavedUserListings();
             renderCategoryTree();
             applyFilters();
             updateFavBadge();
             updateUnreadMessageBadge();
+            const zoomContainer = document.getElementById('zoomContainer');
+            if (zoomContainer) zoomContainer.addEventListener('wheel', (event) => {
+                const modal = document.getElementById('fullscreenGalleryModal');
+                if (!modal || modal.classList.contains('hidden')) return;
+                event.preventDefault();
+                zoomLevel = Math.max(0.5, Math.min(5, zoomLevel + (event.deltaY < 0 ? 0.2 : -0.2)));
+                applyZoom();
+            }, { passive: false });
             // Yeni mesajları kontrol et; rozetin güncel kalması için 15 saniyede bir yenile.
             window.setInterval(updateUnreadMessageBadge, 15000);
 
@@ -1043,6 +1065,8 @@
                 const user = data.user;
                 currentUser = { id: user.id, email: user.email, fullName: user.user_metadata?.full_name || user.email.split('@')[0] };
                 localStorage.setItem('shb_user', JSON.stringify(currentUser));
+                loadMemberFavorites();
+                loadListingNotifications();
                 renderAuthUI();
                 updateUnreadMessageBadge();
                 closeAuthModal();
@@ -1083,6 +1107,8 @@
                 if (data.session && data.user) {
                     currentUser = { id: data.user.id, email: data.user.email, fullName: data.user.user_metadata?.full_name || fullName };
                     localStorage.setItem('shb_user', JSON.stringify(currentUser));
+                    loadMemberFavorites();
+                    loadListingNotifications();
                     renderAuthUI();
                     closeAuthModal();
                     applyFilters();
@@ -1106,6 +1132,8 @@
                 }
                 currentUser = null;
                 localStorage.removeItem('shb_user');
+                loadMemberFavorites();
+                loadListingNotifications();
                 renderAuthUI();
                 updateUnreadMessageBadge();
                 applyFilters();
@@ -1131,6 +1159,8 @@
                 currentUser = null;
                 localStorage.removeItem('shb_user');
             }
+            loadMemberFavorites();
+            loadListingNotifications();
             renderAuthUI();
             applyFilters();
         }
@@ -1141,6 +1171,8 @@
                 currentUser = user ? { id: user.id, email: user.email, fullName: user.user_metadata?.full_name || user.email.split('@')[0] } : null;
                 if (currentUser) localStorage.setItem('shb_user', JSON.stringify(currentUser));
                 else localStorage.removeItem('shb_user');
+                loadMemberFavorites();
+                loadListingNotifications();
                 renderAuthUI();
             });
         }
@@ -1167,8 +1199,64 @@
             applyFilters();
         }
 
+        // Türkçe harf farklarını ve küçük yazım hatalarını tolere eden arama.
+        function normalizeSearchText(value) {
+            return String(value ?? '').toLocaleLowerCase('tr-TR')
+                .replace(/[ıİ]/g, 'i').replace(/[öÖ]/g, 'o').replace(/[üÜ]/g, 'u')
+                .replace(/[şŞ]/g, 's').replace(/[çÇ]/g, 'c').replace(/[ğĞ]/g, 'g')
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+        function editDistance(a, b) {
+            if (a === b) return 0;
+            if (!a.length) return b.length;
+            if (!b.length) return a.length;
+            let prev = Array.from({length: b.length + 1}, (_, i) => i);
+            for (let i = 1; i <= a.length; i++) {
+                const cur = [i];
+                for (let j = 1; j <= b.length; j++) cur[j] = Math.min(cur[j-1] + 1, prev[j] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+                prev = cur;
+            }
+            return prev[b.length];
+        }
+        // Akıllı Türkçe arama: harf varyasyonlarını normalleştirir, yazım hatalarını tolere eder
+        // ve en alakalı ilanları sonuçların üstüne taşır.
+        function searchScore(item, query) {
+            if (!query) return 1;
+            const title = normalizeSearchText(item.title || '');
+            const description = normalizeSearchText(item.description || '');
+            const category = normalizeSearchText(item.category || '');
+            const location = normalizeSearchText(item.location || '');
+            const haystack = [title, description, category, location].join(' ');
+            if (title === query) return 100;
+            if (title.startsWith(query)) return 90;
+            if (title.includes(query)) return 80;
+            if (haystack.includes(query)) return 70;
+            const words = query.split(' ').filter(Boolean);
+            const hayWords = haystack.split(' ').filter(Boolean);
+            if (!words.length) return 1;
+            let matched = 0, score = 0;
+            for (const word of words) {
+                let best = 0;
+                for (const hw of hayWords) {
+                    if (hw === word) best = Math.max(best, 10);
+                    else if (hw.startsWith(word) || word.startsWith(hw)) best = Math.max(best, 7);
+                    else if (hw.includes(word) || word.includes(hw)) best = Math.max(best, 5);
+                    else if (word.length >= 3) {
+                        const d = Math.min(editDistance(word, hw), editDistance(word, hw.slice(0, word.length + 1)));
+                        const allowed = word.length >= 8 ? 2 : 1;
+                        if (d <= allowed) best = Math.max(best, 4 - d);
+                    }
+                }
+                if (best > 0) { matched++; score += best; }
+            }
+            return matched === words.length ? score + (title ? 2 : 0) : 0;
+        }
+        function matchesSearch(item, query) { return !query || searchScore(item, query) > 0; }
+
         function applyFilters() {
-            const searchQuery = (document.getElementById('headerSearchInput')?.value || '').toLowerCase().trim();
+            const rawSearch = document.getElementById('headerSearchInput')?.value || document.getElementById('headerSearchInputMobile')?.value || '';
+            const searchQuery = normalizeSearchText(rawSearch);
             const location = document.getElementById('filterLocation').value;
             const minPrice = parseFloat(document.getElementById('filterMinPrice').value) || 0;
             const maxPrice = parseFloat(document.getElementById('filterMaxPrice').value) || Infinity;
@@ -1180,7 +1268,7 @@
 
             let filtered = listingsState.filter(item => {
                 const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
-                const matchSearch = !searchQuery || item.title.toLowerCase().includes(searchQuery) || item.description.toLowerCase().includes(searchQuery);
+                const matchSearch = matchesSearch(item, searchQuery);
                 const matchLocation = location === 'all' || item.location === location;
                 const matchPrice = item.price >= minPrice && item.price <= maxPrice;
                 const matchCondition = condition === 'all' || item.condition === condition;
@@ -1191,6 +1279,9 @@
                 return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchMy && matchParam && matchAcil;
             });
 
+            if (searchQuery && sortBy !== 'priceAsc' && sortBy !== 'priceDesc') {
+                filtered.sort((a, b) => searchScore(b, searchQuery) - searchScore(a, searchQuery));
+            }
             if (sortBy === 'priceAsc') filtered.sort((a, b) => a.price - b.price);
             else if (sortBy === 'priceDesc') filtered.sort((a, b) => b.price - a.price);
 
@@ -1426,7 +1517,7 @@
         }
 
         function zoomInImage() {
-            zoomLevel += 0.3;
+            zoomLevel = Math.min(4, zoomLevel + 0.3);
             applyZoom();
         }
         function zoomOutImage() {
@@ -1441,7 +1532,10 @@
         }
         function applyZoom() {
             const img = document.getElementById('fullscreenImage');
+            if (!img) return;
+            img.style.transformOrigin = 'center center';
             img.style.transform = `scale(${zoomLevel})`;
+            img.style.cursor = zoomLevel > 1 ? 'zoom-in' : 'default';
         }
 
         // --- 6. İLAN EKLEME, FOTOĞRAF EKLEME/SİLME VE GÜNCELLEME ---
@@ -1638,7 +1732,7 @@
 
             if (editId) {
                 const idx = listingsState.findIndex(item => String(item.id) === String(editId));
-                if (idx !== -1) listingsState[idx] = { ...listingsState[idx], ...listingData };
+                if (idx !== -1) { const previousListing = { ...listingsState[idx] }; listingsState[idx] = { ...listingsState[idx], ...listingData }; createFavoriteChangeNotifications(listingsState[idx], previousListing); }
                 alert('İlanınız ve fotoğrafları güncellendi.');
             } else {
                 const newListing = {
@@ -1836,23 +1930,69 @@
         }
 
         function toggleFavorite(id) {
-            if (favoritesState.includes(id)) {
-                favoritesState = favoritesState.filter(x => x !== id);
-            } else {
-                favoritesState.push(id);
-            }
-            localStorage.setItem('shb_favs', JSON.stringify(favoritesState));
+            if (!currentUser) { alert('Favorilere eklemek için lütfen giriş yapın.'); openAuthModal(); return; }
+            if (favoritesState.some(x => String(x) === String(id))) favoritesState = favoritesState.filter(x => String(x) !== String(id));
+            else favoritesState.push(id);
+            localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
             updateFavBadge();
             applyFilters();
         }
 
         function updateFavBadge() {
-            document.getElementById('favCountBadge').innerText = favoritesState.length;
+            const badge = document.getElementById('favCountBadge');
+            if (badge) badge.innerText = String(favoritesState.length);
+        }
+
+        function updateListingNotificationBadge() {
+            const badge = document.getElementById('listingNotificationBadge');
+            if (!badge) return;
+            const unread = listingNotificationsState.filter(n => !n.read).length;
+            badge.textContent = unread > 99 ? '99+' : String(unread);
+            badge.classList.toggle('hidden', unread === 0);
+            badge.classList.toggle('flex', unread > 0);
+        }
+
+        function createFavoriteChangeNotifications(listing, previous) {
+            if (!listing || !previous || !currentUser) return;
+            const changed = ['title','price','description','category','location'].some(k => String(previous[k] ?? '') !== String(listing[k] ?? ''));
+            if (!changed) return;
+            // Bu tarayıcıda aynı sitede favoriye ekleyen kayıtlı üyeler için bildirim oluşturur.
+            // Farklı cihaz/ziyaretçiler arasında gerçek bildirim için ilan ve favoriler Supabase tablolarında tutulmalıdır.
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (!key || !key.startsWith('shb_favs_user_')) continue;
+                    const ownerId = key.slice('shb_favs_user_'.length);
+                    const favs = JSON.parse(localStorage.getItem(key) || '[]');
+                    if (!favs.some(x => String(x) === String(listing.id)) || ownerId === String(listing.user_id)) continue;
+                    const nKey = 'shb_listing_notifications_' + ownerId;
+                    const notes = JSON.parse(localStorage.getItem(nKey) || '[]');
+                    notes.unshift({ id: Date.now() + Math.random(), listing_id: listing.id, title: listing.title, message: `Favorinizdeki “${listing.title}” ilanı güncellendi.`, created_at: new Date().toISOString(), read: false });
+                    localStorage.setItem(nKey, JSON.stringify(notes.slice(0, 100)));
+                    if (currentUser && ownerId === String(currentUser.id)) loadListingNotifications();
+                }
+            } catch (err) { console.warn('Favori ilan bildirimi oluşturulamadı:', err); }
+        }
+
+        function openListingNotifications() {
+            if (!currentUser) { alert('Bildirimleri görmek için giriş yapın.'); openAuthModal(); return; }
+            loadListingNotifications();
+            const list = document.getElementById('listingNotificationsList');
+            if (!listingNotificationsState.length) list.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Henüz favori ilan bildiriminiz yok.</p>';
+            else list.innerHTML = listingNotificationsState.map(n => `<article class="border ${n.read ? 'border-slate-200' : 'border-amber-400 bg-amber-50'} rounded-xl p-3"><p class="text-sm font-bold text-slate-800">${escapeMessageHtml(n.message)}</p><p class="text-xs text-slate-500 mt-1">${n.created_at ? new Date(n.created_at).toLocaleString('tr-TR') : ''}</p></article>`).join('');
+            const modal = document.getElementById('listingNotificationsModal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+        }
+        function closeListingNotifications() { const modal = document.getElementById('listingNotificationsModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
+        function markListingNotificationsRead() {
+            listingNotificationsState = listingNotificationsState.map(n => ({...n, read: true}));
+            localStorage.setItem(notificationsStorageKey(), JSON.stringify(listingNotificationsState));
+            updateListingNotificationBadge(); openListingNotifications();
         }
 
         function openFavoritesModal() {
             const container = document.getElementById('favoritesListContainer');
-            const favItems = listingsState.filter(x => favoritesState.includes(x.id));
+            const favItems = listingsState.filter(x => favoritesState.some(id => String(id) === String(x.id)));
 
             if (favItems.length === 0) {
                 container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Henüz favori ilanınız bulunmuyor.</p>';
@@ -1878,7 +2018,10 @@
         }
 
         function handleHeaderSearch(e) {
-            if (e.key === 'Enter') applyFilters();
+            const value = e.target.value;
+            const desktop = document.getElementById('headerSearchInput'); const mobile = document.getElementById('headerSearchInputMobile');
+            if (desktop && e.target !== desktop) desktop.value = value; if (mobile && e.target !== mobile) mobile.value = value;
+            applyFilters();
         }
         function executeSearch() {
             applyFilters();
@@ -1898,5 +2041,14 @@
             applyFilters();
         }
     </script>
+
+    <div id="listingNotificationsModal" class="fixed inset-0 bg-black/70 z-[70] hidden items-center justify-center p-3" onclick="if(event.target===this) closeListingNotifications()">
+      <div class="bg-white w-full max-w-xl max-h-[80vh] rounded-2xl overflow-hidden flex flex-col border border-amber-400">
+        <div class="bg-slate-950 text-white p-4 flex items-center justify-between"><h3 class="font-extrabold text-amber-400">Favori İlan Bildirimleri</h3><button onclick="closeListingNotifications()" class="text-white text-xl">×</button></div>
+        <div id="listingNotificationsList" class="p-4 overflow-y-auto space-y-3"></div>
+        <div class="p-3 border-t flex justify-end"><button onclick="markListingNotificationsRead()" class="bg-amber-400 text-slate-950 font-bold rounded-lg px-4 py-2 text-sm">Tümünü okundu yap</button></div>
+      </div>
+    </div>
+
 </body>
 </html>
