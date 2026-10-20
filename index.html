@@ -570,10 +570,16 @@
                         <input type="text" id="postSeller" required placeholder="Adınız Soyadınız" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
                     </div>
 
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Fotoğraf URL'leri (Virgül ile Ayırın)</label>
-                        <input type="text" id="postImageUrls" placeholder="https://resim1.jpg, https://resim2.jpg" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
-                        <p class="text-[10px] text-slate-400 mt-1">Görsel linki vermezseniz otomatik varsayılan ürün görseli atanacaktır.</p>
+                    <div class="sm:col-span-2 rounded-xl border border-amber-200 bg-amber-50/60 p-4">
+                        <label class="block text-xs font-extrabold text-slate-800 mb-2"><i class="fa-solid fa-camera text-amber-600 mr-1"></i> İlan Fotoğrafları</label>
+                        <p class="text-[11px] text-slate-600 mb-3">Bilgisayarınızdan veya telefonunuzdan fotoğraf seçin. Fotoğrafları yayınlamadan önce önizleyebilir ve silebilirsiniz. En fazla 8 fotoğraf ekleyebilirsiniz.</p>
+                        <input type="file" id="postImageFiles" accept="image/*" multiple onchange="handlePostImageFiles(event)" class="block w-full text-xs text-slate-700 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:text-xs file:font-bold file:text-amber-300 hover:file:bg-slate-800">
+                        <div id="postImageStatus" class="text-[11px] text-slate-500 mt-2" aria-live="polite">Henüz fotoğraf seçilmedi.</div>
+                        <div id="postImagePreview" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3"></div>
+                        <details class="mt-3">
+                            <summary class="cursor-pointer text-[11px] font-bold text-slate-600">İsterseniz fotoğraf bağlantısı da ekleyin</summary>
+                            <input type="text" id="postImageUrls" placeholder="https://resim1.jpg, https://resim2.jpg" class="mt-2 w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs outline-none focus:ring-2 focus:ring-amber-400">
+                        </details>
                     </div>
 
                     <div class="sm:col-span-2">
@@ -909,6 +915,7 @@
         let favoritesState = JSON.parse(localStorage.getItem('shb_favs') || '[]');
         let currentModalImageIndex = 0;
         let activeModalListing = null;
+        let selectedPostImages = []; // İlan formundaki seçili fotoğraf URL/dataURL listesi
 
         // Zoom State
         let zoomLevel = 1;
@@ -919,6 +926,7 @@
         // --- INIT & AUTH MANAGEMENT ---
         document.addEventListener('DOMContentLoaded', () => {
             initAuth();
+            loadSavedUserListings();
             renderCategoryTree();
             applyFilters();
             updateFavBadge();
@@ -1315,6 +1323,7 @@
             if (!activeModalListing) return;
             if (confirm('Bu ilanı silmek istediğinize emin misiniz?')) {
                 listingsState = listingsState.filter(x => x.id !== activeModalListing.id);
+                saveUserListings();
                 closeDetailModal();
                 applyFilters();
                 alert('İlan silindi.');
@@ -1413,35 +1422,66 @@
             img.style.transform = `scale(${zoomLevel})`;
         }
 
-        // --- 6. İLAN EKLEME & GÜNCELLEME FORMU ---
+        // --- 6. İLAN EKLEME, FOTOĞRAF EKLEME/SİLME VE GÜNCELLEME ---
+        const MAX_POST_IMAGES = 8;
+        const DEFAULT_POST_IMAGE = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80';
+
+        function loadSavedUserListings() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('shb_user_listings') || '[]');
+                if (!Array.isArray(saved)) return;
+                saved.forEach(savedItem => {
+                    const index = listingsState.findIndex(item => String(item.id) === String(savedItem.id));
+                    if (index >= 0) listingsState[index] = savedItem;
+                    else listingsState.unshift(savedItem);
+                });
+            } catch (err) {
+                console.warn('Kaydedilmiş ilanlar okunamadı:', err);
+            }
+        }
+
+        function saveUserListings() {
+            try {
+                const demoIds = new Set(['demo_user_1', 'demo_user_2', 'demo_user_3', 'demo_user_4']);
+                const userItems = listingsState.filter(item => !demoIds.has(item.user_id));
+                localStorage.setItem('shb_user_listings', JSON.stringify(userItems));
+            } catch (err) {
+                console.error('İlanlar bu tarayıcıya kaydedilemedi:', err);
+                alert('İlan kaydedilirken tarayıcı depolama sınırına ulaşıldı. Daha az veya daha küçük fotoğraf deneyin.');
+            }
+        }
+
         function openPostFormModal(editItem = null) {
             const modal = document.getElementById('postFormModal');
             const form = document.getElementById('newPostForm');
-            
+            const fileInput = document.getElementById('postImageFiles');
+            if (fileInput) fileInput.value = '';
+            document.getElementById('postImageUrls').value = '';
+            selectedPostImages = [];
+
             if (editItem) {
                 document.getElementById('postFormTitle').innerText = 'İlanı Düzenle';
-                document.getElementById('postSubmitBtnText').innerText = 'Görüntüyü Güncelle';
+                document.getElementById('postSubmitBtnText').innerText = 'Değişiklikleri Kaydet';
                 document.getElementById('editPostId').value = editItem.id;
-                document.getElementById('postTitle').value = editItem.title;
-                document.getElementById('postCategory').value = editItem.category;
-                document.getElementById('postPrice').value = editItem.price;
-                document.getElementById('postLocation').value = editItem.location;
-                document.getElementById('postCondition').value = editItem.condition;
-                document.getElementById('postPhone').value = editItem.phone;
-                document.getElementById('postSeller').value = editItem.seller;
-                document.getElementById('postDescription').value = editItem.description;
-                document.getElementById('postImageUrls').value = editItem.images.join(', ');
-                document.getElementById('postParamGuvende').checked = editItem.is_param_guvende;
-                document.getElementById('postAcil').checked = editItem.is_acil;
+                document.getElementById('postTitle').value = editItem.title || '';
+                document.getElementById('postCategory').value = editItem.category || '';
+                document.getElementById('postPrice').value = editItem.price || '';
+                document.getElementById('postLocation').value = editItem.location || 'Deniz Mah.';
+                document.getElementById('postCondition').value = editItem.condition || 'İkinci El';
+                document.getElementById('postPhone').value = editItem.phone || '';
+                document.getElementById('postSeller').value = editItem.seller || '';
+                document.getElementById('postDescription').value = editItem.description || '';
+                selectedPostImages = Array.isArray(editItem.images) ? [...editItem.images] : [];
+                document.getElementById('postParamGuvende').checked = !!editItem.is_param_guvende;
+                document.getElementById('postAcil').checked = !!editItem.is_acil;
             } else {
                 document.getElementById('postFormTitle').innerText = 'Ücretsiz İlan Oluştur';
                 document.getElementById('postSubmitBtnText').innerText = 'İlanı Yayınla';
                 form.reset();
                 document.getElementById('editPostId').value = '';
-                if (currentUser) {
-                    document.getElementById('postSeller').value = currentUser.fullName;
-                }
+                if (currentUser) document.getElementById('postSeller').value = currentUser.fullName || '';
             }
+            renderPostImagePreviews();
             modal.classList.remove('hidden');
         }
 
@@ -1449,55 +1489,147 @@
             document.getElementById('postFormModal').classList.add('hidden');
         }
 
+        function compressImageFile(file) {
+            return new Promise((resolve, reject) => {
+                if (!file || !file.type || !file.type.startsWith('image/')) {
+                    reject(new Error('Lütfen yalnızca fotoğraf dosyası seçin.'));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Fotoğraf okunamadı.'));
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('Fotoğraf açılamadı.'));
+                    img.onload = () => {
+                        const maxSide = 1280;
+                        const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+                        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.78));
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handlePostImageFiles(event) {
+            const files = Array.from(event.target.files || []);
+            if (!files.length) return;
+            const available = MAX_POST_IMAGES - selectedPostImages.length;
+            if (available <= 0) {
+                alert('En fazla 8 fotoğraf ekleyebilirsiniz. Önce bir fotoğraf silin.');
+                event.target.value = '';
+                return;
+            }
+            const accepted = files.slice(0, available);
+            if (files.length > available) alert(`En fazla 8 fotoğraf eklenebilir. İlk ${available} fotoğraf işleme alınacak.`);
+            const status = document.getElementById('postImageStatus');
+            status.textContent = 'Fotoğraflar hazırlanıyor...';
+            event.target.disabled = true;
+            let added = 0;
+            try {
+                for (const file of accepted) {
+                    try {
+                        selectedPostImages.push(await compressImageFile(file));
+                        added++;
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                }
+                renderPostImagePreviews();
+                status.textContent = added ? `${added} fotoğraf eklendi. Toplam ${selectedPostImages.length}/${MAX_POST_IMAGES} fotoğraf.` : 'Fotoğraflar okunamadı. JPG, PNG veya WEBP deneyin.';
+            } finally {
+                event.target.disabled = false;
+                event.target.value = '';
+            }
+        }
+
+        function removePostImage(index) {
+            selectedPostImages.splice(index, 1);
+            renderPostImagePreviews();
+        }
+
+        function renderPostImagePreviews() {
+            const container = document.getElementById('postImagePreview');
+            const status = document.getElementById('postImageStatus');
+            if (!container) return;
+            container.innerHTML = '';
+            selectedPostImages.forEach((src, index) => {
+                const card = document.createElement('div');
+                card.className = 'relative overflow-hidden rounded-lg border border-slate-200 bg-white';
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = `İlan fotoğrafı ${index + 1}`;
+                img.className = 'w-full h-24 object-cover';
+                const number = document.createElement('span');
+                number.className = 'absolute left-1 top-1 rounded bg-slate-950/80 px-1.5 py-0.5 text-[10px] font-bold text-white';
+                number.textContent = `${index + 1}`;
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'absolute right-1 top-1 rounded-full bg-red-600 px-2 py-1 text-[10px] font-bold text-white shadow';
+                remove.textContent = 'Sil';
+                remove.setAttribute('aria-label', `Fotoğraf ${index + 1} sil`);
+                remove.addEventListener('click', () => removePostImage(index));
+                card.append(img, number, remove);
+                container.appendChild(card);
+            });
+            if (status && !status.textContent.includes('hazırlanıyor')) {
+                status.textContent = selectedPostImages.length ? `Toplam ${selectedPostImages.length}/${MAX_POST_IMAGES} fotoğraf. Silmek için fotoğrafın üzerindeki Sil düğmesine basın.` : 'Henüz fotoğraf seçilmedi.';
+            }
+        }
+
         function handlePostFormSubmit(e) {
             e.preventDefault();
+            const submitButton = document.querySelector('#newPostForm button[type="submit"]');
+            if (submitButton && submitButton.disabled) return;
             const editId = document.getElementById('editPostId').value;
-            const title = document.getElementById('postTitle').value;
+            const title = document.getElementById('postTitle').value.trim();
             const category = document.getElementById('postCategory').value;
             const price = parseFloat(document.getElementById('postPrice').value);
             const location = document.getElementById('postLocation').value;
             const condition = document.getElementById('postCondition').value;
-            const phone = document.getElementById('postPhone').value;
-            const seller = document.getElementById('postSeller').value;
-            const description = document.getElementById('postDescription').value;
+            const phone = document.getElementById('postPhone').value.trim();
+            const seller = document.getElementById('postSeller').value.trim();
+            const description = document.getElementById('postDescription').value.trim();
             const urlsInput = document.getElementById('postImageUrls').value;
             const paramGuvende = document.getElementById('postParamGuvende').checked;
             const acil = document.getElementById('postAcil').checked;
 
-            let imgArray = ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80'];
-            if (urlsInput.trim()) {
-                imgArray = urlsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            const externalUrls = urlsInput.split(',').map(value => value.trim()).filter(value => /^https?:\/\//i.test(value));
+            let imgArray = [...selectedPostImages, ...externalUrls].slice(0, MAX_POST_IMAGES);
+            if (!imgArray.length && editId) {
+                const existing = listingsState.find(item => String(item.id) === String(editId));
+                imgArray = existing && Array.isArray(existing.images) ? [...existing.images] : [];
             }
+            if (!imgArray.length) imgArray = [DEFAULT_POST_IMAGE];
+
+            const listingData = {
+                title, category, price, location, condition, phone, seller, description,
+                images: imgArray,
+                is_param_guvende: paramGuvende,
+                is_acil: acil
+            };
 
             if (editId) {
-                // Güncelleme
-                const idx = listingsState.findIndex(x => x.id == editId);
-                if (idx !== -1) {
-                    listingsState[idx] = {
-                        ...listingsState[idx],
-                        title, category, price, location, condition, phone, seller, description,
-                        images: imgArray,
-                        is_param_guvende: paramGuvende,
-                        is_acil: acil
-                    };
-                }
-                alert('İlanınız güncellendi.');
+                const idx = listingsState.findIndex(item => String(item.id) === String(editId));
+                if (idx !== -1) listingsState[idx] = { ...listingsState[idx], ...listingData };
+                alert('İlanınız ve fotoğrafları güncellendi.');
             } else {
-                // Yeni Oluşturma
                 const newListing = {
                     id: Date.now(),
                     user_id: currentUser ? currentUser.id : 'anon',
-                    title, category, price, location, condition, phone, seller, description,
-                    date: 'Bugün',
-                    is_param_guvende: paramGuvende,
-                    is_acil: acil,
-                    is_vip: false,
-                    images: imgArray
+                    ...listingData,
+                    date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
+                    is_vip: false
                 };
                 listingsState.unshift(newListing);
-                alert('İlanınız başarıyla eklendi ve yayınlandı!');
+                alert('İlanınız fotoğraflarıyla birlikte eklendi.');
             }
-
+            saveUserListings();
             closePostFormModal();
             applyFilters();
         }
