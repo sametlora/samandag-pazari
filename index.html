@@ -942,6 +942,9 @@
             renderCategoryTree();
             applyFilters();
             updateFavBadge();
+            updateUnreadMessageBadge();
+            // Yeni mesajları kontrol et; rozetin güncel kalması için 15 saniyede bir yenile.
+            window.setInterval(updateUnreadMessageBadge, 15000);
 
             // Keyboard navigation for gallery
             document.addEventListener('keydown', (e) => {
@@ -972,8 +975,9 @@
                             <i class="fa-solid fa-user-circle text-sm"></i>
                             <span class="max-w-[100px] truncate">${currentUser.fullName || currentUser.email}</span>
                         </div>
-                        <button onclick="openInboxModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Mesaj Kutum">
+                        <button onclick="openInboxModal()" class="relative bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Mesaj Kutum">
                             <i class="fa-regular fa-envelope mr-1"></i>Mesajlar
+                            <span id="unreadMessageBadge" class="hidden absolute -top-2 -right-2 min-w-[20px] h-5 px-1 rounded-full bg-red-600 border-2 border-white text-white text-[10px] font-black items-center justify-center shadow-lg" aria-label="Okunmamış mesaj sayısı">0</span>
                         </button>
                         <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Çıkış Yap">
                             <i class="fa-solid fa-power-off"></i>
@@ -988,6 +992,7 @@
                     </button>
                 `;
             }
+            updateUnreadMessageBadge();
         }
 
         function requireAuthAction(actionCallback) {
@@ -1039,6 +1044,7 @@
                 currentUser = { id: user.id, email: user.email, fullName: user.user_metadata?.full_name || user.email.split('@')[0] };
                 localStorage.setItem('shb_user', JSON.stringify(currentUser));
                 renderAuthUI();
+                updateUnreadMessageBadge();
                 closeAuthModal();
                 applyFilters();
                 alert('Giriş başarılı.');
@@ -1101,6 +1107,7 @@
                 currentUser = null;
                 localStorage.removeItem('shb_user');
                 renderAuthUI();
+                updateUnreadMessageBadge();
                 applyFilters();
                 alert('Çıkış yapıldı.');
             } catch (error) {
@@ -1741,7 +1748,8 @@
                 if (error) throw error;
                 document.getElementById('msgContent').value = '';
                 closeSendMessageModal();
-                alert('Mesaj veritabanına kaydedildi. Alıcı, giriş yapıp Mesajlar düğmesinden okuyabilir.');
+                alert('Mesaj veritabanına kaydedildi. Alıcının Mesajlar düğmesinde okunmamış mesaj rozeti görünecektir.');
+                updateUnreadMessageBadge();
             } catch (error) {
                 console.error('Mesaj gönderme hatası:', error);
                 alert('Mesaj gönderilemedi: ' + (error.message || 'Supabase hatası'));
@@ -1750,10 +1758,40 @@
             }
         }
 
+        async function updateUnreadMessageBadge() {
+            const badge = document.getElementById('unreadMessageBadge');
+            if (!badge) return;
+            if (!supabaseClient || !currentUser) {
+                badge.classList.add('hidden');
+                badge.classList.remove('flex');
+                return;
+            }
+            try {
+                const { count, error } = await supabaseClient
+                    .from('messages')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('recipient_id', currentUser.id)
+                    .eq('is_read', false);
+                if (error) throw error;
+                const unreadCount = count || 0;
+                badge.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+                if (unreadCount > 0) {
+                    badge.classList.remove('hidden');
+                    badge.classList.add('flex');
+                } else {
+                    badge.classList.add('hidden');
+                    badge.classList.remove('flex');
+                }
+            } catch (error) {
+                console.error('Okunmamış mesaj sayısı alınamadı:', error);
+            }
+        }
+
         function openInboxModal() {
             if (!currentUser) { alert('Mesajlarınızı görmek için giriş yapın.'); openAuthModal(); return; }
             document.getElementById('inboxModal').classList.remove('hidden');
             loadInboxMessages();
+            updateUnreadMessageBadge();
         }
         function closeInboxModal() { document.getElementById('inboxModal').classList.add('hidden'); }
 
@@ -1793,7 +1831,8 @@
             if (!supabaseClient || !currentUser) return;
             const { error } = await supabaseClient.from('messages').update({ is_read: true }).eq('id', id).eq('recipient_id', currentUser.id);
             if (error) { alert('Okundu bilgisi kaydedilemedi: ' + error.message); return; }
-            loadInboxMessages();
+            await loadInboxMessages();
+            updateUnreadMessageBadge();
         }
 
         function toggleFavorite(id) {
