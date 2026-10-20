@@ -794,17 +794,15 @@
     <!-- JAVASCRIPT & SUPABASE INTEGRATION -->
     <script>
         // --- 1. SUPABASE AYARLARI & FALLBACK STATE ---
-        const SUPABASE_URL = 'https://xyzcompany.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder';
+        const SUPABASE_URL = 'https://hicevhodrskuymffgbdo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_wCUwLT4hjbddEjWY_HJEJQ_oTlTeUiB';
         
-        let supabaseClient = null;
-        try {
-            if (typeof supabase !== 'undefined' && SUPABASE_URL.includes('.supabase.co')) {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-        } catch(e) {
-            console.log("Supabase mock modunda çalışıyor.");
+        if (typeof supabase === 'undefined') {
+            throw new Error('Supabase kütüphanesi yüklenemedi. İnternet bağlantısını kontrol edin.');
         }
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
 
         // Kullanıcı Durumu (Auth State)
         let currentUser = null; // { id, email, fullName }
@@ -820,87 +818,8 @@
             { id: 'Hizmetler', name: 'Hizmetler & Ustalık', icon: 'fa-wrench', count: 0 }
         ];
 
-        // Zengin Mock İlan Verileri
-        let listingsState = [
-            {
-                id: 101,
-                user_id: 'demo_user_1',
-                title: 'Sahibinden 2020 Model Renault Megane 1.5 dCi Icon Touch',
-                category: 'Vasıta',
-                price: 745000,
-                location: 'Deniz Mah.',
-                condition: 'İkinci El',
-                phone: '0532 111 2233',
-                seller: 'Mehmet Can',
-                date: '19 Ekim 2026',
-                is_param_guvende: false,
-                is_acil: true,
-                is_vip: true,
-                images: [
-                    'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80'
-                ],
-                description: '2020 Model Renault Megane. Hatasız, boyasız, tramer kayıtsızdır. Tüm bakımları Samandağ yetkili servisinde yapılmıştır.'
-            },
-            {
-                id: 102,
-                user_id: 'demo_user_2',
-                title: 'Samandağ Deniz Mahallesi Sahile 200m 3+1 Lüks Satılık Daire',
-                category: 'Emlak',
-                price: 2850000,
-                location: 'Deniz Mah.',
-                condition: 'Sıfır',
-                phone: '0533 444 5566',
-                seller: 'Samandağ Emlak',
-                date: '18 Ekim 2026',
-                is_param_guvende: false,
-                is_acil: false,
-                is_vip: true,
-                images: [
-                    'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
-                ],
-                description: 'Deniz manzaralı, asansörlü, kapalı otoparklı sıfır lüks daire. Krediye uygundur.'
-            },
-            {
-                id: 103,
-                user_id: 'demo_user_3',
-                title: 'iPhone 14 Pro Max 256 GB Derin Mor - Faturası Mevcut',
-                category: 'İkinci El ve Sıfır Alışveriş',
-                price: 46500,
-                location: 'Atatürk Mah.',
-                condition: 'İkinci El',
-                phone: '0535 888 9900',
-                seller: 'Ali Yılmaz',
-                date: '19 Ekim 2026',
-                is_param_guvende: true,
-                is_acil: true,
-                is_vip: false,
-                images: [
-                    'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80'
-                ],
-                description: 'Pil sağlığı %88. Kutu, fatura ve orijinal şarj kablosu ile verilecektir. Çiziksiz temiz cihaz.'
-            },
-            {
-                id: 104,
-                user_id: 'demo_user_4',
-                title: 'Temiz Kullanılmış L Koltuk Takımı + Berjer',
-                category: 'İkinci El ve Sıfır Alışveriş',
-                price: 8500,
-                location: 'Çiğdede Mah.',
-                condition: 'İkinci El',
-                phone: '0536 222 3344',
-                seller: 'Zeynep K.',
-                date: '17 Ekim 2026',
-                is_param_guvende: true,
-                is_acil: false,
-                is_vip: false,
-                images: [
-                    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80'
-                ],
-                description: 'Leke tutmaz tay tüyü kumaş. Herhangi bir yırtık veya deforme yoktur.'
-            }
-        ];
+        // İlanlar yalnızca gerçek Supabase veritabanından yüklenir; sahte ilan kullanılmaz.
+        let listingsState = [];
 
         let selectedCategory = 'all';
         let viewMode = 'list';
@@ -914,17 +833,15 @@
         // Selected VIP Package State
         let selectedPackageInfo = { id: '1_ay', price: 250, label: '1 Aylık Doping (250 TL)' };
 
-        // --- INIT & AUTH MANAGEMENT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            initAuth();
+        // --- GERÇEK SUPABASE OTURUMU ---
+        document.addEventListener('DOMContentLoaded', async () => {
             renderCategoryTree();
-            applyFilters();
             updateFavBadge();
-
-            // Keyboard navigation for gallery
+            await initAuth();
+            await loadListings();
             document.addEventListener('keydown', (e) => {
                 const fsModal = document.getElementById('fullscreenGalleryModal');
-                if (!fsModal.classList.contains('hidden')) {
+                if (fsModal && !fsModal.classList.contains('hidden')) {
                     if (e.key === 'ArrowLeft') prevFullscreenImage();
                     if (e.key === 'ArrowRight') nextFullscreenImage();
                     if (e.key === 'Escape') closeFullscreenGallery();
@@ -932,106 +849,122 @@
             });
         });
 
-        function initAuth() {
-            // Check local session
-            const savedUser = localStorage.getItem('shb_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
+        async function initAuth() {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) console.error('Oturum kontrolü:', error.message);
+            currentUser = data?.session?.user || null;
+            renderAuthUI();
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                currentUser = session?.user || null;
                 renderAuthUI();
-            }
+                applyFilters();
+            });
         }
 
         function renderAuthUI() {
             const container = document.getElementById('authNavContainer');
+            if (!container) return;
             if (currentUser) {
+                const displayName = currentUser.user_metadata?.full_name || currentUser.email || 'Hesabım';
                 container.innerHTML = `
                     <div class="flex items-center space-x-2">
                         <div class="bg-slate-900 border border-slate-700 text-amber-400 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5">
                             <i class="fa-solid fa-user-circle text-sm"></i>
-                            <span class="max-w-[100px] truncate">${currentUser.fullName || currentUser.email}</span>
+                            <span class="max-w-[100px] truncate">${escapeHtml(displayName)}</span>
                         </div>
-                        <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Çıkış Yap">
-                            <i class="fa-solid fa-power-off"></i>
-                        </button>
-                    </div>
-                `;
+                        <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Çıkış Yap"><i class="fa-solid fa-power-off"></i></button>
+                    </div>`;
             } else {
-                container.innerHTML = `
-                    <button onclick="openAuthModal()" class="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition">
-                        <i class="fa-regular fa-user mr-1"></i>
-                        <span>Giriş Yap</span>
-                    </button>
-                `;
+                container.innerHTML = `<button onclick="openAuthModal()" class="bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition"><i class="fa-regular fa-user mr-1"></i><span>Giriş Yap</span></button>`;
             }
         }
 
         function requireAuthAction(actionCallback) {
-            if (!currentUser) {
-                alert('Bu işlemi gerçekleştirmek için lütfen giriş yapın.');
-                openAuthModal();
-                return;
-            }
+            if (!currentUser) { alert('Bu işlem için önce giriş yapın.'); openAuthModal(); return; }
             actionCallback();
         }
-
-        function openAuthModal() {
-            document.getElementById('authModal').classList.remove('hidden');
-        }
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.add('hidden');
-        }
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
 
         function switchAuthTab(tab) {
-            if (tab === 'login') {
-                document.getElementById('loginForm').classList.remove('hidden');
-                document.getElementById('registerForm').classList.add('hidden');
-                document.getElementById('tabLoginBtn').className = 'flex-1 pb-2 border-b-2 border-amber-400 text-slate-900 font-bold';
-                document.getElementById('tabRegisterBtn').className = 'flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold';
-            } else {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('registerForm').classList.remove('hidden');
-                document.getElementById('tabRegisterBtn').className = 'flex-1 pb-2 border-b-2 border-amber-400 text-slate-900 font-bold';
-                document.getElementById('tabLoginBtn').className = 'flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold';
+            const login = document.getElementById('loginForm');
+            const register = document.getElementById('registerForm');
+            login.classList.toggle('hidden', tab !== 'login');
+            register.classList.toggle('hidden', tab !== 'register');
+            document.getElementById('tabLoginBtn').className = tab === 'login' ? 'flex-1 pb-2 border-b-2 border-amber-400 text-slate-900 font-bold' : 'flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold';
+            document.getElementById('tabRegisterBtn').className = tab === 'register' ? 'flex-1 pb-2 border-b-2 border-amber-400 text-slate-900 font-bold' : 'flex-1 pb-2 border-b-2 border-transparent text-slate-400 hover:text-slate-600 font-bold';
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) { alert('E-posta ve şifre girin.'); return; }
+            const button = document.querySelector('#loginForm button[type="submit"]');
+            button.disabled = true; button.textContent = 'Giriş yapılıyor...';
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                currentUser = data.user;
+                renderAuthUI(); closeAuthModal(); await loadListings();
+                alert('Giriş başarılı.');
+            } catch (err) { alert('Giriş yapılamadı: ' + (err.message || err)); }
+            finally { button.disabled = false; button.textContent = 'Giriş Yap'; }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regFullName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            if (!fullName || !email || password.length < 6) { alert('Ad soyad, geçerli e-posta ve en az 6 karakterli şifre girin.'); return; }
+            const button = document.querySelector('#registerForm button[type="submit"]');
+            button.disabled = true; button.textContent = 'Hesap oluşturuluyor...';
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { full_name: fullName } } });
+                if (error) throw error;
+                if (data.session) {
+                    currentUser = data.user; renderAuthUI(); closeAuthModal(); await loadListings();
+                    alert('Hesabınız oluşturuldu ve giriş yapıldı.');
+                } else {
+                    alert('Kayıt oluşturuldu. E-posta doğrulaması isteniyorsa gelen kutunuzu kontrol edip doğruladıktan sonra giriş yapın.');
+                    switchAuthTab('login');
+                }
+            } catch (err) { alert('Kayıt oluşturulamadı: ' + (err.message || err)); }
+            finally { button.disabled = false; button.textContent = 'Hesap Oluştur'; }
+        }
+
+        async function handleLogout() {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) { alert('Çıkış yapılamadı: ' + error.message); return; }
+            currentUser = null; renderAuthUI(); applyFilters(); alert('Çıkış yapıldı.');
+        }
+
+        async function loadListings() {
+            const container = document.getElementById('listingsContainer');
+            container.innerHTML = '<div class="bg-white rounded-xl p-8 text-center">İlanlar yükleniyor...</div>';
+            try {
+                const { data, error } = await supabaseClient.from('ilantable').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                listingsState = (data || []).map(row => ({
+                    id: row.id,
+                    user_id: row.user_id || row.kullanici_id || row.uid || null,
+                    title: row.baslik || '', category: row.kategori || 'Diğer',
+                    price: row.fiyat == null ? 0 : Number(row.fiyat),
+                    location: row.mahalle || '', condition: row.durum || row.condition || 'İkinci El',
+                    phone: row.telefon || '', seller: row.ad_soyad || row.satici || row.seller || '',
+                    date: row.created_at ? new Date(row.created_at).toLocaleDateString('tr-TR') : '',
+                    is_param_guvende: Boolean(row.is_param_guvende), is_acil: Boolean(row.is_acil), is_vip: Boolean(row.is_vip),
+                    images: (() => { try { const v = typeof row.resimurl === 'string' ? JSON.parse(row.resimurl) : row.resimurl; return Array.isArray(v) ? v : (v ? [v] : []); } catch (_) { return row.resimurl ? [row.resimurl] : []; } })(),
+                    description: row.aciklama || ''
+                }));
+                applyFilters();
+            } catch (err) {
+                console.error('İlanlar yüklenemedi:', err);
+                listingsState = [];
+                container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-red-700">İlanlar yüklenemedi: ${escapeHtml(err.message || err)}<br><span class="text-xs text-slate-500">Supabase tablo ve erişim izinlerini kontrol edin.</span></div>`;
+                document.getElementById('totalListingBadge').innerText = '0 İlan';
             }
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            currentUser = {
-                id: 'user_' + Date.now(),
-                email: email,
-                fullName: email.split('@')[0]
-            };
-            localStorage.setItem('shb_user', JSON.stringify(currentUser));
-            renderAuthUI();
-            closeAuthModal();
-            applyFilters();
-            alert('Başarıyla giriş yapıldı!');
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const fullName = document.getElementById('regFullName').value;
-            const email = document.getElementById('regEmail').value;
-            currentUser = {
-                id: 'user_' + Date.now(),
-                email: email,
-                fullName: fullName
-            };
-            localStorage.setItem('shb_user', JSON.stringify(currentUser));
-            renderAuthUI();
-            closeAuthModal();
-            applyFilters();
-            alert('Hesabınız oluşturuldu ve giriş yapıldı!');
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('shb_user');
-            renderAuthUI();
-            applyFilters();
-            alert('Çıkış yapıldı.');
         }
 
         // --- 2. KATEGORİ & FİLTRELEME ---
@@ -1071,7 +1004,7 @@
                 const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
                 const matchSearch = !searchQuery || item.title.toLowerCase().includes(searchQuery) || item.description.toLowerCase().includes(searchQuery);
                 const matchLocation = location === 'all' || item.location === location;
-                const matchPrice = item.price >= minPrice && item.price <= maxPrice;
+                const matchPrice = (item.price || 0) >= minPrice && (item.price || 0) <= maxPrice;
                 const matchCondition = condition === 'all' || item.condition === condition;
                 const matchMy = !myOnly || (currentUser && item.user_id === currentUser.id);
                 const matchParam = !paramGuvende || item.is_param_guvende;
@@ -1080,8 +1013,8 @@
                 return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchMy && matchParam && matchAcil;
             });
 
-            if (sortBy === 'priceAsc') filtered.sort((a, b) => a.price - b.price);
-            else if (sortBy === 'priceDesc') filtered.sort((a, b) => b.price - a.price);
+            if (sortBy === 'priceAsc') filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+            else if (sortBy === 'priceDesc') filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
 
             document.getElementById('totalListingBadge').innerText = filtered.length + ' İlan';
             renderListings(filtered);
@@ -1122,7 +1055,7 @@
                                 <h4 onclick="openDetailModal(${item.id})" class="font-bold text-xs text-slate-900 line-clamp-2 hover:text-amber-600 cursor-pointer mb-2">${item.title}</h4>
                             </div>
                             <div class="flex justify-between items-center pt-2 border-t border-slate-100">
-                                <span class="font-black text-amber-600 text-sm">${item.price.toLocaleString('tr-TR')} TL</span>
+                                <span class="font-black text-amber-600 text-sm">${Number(item.price || 0).toLocaleString('tr-TR')} TL</span>
                                 <span class="text-[10px] text-slate-400">${item.date}</span>
                             </div>
                         </div>
@@ -1157,7 +1090,7 @@
                         </div>
 
                         <div class="text-right shrink-0 space-y-1">
-                            <div class="font-black text-amber-600 text-sm sm:text-base">${item.price.toLocaleString('tr-TR')} TL</div>
+                            <div class="font-black text-amber-600 text-sm sm:text-base">${Number(item.price || 0).toLocaleString('tr-TR')} TL</div>
                             <div class="text-[10px] text-slate-400">${item.date}</div>
                             <button onclick="event.stopPropagation(); toggleFavorite(${item.id})" class="text-slate-400 hover:text-red-500 text-sm p-1">
                                 <i class="fa-solid fa-heart ${favoritesState.includes(item.id) ? 'text-red-500' : ''}"></i>
@@ -1368,57 +1301,64 @@
             document.getElementById('postFormModal').classList.add('hidden');
         }
 
-        function handlePostFormSubmit(e) {
+        async function handlePostFormSubmit(e) {
             e.preventDefault();
-            const editId = document.getElementById('editPostId').value;
-            const title = document.getElementById('postTitle').value;
+            const form = document.getElementById('newPostForm');
+            const submitButton = form.querySelector('button[type="submit"]');
+            const title = document.getElementById('postTitle').value.trim();
             const category = document.getElementById('postCategory').value;
-            const price = parseFloat(document.getElementById('postPrice').value);
-            const location = document.getElementById('postLocation').value;
-            const condition = document.getElementById('postCondition').value;
-            const phone = document.getElementById('postPhone').value;
-            const seller = document.getElementById('postSeller').value;
-            const description = document.getElementById('postDescription').value;
-            const urlsInput = document.getElementById('postImageUrls').value;
-            const paramGuvende = document.getElementById('postParamGuvende').checked;
-            const acil = document.getElementById('postAcil').checked;
-
-            let imgArray = ['https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80'];
-            if (urlsInput.trim()) {
-                imgArray = urlsInput.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            }
-
-            if (editId) {
-                // Güncelleme
-                const idx = listingsState.findIndex(x => x.id == editId);
-                if (idx !== -1) {
-                    listingsState[idx] = {
-                        ...listingsState[idx],
-                        title, category, price, location, condition, phone, seller, description,
-                        images: imgArray,
-                        is_param_guvende: paramGuvende,
-                        is_acil: acil
-                    };
+            const priceText = document.getElementById('postPrice').value;
+            const location = document.getElementById('postLocation').value.trim();
+            const phone = document.getElementById('postPhone').value.trim();
+            const description = document.getElementById('postDescription').value.trim();
+            const urlsInput = document.getElementById('postImageUrls').value.trim();
+            const editId = document.getElementById('editPostId').value;
+            const condition = document.getElementById('postCondition').value || 'İkinci El';
+            const images = urlsInput ? urlsInput.split(',').map(x => x.trim()).filter(Boolean) : [];
+            if (!title || !category || !phone) { alert('İlan başlığı, kategori ve telefon zorunludur.'); return; }
+            if (images.some(url => !/^https?:\/\//i.test(url))) { alert('Fotoğraf alanına yalnızca http:// veya https:// ile başlayan fotoğraf bağlantıları girin.'); return; }
+            submitButton.disabled = true;
+            const originalText = document.getElementById('postSubmitBtnText').textContent;
+            try {
+                const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+                if (userError) throw userError;
+                if (!user) { closePostFormModal(); openAuthModal(); alert('Ücretsiz ilan vermek için önce gerçek hesabınızla giriş yapın.'); return; }
+                if (editId) {
+                    const updateData = { baslik: title, fiyat: priceText ? Number(priceText) : null, aciklama: description, kategori: category, mahalle: location, telefon: phone };
+                    const { error } = await supabaseClient.from('ilantable').update(updateData).eq('id', editId).eq('user_id', user.id);
+                    if (error) throw error;
+                    alert('İlanınız güncellendi.');
+                } else {
+                    document.getElementById('postSubmitBtnText').textContent = 'İlan hakkı kontrol ediliyor...';
+                    const { data: hasRight, error: rightError } = await supabaseClient.rpc('kullanici_ilan_hakki_var_mi', { p_user_id: user.id });
+                    if (rightError) throw rightError;
+                    if (hasRight !== true) {
+                        closePostFormModal(); document.getElementById('membershipModal').classList.remove('hidden');
+                        alert('Ücretsiz deneme süreniz veya ilan hakkınız bitmiş. Devam etmek için üyelik paketi seçin.'); return;
+                    }
+                    document.getElementById('postSubmitBtnText').textContent = 'İlan veritabanına kaydediliyor...';
+                    const { error } = await supabaseClient.rpc('ilan_ekle', {
+                        p_baslik: title,
+                        p_fiyat: priceText ? Number(priceText) : null,
+                        p_aciklama: description,
+                        p_kategori: category,
+                        p_mahalle: location,
+                        p_telefon: phone,
+                        p_resimurl: JSON.stringify(images)
+                    });
+                    if (error) throw error;
+                    alert('İlanınız veritabanına kaydedildi ve yayınlandı.');
                 }
-                alert('İlanınız güncellendi.');
-            } else {
-                // Yeni Oluşturma
-                const newListing = {
-                    id: Date.now(),
-                    user_id: currentUser ? currentUser.id : 'anon',
-                    title, category, price, location, condition, phone, seller, description,
-                    date: 'Bugün',
-                    is_param_guvende: paramGuvende,
-                    is_acil: acil,
-                    is_vip: false,
-                    images: imgArray
-                };
-                listingsState.unshift(newListing);
-                alert('İlanınız başarıyla eklendi ve yayınlandı!');
+                closePostFormModal();
+                await loadListings();
+                if (!editId) form.reset();
+            } catch (err) {
+                console.error('İlan kayıt hatası:', err);
+                alert('İlan yayınlanamadı: ' + (err.message || err));
+            } finally {
+                submitButton.disabled = false;
+                document.getElementById('postSubmitBtnText').textContent = originalText || (editId ? 'Görüntüyü Güncelle' : 'İlanı Yayınla');
             }
-
-            closePostFormModal();
-            applyFilters();
         }
 
         // --- 7. PAKET ALACAK OLANLARA IBAN & HAVALE/EFT ---
@@ -1518,7 +1458,7 @@
                             <img src="${item.images[0]}" class="w-12 h-10 object-cover rounded">
                             <div class="truncate">
                                 <h5 class="font-bold text-xs text-slate-900 truncate">${item.title}</h5>
-                                <div class="text-[10px] text-amber-600 font-bold">${item.price.toLocaleString('tr-TR')} TL</div>
+                                <div class="text-[10px] text-amber-600 font-bold">${Number(item.price || 0).toLocaleString('tr-TR')} TL</div>
                             </div>
                         </div>
                         <button onclick="toggleFavorite(${item.id}); openFavoritesModal();" class="text-red-500 text-xs px-2 py-1 font-bold">Kaldır</button>
