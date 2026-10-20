@@ -714,6 +714,18 @@
         </div>
     </div>
 
+    <!-- GELEN KUTUSU / MESAJLAR -->
+    <div id="inboxModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl border border-slate-200 max-h-[85vh] flex flex-col">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-3">
+          <h3 class="font-extrabold text-base text-slate-900"><i class="fa-regular fa-envelope text-amber-500 mr-2"></i>Mesaj Kutum</h3>
+          <button onclick="closeInboxModal()" class="text-slate-400 hover:text-slate-700" aria-label="Kapat"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <div id="inboxMessages" class="overflow-y-auto space-y-3"><p class="text-sm text-slate-500">Mesajlar yükleniyor...</p></div>
+        <button onclick="loadInboxMessages()" class="mt-3 border border-slate-300 rounded-lg py-2 text-xs font-bold hover:bg-slate-50">Yenile</button>
+      </div>
+    </div>
+
     <!-- 9. FAVORİLERİM MODALI -->
     <div id="favoritesModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-5 shadow-2xl border border-slate-200 relative max-h-[85vh] flex flex-col">
@@ -960,6 +972,9 @@
                             <i class="fa-solid fa-user-circle text-sm"></i>
                             <span class="max-w-[100px] truncate">${currentUser.fullName || currentUser.email}</span>
                         </div>
+                        <button onclick="openInboxModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Mesaj Kutum">
+                            <i class="fa-regular fa-envelope mr-1"></i>Mesajlar
+                        </button>
                         <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-2.5 py-2 rounded-lg transition" title="Çıkış Yap">
                             <i class="fa-solid fa-power-off"></i>
                         </button>
@@ -1692,15 +1707,93 @@
 
         // --- 8. DİĞER MODALLAR & FAVORİLER ---
         function openSendMessageModal() {
+            if (!currentUser) { alert('Mesaj göndermek için giriş yapın.'); openAuthModal(); return; }
+            if (!activeModalListing) { alert('Önce bir ilanı açın.'); return; }
+            if (activeModalListing.user_id === currentUser.id) { alert('Kendi ilanınıza mesaj gönderemezsiniz.'); return; }
+            document.getElementById('msgContent').value = '';
             document.getElementById('sendMessageModal').classList.remove('hidden');
         }
         function closeSendMessageModal() {
             document.getElementById('sendMessageModal').classList.add('hidden');
         }
-        function handleSendMessageSubmit(e) {
+        async function handleSendMessageSubmit(e) {
             e.preventDefault();
-            alert('Mesajınız satıcıya başarıyla iletildi.');
-            closeSendMessageModal();
+            if (!supabaseClient || !currentUser) { alert('Mesaj göndermek için Supabase bağlantısı ve üyelik gereklidir.'); return; }
+            const listing = activeModalListing;
+            const content = document.getElementById('msgContent').value.trim();
+            if (!listing || !content) { alert('Lütfen mesajınızı yazın.'); return; }
+            // Demo ilanlar gerçek auth.users üyelerine bağlı değildir.
+            const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            if (!uuidPattern.test(String(listing.user_id || ''))) {
+                alert('Bu ekrandaki ilan örnek/demo ilandır; gerçek bir üye hesabına bağlı olmadığı için mesaj gönderilemiyor. Gerçek ilanlar veritabanından üye user_id bilgisiyle yüklenmelidir.');
+                return;
+            }
+            const submit = e.submitter || e.target.querySelector('button[type="submit"]');
+            const oldText = submit ? submit.textContent : '';
+            if (submit) { submit.disabled = true; submit.textContent = 'Gönderiliyor...'; }
+            try {
+                const { error } = await supabaseClient.from('messages').insert({
+                    listing_id: String(listing.id),
+                    sender_id: currentUser.id,
+                    recipient_id: listing.user_id,
+                    content
+                });
+                if (error) throw error;
+                document.getElementById('msgContent').value = '';
+                closeSendMessageModal();
+                alert('Mesaj veritabanına kaydedildi. Alıcı, giriş yapıp Mesajlar düğmesinden okuyabilir.');
+            } catch (error) {
+                console.error('Mesaj gönderme hatası:', error);
+                alert('Mesaj gönderilemedi: ' + (error.message || 'Supabase hatası'));
+            } finally {
+                if (submit) { submit.disabled = false; submit.textContent = oldText || 'Mesajı İlet'; }
+            }
+        }
+
+        function openInboxModal() {
+            if (!currentUser) { alert('Mesajlarınızı görmek için giriş yapın.'); openAuthModal(); return; }
+            document.getElementById('inboxModal').classList.remove('hidden');
+            loadInboxMessages();
+        }
+        function closeInboxModal() { document.getElementById('inboxModal').classList.add('hidden'); }
+
+        async function loadInboxMessages() {
+            const container = document.getElementById('inboxMessages');
+            if (!container) return;
+            if (!supabaseClient || !currentUser) { container.innerHTML = '<p class="text-sm text-slate-500">Mesajları görmek için giriş yapın.</p>'; return; }
+            container.innerHTML = '<p class="text-sm text-slate-500">Mesajlar yükleniyor...</p>';
+            try {
+                const { data, error } = await supabaseClient.from('messages').select('id, listing_id, sender_id, recipient_id, content, is_read, created_at').order('created_at', { ascending: false }).limit(100);
+                if (error) throw error;
+                const messages = (data || []).filter(m => m.sender_id === currentUser.id || m.recipient_id === currentUser.id);
+                if (!messages.length) { container.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Henüz mesajınız yok.</p>'; return; }
+                container.innerHTML = messages.map(m => {
+                    const received = m.recipient_id === currentUser.id;
+                    const label = received ? 'Gönderen' : 'Alıcı';
+                    const otherId = received ? m.sender_id : m.recipient_id;
+                    const date = m.created_at ? new Date(m.created_at).toLocaleString('tr-TR') : '';
+                    const unread = received && !m.is_read;
+                    return `<article class="border ${unread ? 'border-amber-400 bg-amber-50' : 'border-slate-200 bg-white'} rounded-xl p-3">
+                      <div class="flex flex-wrap items-center justify-between gap-2 mb-2"><span class="text-xs font-extrabold text-slate-800">${received ? 'Gelen mesaj' : 'Gönderdiğim mesaj'} ${unread ? '<span class="text-amber-700">• Okunmadı</span>' : ''}</span><span class="text-[10px] text-slate-500">${date}</span></div>
+                      <p class="text-[10px] text-slate-500 mb-2">${label}: ${String(otherId).slice(0,8)}… · İlan no: ${m.listing_id || '-'}</p>
+                      <p class="text-sm text-slate-800 whitespace-pre-wrap break-words"></p>
+                      <div class="text-sm text-slate-800 whitespace-pre-wrap break-words">${escapeMessageHtml(m.content)}</div>
+                      ${unread ? `<button onclick="markMessageRead(${m.id})" class="mt-3 text-xs font-bold text-amber-800 underline">Okundu olarak işaretle</button>` : ''}
+                    </article>`;
+                }).join('');
+            } catch (error) {
+                console.error('Mesajlar yüklenemedi:', error);
+                container.innerHTML = `<p class="text-sm text-red-600">Mesajlar yüklenemedi: ${escapeMessageHtml(error.message || 'Bilinmeyen hata')}</p>`;
+            }
+        }
+        function escapeMessageHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+        async function markMessageRead(id) {
+            if (!supabaseClient || !currentUser) return;
+            const { error } = await supabaseClient.from('messages').update({ is_read: true }).eq('id', id).eq('recipient_id', currentUser.id);
+            if (error) { alert('Okundu bilgisi kaydedilemedi: ' + error.message); return; }
+            loadInboxMessages();
         }
 
         function toggleFavorite(id) {
