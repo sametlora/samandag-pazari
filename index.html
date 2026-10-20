@@ -935,8 +935,26 @@
         let listingNotificationsState = [];
         function favoritesStorageKey() { return 'shb_favs_user_' + (currentUser?.id || 'guest'); }
         function notificationsStorageKey(userId = currentUser?.id || 'guest') { return 'shb_listing_notifications_' + userId; }
-        function loadMemberFavorites() { try { favoritesState = JSON.parse(localStorage.getItem(favoritesStorageKey()) || '[]'); if (!Array.isArray(favoritesState)) favoritesState = []; } catch (_) { favoritesState = []; } updateFavBadge(); }
-        function loadListingNotifications() { try { listingNotificationsState = JSON.parse(localStorage.getItem(notificationsStorageKey()) || '[]'); if (!Array.isArray(listingNotificationsState)) listingNotificationsState = []; } catch (_) { listingNotificationsState = []; } updateListingNotificationBadge(); }
+        async function loadMemberFavorites() {
+            if (supabaseClient && currentUser) {
+                const { data, error } = await supabaseClient.from('favorites').select('ilan_id').eq('user_id', currentUser.id);
+                if (!error) favoritesState = (data || []).map(row => String(row.ilan_id));
+                else { console.error('Favoriler Supabase’den okunamadı:', error.message); favoritesState = []; }
+            } else {
+                try { favoritesState = JSON.parse(localStorage.getItem(favoritesStorageKey()) || '[]'); if (!Array.isArray(favoritesState)) favoritesState = []; } catch (_) { favoritesState = []; }
+            }
+            updateFavBadge(); applyFilters();
+        }
+        async function loadListingNotifications() {
+            if (supabaseClient && currentUser) {
+                const { data, error } = await supabaseClient.from('notifications').select('id,user_id,baslik,mesaj,tip,okundu,created_at').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(100);
+                if (!error) listingNotificationsState = (data || []).map(n => ({ id:n.id, title:n.baslik, message:n.mesaj, type:n.tip, read:!!n.okundu, created_at:n.created_at }));
+                else { console.error('Bildirimler Supabase’den okunamadı:', error.message); listingNotificationsState = []; }
+            } else {
+                try { listingNotificationsState = JSON.parse(localStorage.getItem(notificationsStorageKey()) || '[]'); if (!Array.isArray(listingNotificationsState)) listingNotificationsState = []; } catch (_) { listingNotificationsState = []; }
+            }
+            updateListingNotificationBadge();
+        }
         let currentModalImageIndex = 0;
         let activeModalListing = null;
         let selectedPostImages = []; // İlan formundaki seçili fotoğraf URL/dataURL listesi
@@ -953,6 +971,7 @@
             loadMemberFavorites();
             loadListingNotifications();
             loadSavedUserListings();
+            loadSupabaseListings();
             renderCategoryTree();
             applyFilters();
             updateFavBadge();
@@ -1162,9 +1181,12 @@
             loadMemberFavorites();
             loadListingNotifications();
             renderAuthUI();
+            await loadSupabaseListings();
             applyFilters();
         }
         restoreSupabaseSession();
+        window.addEventListener('focus', () => { if (currentUser) { loadListingNotifications(); loadMemberFavorites(); } });
+        setInterval(() => { if (currentUser && document.visibilityState === 'visible') loadListingNotifications(); }, 15000);
         if (supabaseClient) {
             supabaseClient.auth.onAuthStateChange((_event, session) => {
                 const user = session?.user;
@@ -1174,6 +1196,7 @@
                 loadMemberFavorites();
                 loadListingNotifications();
                 renderAuthUI();
+                loadSupabaseListings();
             });
         }
 
@@ -1435,11 +1458,14 @@
         function triggerDeleteListing() {
             if (!activeModalListing) return;
             if (confirm('Bu ilanı silmek istediğinize emin misiniz?')) {
-                listingsState = listingsState.filter(x => x.id !== activeModalListing.id);
-                saveUserListings();
-                closeDetailModal();
-                applyFilters();
-                alert('İlan silindi.');
+                (async () => {
+                    if (supabaseClient && currentUser && activeModalListing._supabase) {
+                        const { error } = await supabaseClient.from('ilantable').delete().eq('id', activeModalListing.id).eq('user_id', currentUser.id);
+                        if (error) { alert('İlan silinemedi: ' + error.message); return; }
+                    }
+                    listingsState = listingsState.filter(x => String(x.id) !== String(activeModalListing.id));
+                    saveUserListings(); closeDetailModal(); applyFilters(); alert('İlan silindi.');
+                })();
             }
         }
 
@@ -1541,6 +1567,36 @@
         // --- 6. İLAN EKLEME, FOTOĞRAF EKLEME/SİLME VE GÜNCELLEME ---
         const MAX_POST_IMAGES = 8;
         const DEFAULT_POST_IMAGE = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80';
+
+        async function loadSupabaseListings() {
+            if (!supabaseClient) return;
+            const { data, error } = await supabaseClient.from('ilantable')
+                .select('id,user_id,baslik,fiyat,aciklama,kategori,mahalle,telefon,resimurl,created_at,durum,onay_durumu')
+                .order('created_at', { ascending: false }).limit(500);
+            if (error) { console.error('İlanlar Supabase’den okunamadı:', error.message); return; }
+            const remoteItems = (data || []).map(row => {
+                let images = [];
+                if (Array.isArray(row.resimurl)) images = row.resimurl;
+                else if (typeof row.resimurl === 'string' && row.resimurl.trim()) {
+                    try { const parsed = JSON.parse(row.resimurl); images = Array.isArray(parsed) ? parsed : [row.resimurl]; }
+                    catch (_) { images = [row.resimurl]; }
+                }
+                return {
+                    id: row.id, user_id: row.user_id, title: row.baslik || 'İlan',
+                    category: row.kategori || 'Diğer', price: Number(row.fiyat || 0),
+                    location: row.mahalle || 'Samandağ', condition: 'Belirtilmedi',
+                    phone: row.telefon || '', seller: row.user_id === currentUser?.id ? (currentUser.fullName || 'Üyem') : 'Samandağ Pazarı üyesi',
+                    date: row.created_at ? new Date(row.created_at).toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' }) : '',
+                    images: images.filter(Boolean).slice(0, 8).length ? images.filter(Boolean).slice(0, 8) : [DEFAULT_POST_IMAGE],
+                    description: row.aciklama || '', is_param_guvende: false, is_acil: false, is_vip: false,
+                    _supabase: true, durum: row.durum, onay_durumu: row.onay_durumu
+                };
+            });
+            const remoteIds = new Set(remoteItems.map(x => String(x.id)));
+            listingsState = listingsState.filter(x => !x._supabase && !remoteIds.has(String(x.id)));
+            listingsState = [...remoteItems, ...listingsState];
+            applyFilters();
+        }
 
         function loadSavedUserListings() {
             try {
@@ -1698,7 +1754,7 @@
             }
         }
 
-        function handlePostFormSubmit(e) {
+        async function handlePostFormSubmit(e) {
             e.preventDefault();
             const submitButton = document.querySelector('#newPostForm button[type="submit"]');
             if (submitButton && submitButton.disabled) return;
@@ -1730,20 +1786,39 @@
                 is_acil: acil
             };
 
+            if (!currentUser) { alert('İlan vermek veya düzenlemek için giriş yapmalısınız.'); openAuthModal(); return; }
+            const dbImages = JSON.stringify(imgArray);
             if (editId) {
                 const idx = listingsState.findIndex(item => String(item.id) === String(editId));
-                if (idx !== -1) { const previousListing = { ...listingsState[idx] }; listingsState[idx] = { ...listingsState[idx], ...listingData }; createFavoriteChangeNotifications(listingsState[idx], previousListing); }
-                alert('İlanınız ve fotoğrafları güncellendi.');
+                const existingItem = idx >= 0 ? listingsState[idx] : null;
+                if (supabaseClient && existingItem && existingItem._supabase) {
+                    const { error } = await supabaseClient.from('ilantable').update({
+                        baslik: title, fiyat: price, aciklama: description, kategori: category,
+                        mahalle: location, telefon: phone, resimurl: dbImages
+                    }).eq('id', editId).eq('user_id', currentUser.id);
+                    if (error) { alert('İlan güncellenemedi: ' + error.message); return; }
+                    if (idx !== -1) listingsState[idx] = { ...listingsState[idx], ...listingData, _supabase: true };
+                    await loadListingNotifications();
+                    alert('İlanınız güncellendi. Favorileyen üyelere bildirim oluşturuldu.');
+                } else {
+                    if (idx !== -1) { const previousListing = { ...listingsState[idx] }; listingsState[idx] = { ...listingsState[idx], ...listingData }; await createFavoriteChangeNotifications(listingsState[idx], previousListing); }
+                    alert('İlanınız ve fotoğrafları güncellendi.');
+                }
             } else {
-                const newListing = {
-                    id: Date.now(),
-                    user_id: currentUser ? currentUser.id : 'anon',
-                    ...listingData,
-                    date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }),
-                    is_vip: false
-                };
-                listingsState.unshift(newListing);
-                alert('İlanınız fotoğraflarıyla birlikte eklendi.');
+                if (supabaseClient) {
+                    const { data, error } = await supabaseClient.rpc('ilan_ekle', {
+                        p_baslik: title, p_fiyat: price, p_aciklama: description, p_kategori: category,
+                        p_mahalle: location, p_telefon: phone, p_resimurl: dbImages
+                    });
+                    if (error) { alert('İlan yayınlanamadı: ' + error.message); return; }
+                    const newId = data;
+                    listingsState.unshift({ id: newId, user_id: currentUser.id, _supabase: true, ...listingData, date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }), is_vip: false });
+                    alert('İlanınız Supabase veritabanına kaydedildi ve yayınlandı.');
+                } else {
+                    const newListing = { id: Date.now(), user_id: currentUser.id, ...listingData, date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }), is_vip: false };
+                    listingsState.unshift(newListing);
+                    alert('İlanınız fotoğraflarıyla birlikte eklendi.');
+                }
             }
             saveUserListings();
             closePostFormModal();
@@ -1929,13 +2004,23 @@
             updateUnreadMessageBadge();
         }
 
-        function toggleFavorite(id) {
+        async function toggleFavorite(id) {
             if (!currentUser) { alert('Favorilere eklemek için lütfen giriş yapın.'); openAuthModal(); return; }
-            if (favoritesState.some(x => String(x) === String(id))) favoritesState = favoritesState.filter(x => String(x) !== String(id));
-            else favoritesState.push(id);
-            localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
-            updateFavBadge();
-            applyFilters();
+            const existing = favoritesState.some(x => String(x) === String(id));
+            if (supabaseClient) {
+                if (existing) {
+                    const { error } = await supabaseClient.from('favorites').delete().eq('user_id', currentUser.id).eq('ilan_id', id);
+                    if (error) { alert('Favoriden kaldırılamadı: ' + error.message); return; }
+                } else {
+                    const { error } = await supabaseClient.from('favorites').insert({ user_id: currentUser.id, ilan_id: id });
+                    if (error) { alert('Favoriye eklenemedi: ' + error.message); return; }
+                }
+                await loadMemberFavorites();
+            } else {
+                if (existing) favoritesState = favoritesState.filter(x => String(x) !== String(id)); else favoritesState.push(String(id));
+                localStorage.setItem(favoritesStorageKey(), JSON.stringify(favoritesState));
+                updateFavBadge(); applyFilters();
+            }
         }
 
         function updateFavBadge() {
@@ -1952,12 +2037,12 @@
             badge.classList.toggle('flex', unread > 0);
         }
 
-        function createFavoriteChangeNotifications(listing, previous) {
-            if (!listing || !previous || !currentUser) return;
+        async function createFavoriteChangeNotifications(listing, previous) {
+            // Supabase trigger gerçek ilan güncellemesinde bildirim oluşturur.
+            // Bu fonksiyon yalnızca Supabase dışı demo modunda yerel uyarı üretir.
+            if (supabaseClient || !listing || !previous || !currentUser) return;
             const changed = ['title','price','description','category','location'].some(k => String(previous[k] ?? '') !== String(listing[k] ?? ''));
             if (!changed) return;
-            // Bu tarayıcıda aynı sitede favoriye ekleyen kayıtlı üyeler için bildirim oluşturur.
-            // Farklı cihaz/ziyaretçiler arasında gerçek bildirim için ilan ve favoriler Supabase tablolarında tutulmalıdır.
             try {
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
@@ -1969,14 +2054,14 @@
                     const notes = JSON.parse(localStorage.getItem(nKey) || '[]');
                     notes.unshift({ id: Date.now() + Math.random(), listing_id: listing.id, title: listing.title, message: `Favorinizdeki “${listing.title}” ilanı güncellendi.`, created_at: new Date().toISOString(), read: false });
                     localStorage.setItem(nKey, JSON.stringify(notes.slice(0, 100)));
-                    if (currentUser && ownerId === String(currentUser.id)) loadListingNotifications();
                 }
+                await loadListingNotifications();
             } catch (err) { console.warn('Favori ilan bildirimi oluşturulamadı:', err); }
         }
 
-        function openListingNotifications() {
+        async function openListingNotifications() {
             if (!currentUser) { alert('Bildirimleri görmek için giriş yapın.'); openAuthModal(); return; }
-            loadListingNotifications();
+            await loadListingNotifications();
             const list = document.getElementById('listingNotificationsList');
             if (!listingNotificationsState.length) list.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Henüz favori ilan bildiriminiz yok.</p>';
             else list.innerHTML = listingNotificationsState.map(n => `<article class="border ${n.read ? 'border-slate-200' : 'border-amber-400 bg-amber-50'} rounded-xl p-3"><p class="text-sm font-bold text-slate-800">${escapeMessageHtml(n.message)}</p><p class="text-xs text-slate-500 mt-1">${n.created_at ? new Date(n.created_at).toLocaleString('tr-TR') : ''}</p></article>`).join('');
@@ -1984,13 +2069,20 @@
             modal.classList.remove('hidden'); modal.classList.add('flex');
         }
         function closeListingNotifications() { const modal = document.getElementById('listingNotificationsModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
-        function markListingNotificationsRead() {
-            listingNotificationsState = listingNotificationsState.map(n => ({...n, read: true}));
-            localStorage.setItem(notificationsStorageKey(), JSON.stringify(listingNotificationsState));
-            updateListingNotificationBadge(); openListingNotifications();
+        async function markListingNotificationsRead() {
+            if (supabaseClient && currentUser) {
+                const { error } = await supabaseClient.from('notifications').update({ okundu: true }).eq('user_id', currentUser.id).eq('okundu', false);
+                if (error) { alert('Bildirimler okundu yapılamadı: ' + error.message); return; }
+            } else {
+                listingNotificationsState = listingNotificationsState.map(n => ({...n, read: true}));
+                localStorage.setItem(notificationsStorageKey(), JSON.stringify(listingNotificationsState));
+            }
+            await loadListingNotifications(); await openListingNotifications();
         }
 
-        function openFavoritesModal() {
+        async function openFavoritesModal() {
+            if (!currentUser) { alert('Favorilerinizi görmek için giriş yapın.'); openAuthModal(); return; }
+            await loadMemberFavorites();
             const container = document.getElementById('favoritesListContainer');
             const favItems = listingsState.filter(x => favoritesState.some(id => String(id) === String(x.id)));
 
@@ -2006,7 +2098,7 @@
                                 <div class="text-[10px] text-amber-600 font-bold">${item.price.toLocaleString('tr-TR')} TL</div>
                             </div>
                         </div>
-                        <button onclick="toggleFavorite(${item.id}); openFavoritesModal();" class="text-red-500 text-xs px-2 py-1 font-bold">Kaldır</button>
+                        <button onclick="toggleFavorite(${item.id}).then(() => openFavoritesModal());" class="text-red-500 text-xs px-2 py-1 font-bold">Kaldır</button>
                     </div>
                 `).join('');
             }
