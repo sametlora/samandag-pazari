@@ -1405,7 +1405,7 @@
         // --- 4. İLAN DETAY & DÜZENLEME / SİLME ---
         function openDetailModal(id) {
             const item = listingsState.find(x => String(x.id) === String(id));
-            if (!item) { alert("İlan bulunamadı. İlan listesini yenileyip tekrar deneyin."); return; }
+            if (!item) return;
             
             activeModalListing = item;
             currentModalImageIndex = 0;
@@ -2085,34 +2085,53 @@
             if (!currentUser) { alert('Bildirimleri görmek için giriş yapın.'); openAuthModal(); return; }
             await loadListingNotifications();
             const list = document.getElementById('listingNotificationsList');
-            if (!listingNotificationsState.length) list.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Henüz favori ilan bildiriminiz yok.</p>';
-            else list.innerHTML = listingNotificationsState.map(n => {
-                const hasListing = n.listing_id !== null && n.listing_id !== undefined && String(n.listing_id) !== '';
-                return `<article class="border ${n.read ? 'border-slate-200' : 'border-amber-400 bg-amber-50'} rounded-xl p-3">
-                    <button type="button" ${hasListing ? `onclick="openNotificationListing('${String(n.listing_id).replace(/'/g, "\\'")}')"` : 'disabled'} class="block w-full text-left ${hasListing ? 'cursor-pointer hover:text-amber-700' : 'cursor-default'}" title="${hasListing ? 'İlanı ve değişiklikleri görüntüle' : 'İlan bağlantısı bulunmuyor'}">
-                        <span class="block text-sm font-extrabold text-slate-900">${escapeMessageHtml(n.title || 'Favori ilan güncellendi')}</span>
-                        <span class="block text-sm text-slate-700 mt-1">${escapeMessageHtml(n.message || '')}</span>
-                        ${hasListing ? '<span class="inline-block mt-2 text-xs font-bold text-amber-700 underline">İlanı görüntüle →</span>' : ''}
-                    </button>
-                    <p class="text-xs text-slate-500 mt-2">${n.created_at ? new Date(n.created_at).toLocaleString('tr-TR') : ''}</p>
-                </article>`;
-            }).join('');
+            if (!listingNotificationsState.length) {
+                list.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Henüz favori ilan bildiriminiz yok.</p>';
+            } else {
+                list.innerHTML = listingNotificationsState.map((n, index) => {
+                    const safeTitle = escapeMessageHtml(n.title || 'Favori ilanınız güncellendi');
+                    const safeMessage = escapeMessageHtml(n.message || 'İlan bilgilerinde değişiklik yapıldı.');
+                    const hasListing = n.listing_id !== null && n.listing_id !== undefined && String(n.listing_id) !== '';
+                    return `<article role="button" tabindex="0"
+                        onclick="openNotificationListing(${index})"
+                        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNotificationListing(${index})}"
+                        class="border ${n.read ? 'border-slate-200 bg-white' : 'border-amber-400 bg-amber-50'} rounded-xl p-3 mb-2 ${hasListing ? 'cursor-pointer hover:border-amber-600 hover:shadow-sm' : ''}">
+                        <div class="flex items-start gap-2">
+                          <span class="text-amber-600 mt-0.5"><i class="fa-solid fa-bell"></i></span>
+                          <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-slate-900">${safeTitle}</p>
+                            <p class="text-sm text-slate-700 mt-1">${safeMessage}</p>
+                            <p class="text-xs text-amber-700 mt-2 font-semibold">${hasListing ? 'İlanı görmek için tıklayın' : 'Bu eski bildirimin ilan bağlantısı bulunmuyor'}</p>
+                            <p class="text-xs text-slate-500 mt-1">${n.created_at ? new Date(n.created_at).toLocaleString('tr-TR') : ''}</p>
+                          </div>
+                        </div>
+                    </article>`;
+                }).join('');
+            }
             const modal = document.getElementById('listingNotificationsModal');
             modal.classList.remove('hidden'); modal.classList.add('flex');
         }
-        async function openNotificationListing(id) {
-            const listingId = String(id);
-            let item = listingsState.find(x => String(x.id) === listingId);
-            if (!item && typeof loadSupabaseListings === 'function') {
-                try { await loadSupabaseListings(); } catch (err) { console.warn('İlan yüklenemedi:', err); }
-                item = listingsState.find(x => String(x.id) === listingId);
-            }
-            if (!item) {
-                alert('Bu bildirimdeki ilan artık yayında olmayabilir veya yüklenemedi. Ana sayfayı yenileyip tekrar deneyin.');
+
+        async function openNotificationListing(index) {
+            const n = listingNotificationsState[index];
+            if (!n || n.listing_id === null || n.listing_id === undefined) {
+                alert('Bu eski bildirime ait ilan bağlantısı bulunamadı. Yeni bildirimlerde ilan açılabilir.');
                 return;
             }
-            closeListingNotifications();
-            openDetailModal(String(item.id));
+            const modal = document.getElementById('listingNotificationsModal');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
+            let item = listingsState.find(x => String(x.id) === String(n.listing_id));
+            if (!item && supabaseClient) {
+                try {
+                    await loadSupabaseListings();
+                    item = listingsState.find(x => String(x.id) === String(n.listing_id));
+                } catch (err) { console.warn('Bildirim ilanı yüklenemedi:', err); }
+            }
+            if (!item) {
+                alert('Bu ilan artık yayında olmayabilir veya ilan listesine yüklenemedi.');
+                return;
+            }
+            openDetailModal(item.id);
         }
         function closeListingNotifications() { const modal = document.getElementById('listingNotificationsModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
         async function markListingNotificationsRead() {
@@ -2136,15 +2155,15 @@
                 container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Henüz favori ilanınız bulunmuyor.</p>';
             } else {
                 container.innerHTML = favItems.map(item => `
-                    <div onclick="closeFavoritesModal(); openDetailModal('${String(item.id).replace(/'/g, "\\'")}');" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();closeFavoritesModal();openDetailModal('${String(item.id).replace(/'/g, "\\'")}');}" class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition" title="İlan detayını aç">
-                        <div class="flex items-center space-x-3 truncate min-w-0 flex-1">
-                            <img src="${item.images && item.images[0] ? item.images[0] : ''}" class="w-12 h-10 object-cover rounded" alt="">
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                        <div class="flex items-center space-x-3 truncate">
+                            <img src="${item.images[0]}" class="w-12 h-10 object-cover rounded">
                             <div class="truncate">
                                 <h5 class="font-bold text-xs text-slate-900 truncate">${item.title}</h5>
-                                <div class="text-[10px] text-amber-600 font-bold">${Number(item.price || 0).toLocaleString('tr-TR')} TL</div>
+                                <div class="text-[10px] text-amber-600 font-bold">${item.price.toLocaleString('tr-TR')} TL</div>
                             </div>
                         </div>
-                        <button onclick="event.stopPropagation(); toggleFavorite('${String(item.id).replace(/'/g, "\\'")}').then(() => openFavoritesModal());" class="text-red-500 text-xs px-2 py-1 font-bold shrink-0">Kaldır</button>
+                        <button onclick="toggleFavorite(${item.id}).then(() => openFavoritesModal());" class="text-red-500 text-xs px-2 py-1 font-bold">Kaldır</button>
                     </div>
                 `).join('');
             }
