@@ -108,7 +108,7 @@
             <div class="flex items-center justify-between h-16 gap-2 sm:gap-4">
                 
                 <!-- Logo & Slogan -->
-                <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="resetAllFilters()">
+                <div class="flex items-center space-x-3 cursor-pointer shrink-0" role="button" tabindex="0" aria-label="Ana sayfayı yenile" onclick="window.location.reload()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.reload();}">
                     <div class="bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded text-xl tracking-wider">
                         S2E
                     </div>
@@ -803,7 +803,7 @@
     <!-- FOOTER -->
     <footer class="bg-slate-950 text-slate-400 text-xs py-8 border-t border-slate-800 mt-12">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 cursor-pointer" role="button" tabindex="0" aria-label="Ana sayfayı yenile" onclick="window.location.reload()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.reload();}">
                 <span class="bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded text-xs">S2E</span>
                 <span class="font-bold text-slate-200">Samandağ 2. El Pazarı</span>
                 <span>&copy; 2026 Tüm Hakları Saklıdır.</span>
