@@ -947,8 +947,8 @@
         }
         async function loadListingNotifications() {
             if (supabaseClient && currentUser) {
-                const { data, error } = await supabaseClient.from('notifications').select('id,user_id,baslik,mesaj,tip,okundu,created_at').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(100);
-                if (!error) listingNotificationsState = (data || []).map(n => ({ id:n.id, title:n.baslik, message:n.mesaj, type:n.tip, read:!!n.okundu, created_at:n.created_at }));
+                const { data, error } = await supabaseClient.from('notifications').select('id,user_id,ilan_id,baslik,mesaj,tip,okundu,created_at').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(100);
+                if (!error) listingNotificationsState = (data || []).map(n => ({ id:n.id, listing_id:n.ilan_id, title:n.baslik, message:n.mesaj, type:n.tip, read:!!n.okundu, created_at:n.created_at }));
                 else { console.error('Bildirimler Supabase’den okunamadı:', error.message); listingNotificationsState = []; }
             } else {
                 try { listingNotificationsState = JSON.parse(localStorage.getItem(notificationsStorageKey()) || '[]'); if (!Array.isArray(listingNotificationsState)) listingNotificationsState = []; } catch (_) { listingNotificationsState = []; }
@@ -2086,9 +2086,33 @@
             await loadListingNotifications();
             const list = document.getElementById('listingNotificationsList');
             if (!listingNotificationsState.length) list.innerHTML = '<p class="text-sm text-slate-500 text-center py-8">Henüz favori ilan bildiriminiz yok.</p>';
-            else list.innerHTML = listingNotificationsState.map(n => `<article class="border ${n.read ? 'border-slate-200' : 'border-amber-400 bg-amber-50'} rounded-xl p-3"><p class="text-sm font-bold text-slate-800">${escapeMessageHtml(n.message)}</p><p class="text-xs text-slate-500 mt-1">${n.created_at ? new Date(n.created_at).toLocaleString('tr-TR') : ''}</p></article>`).join('');
+            else list.innerHTML = listingNotificationsState.map(n => {
+                const hasListing = n.listing_id !== null && n.listing_id !== undefined && String(n.listing_id) !== '';
+                return `<article class="border ${n.read ? 'border-slate-200' : 'border-amber-400 bg-amber-50'} rounded-xl p-3">
+                    <button type="button" ${hasListing ? `onclick="openNotificationListing('${String(n.listing_id).replace(/'/g, "\\'")}')"` : 'disabled'} class="block w-full text-left ${hasListing ? 'cursor-pointer hover:text-amber-700' : 'cursor-default'}" title="${hasListing ? 'İlanı ve değişiklikleri görüntüle' : 'İlan bağlantısı bulunmuyor'}">
+                        <span class="block text-sm font-extrabold text-slate-900">${escapeMessageHtml(n.title || 'Favori ilan güncellendi')}</span>
+                        <span class="block text-sm text-slate-700 mt-1">${escapeMessageHtml(n.message || '')}</span>
+                        ${hasListing ? '<span class="inline-block mt-2 text-xs font-bold text-amber-700 underline">İlanı görüntüle →</span>' : ''}
+                    </button>
+                    <p class="text-xs text-slate-500 mt-2">${n.created_at ? new Date(n.created_at).toLocaleString('tr-TR') : ''}</p>
+                </article>`;
+            }).join('');
             const modal = document.getElementById('listingNotificationsModal');
             modal.classList.remove('hidden'); modal.classList.add('flex');
+        }
+        async function openNotificationListing(id) {
+            const listingId = String(id);
+            let item = listingsState.find(x => String(x.id) === listingId);
+            if (!item && typeof loadSupabaseListings === 'function') {
+                try { await loadSupabaseListings(); } catch (err) { console.warn('İlan yüklenemedi:', err); }
+                item = listingsState.find(x => String(x.id) === listingId);
+            }
+            if (!item) {
+                alert('Bu bildirimdeki ilan artık yayında olmayabilir veya yüklenemedi. Ana sayfayı yenileyip tekrar deneyin.');
+                return;
+            }
+            closeListingNotifications();
+            openDetailModal(String(item.id));
         }
         function closeListingNotifications() { const modal = document.getElementById('listingNotificationsModal'); modal.classList.add('hidden'); modal.classList.remove('flex'); }
         async function markListingNotificationsRead() {
