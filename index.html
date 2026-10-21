@@ -582,20 +582,26 @@
                             <h4 class="font-extrabold text-sm text-slate-900">Araç Bilgileri</h4>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <label class="text-xs font-bold text-slate-700">Marka
-                                <input id="vehicleBrand" list="vehicleBrandSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Marka seçin veya yazın" autocomplete="off">
-                                <datalist id="vehicleBrandSuggestions"><option value="Audi"><option value="BMW"><option value="Citroën"><option value="Dacia"><option value="Fiat"><option value="Ford"><option value="Honda"><option value="Hyundai"><option value="Kia"><option value="Mercedes-Benz"><option value="Nissan"><option value="Opel"><option value="Peugeot"><option value="Renault"><option value="Seat"><option value="Skoda"><option value="Toyota"><option value="Volkswagen"><option value="Volvo"><option value="Togg"><option value="Yamaha"><option value="Honda Motosiklet"><option value="Mondial"><option value="Kuba"><option value="Arora"></datalist>
+                            <label class="text-xs font-bold text-slate-700">1. Araç Türü *
+                                <select id="vehicleType" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Araç türü seçin</option><option>Otomobil</option><option>Arazi, SUV & Pickup</option><option>Elektrikli Araçlar</option><option>Motosiklet</option><option>Minivan & Panelvan</option><option>Ticari Araçlar</option><option>Deniz Araçları</option><option>Hasarlı Araçlar</option><option>Karavan</option><option>Klasik Araçlar</option><option>Hava Araçları</option><option>ATV</option><option>UTV</option><option>Engelli Plakalı Araçlar</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">2. Model Yılı *
+                                <select id="vehicleYear" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Yıl seçin</option><option value="2027">2027</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">3. Araç Markası *
+                                <select id="vehicleBrand" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Marka seçin</option><option value="Alfa Romeo">Alfa Romeo</option><option value="Aston Martin">Aston Martin</option><option value="Audi">Audi</option><option value="Bentley">Bentley</option><option value="BMW">BMW</option><option value="Bugatti">Bugatti</option><option value="Cadillac">Cadillac</option><option value="Chevrolet">Chevrolet</option><option value="Citroen">Citroen</option><option value="Dacia">Dacia</option><option value="Dodge">Dodge</option><option value="DS Automobiles">DS Automobiles</option><option value="Ferrari">Ferrari</option><option value="Fiat">Fiat</option><option value="Ford">Ford</option><option value="Honda">Honda</option><option value="Hyundai">Hyundai</option><option value="Infiniti">Infiniti</option><option value="Jaguar">Jaguar</option><option value="Kia">Kia</option><option value="Lamborghini">Lamborghini</option><option value="Lancia">Lancia</option><option value="Lexus">Lexus</option><option value="Lotus">Lotus</option><option value="Maserati">Maserati</option><option value="Maybach">Maybach</option><option value="Mazda">Mazda</option><option value="Mercedes-Benz">Mercedes-Benz</option><option value="Mini">Mini</option><option value="Mitsubishi">Mitsubishi</option><option value="Morgan">Morgan</option><option value="Nissan">Nissan</option><option value="Opel">Opel</option><option value="Peugeot">Peugeot</option><option value="Porsche">Porsche</option><option value="Proton">Proton</option><option value="Renault">Renault</option><option value="Rolls-Royce">Rolls-Royce</option><option value="Seat">Seat</option><option value="Skoda">Skoda</option><option value="Smart">Smart</option><option value="Subaru">Subaru</option><option value="Suzuki">Suzuki</option><option value="Tata">Tata</option><option value="Tesla">Tesla</option><option value="Toyota">Toyota</option><option value="Volkswagen">Volkswagen</option><option value="Volvo">Volvo</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Model *
+                                <select id="vehicleModel" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" disabled><option value="">Önce marka seçin</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Motor / Versiyon
+                                <select id="vehicleEngineVariant" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" disabled><option value="">Önce model seçin</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Paket / Donanım
+                                <select id="vehicleTrim" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Paket seçin</option></select>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Seri
-                                <input id="vehicleSeries" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: 5 Serisi">
-                            </label>
-                            <label class="text-xs font-bold text-slate-700">Model
-                                <input id="vehicleModel" list="vehicleModelSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Model / motor seçin" autocomplete="off">
-                                <datalist id="vehicleModelSuggestions"><option value="Clio 1.0 TCe 90 HP"><option value="Clio 1.5 dCi 90 HP"><option value="Megane 1.3 TCe 140 HP"><option value="Megane 1.5 dCi 110 HP"><option value="Symbol 1.5 dCi 90 HP"><option value="Fluence 1.5 dCi 110 HP"><option value="Egea 1.4 Fire 95 HP"><option value="Egea 1.3 Multijet 95 HP"><option value="Egea 1.6 Multijet 130 HP"><option value="Linea 1.3 Multijet 95 HP"><option value="Focus 1.5 EcoBlue 120 HP"><option value="Focus 1.6 Ti-VCT 125 HP"><option value="Fiesta 1.0 EcoBoost 100 HP"><option value="Civic 1.6 i-VTEC 125 HP"><option value="Civic 1.5 VTEC Turbo 182 HP"><option value="Corolla 1.6 Valvematic 132 HP"><option value="Corolla 1.5 125 HP"><option value="Auris 1.4 D-4D 90 HP"><option value="Passat 1.6 TDI 120 HP"><option value="Passat 2.0 TDI 150 HP"><option value="Golf 1.6 TDI 115 HP"><option value="Golf 1.0 TSI 110 HP"><option value="Polo 1.0 MPI 80 HP"><option value="Polo 1.0 TSI 95 HP"><option value="Astra 1.6 CDTI 136 HP"><option value="Corsa 1.2 75 HP"><option value="i20 1.4 MPI 100 HP"><option value="i20 1.0 T-GDI 100 HP"><option value="Tucson 1.6 T-GDI 177 HP"><option value="Duster 1.5 dCi 110 HP"><option value="Qashqai 1.5 dCi 110 HP"><option value="320i 2.0 184 HP"><option value="520i 2.0 184 HP"><option value="C 200 1.5 184 HP"><option value="Model Y Elektrik 300 HP"></datalist>
-                            </label>
-                            <label class="text-xs font-bold text-slate-700">Yıl
-                                <input id="vehicleYear" type="number" min="1900" max="2027" list="vehicleYearSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Yıl seçin veya yazın">
-                                <datalist id="vehicleYearSuggestions"><option value="2026"><option value="2025"><option value="2024"><option value="2023"><option value="2022"><option value="2021"><option value="2020"><option value="2019"><option value="2018"><option value="2017"><option value="2016"><option value="2015"><option value="2014"><option value="2013"><option value="2012"><option value="2011"><option value="2010"><option value="2009"><option value="2008"><option value="2007"><option value="2006"><option value="2005"><option value="2000"><option value="1995"><option value="1990"></datalist>
+                                <input id="vehicleSeries" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Seri (varsa)">
                             </label>
                             <label class="text-xs font-bold text-slate-700">Yakıt / Motor Tipi
                                 <select id="vehicleFuel" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Benzin</option><option>Dizel</option><option>LPG</option><option>Hibrit</option><option>Elektrik</option></select>
@@ -620,8 +626,7 @@
                                 <select id="vehicleDrive" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Önden Çekiş</option><option>Arkadan İtiş</option><option>4x4</option><option>AWD</option></select>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Renk
-                                <input id="vehicleColor" list="vehicleColorSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Renk seçin veya yazın" autocomplete="off">
-                                <datalist id="vehicleColorSuggestions"><option value="Beyaz"><option value="Siyah"><option value="Gri"><option value="Gümüş Gri"><option value="Füme"><option value="Lacivert"><option value="Mavi"><option value="Kırmızı"><option value="Bordo"><option value="Yeşil"><option value="Kahverengi"><option value="Bej"><option value="Sarı"><option value="Turuncu"><option value="Mor"><option value="İnci Beyazı"><option value="Metalik Gri"></datalist>
+                                <select id="vehicleColor" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Renk seçin</option><option>Beyaz</option><option>İnci Beyazı</option><option>Siyah</option><option>Metalik Siyah</option><option>Gri</option><option>Metalik Gri</option><option>Gümüş Gri</option><option>Füme</option><option>Lacivert</option><option>Mavi</option><option>Kırmızı</option><option>Bordo</option><option>Yeşil</option><option>Kahverengi</option><option>Bej</option><option>Sarı</option><option>Turuncu</option><option>Mor</option><option>Altın</option><option>Diğer</option></select>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Araç Durumu
                                 <select id="vehicleCondition" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>İkinci El</option><option>Sıfır</option></select>
@@ -1575,7 +1580,7 @@
             const vehicleDetails = item.vehicleDetails || decodeVehicleDescription(item.description || '').vehicleDetails;
             if (vehiclePanel && vehicleGrid && vehiclePaint) {
                 if (vehicleDetails && isVehicleCategory(item.category)) {
-                    const detailLabels = {vehicleBrand:'Marka',vehicleSeries:'Seri',vehicleModel:'Model',vehicleYear:'Yıl',vehicleFuel:'Yakıt / Motor Tipi',vehicleGear:'Vites',vehicleKm:'Kilometre',vehicleBody:'Kasa Tipi',vehiclePower:'Motor Gücü (hp)',vehicleEngine:'Motor Hacmi (cc)',vehicleDrive:'Çekiş',vehicleColor:'Renk',vehicleCondition:'Araç Durumu',vehicleWarranty:'Servis Garantisi',vehicleDamage:'Ağır Hasar Kayıtlı',vehiclePlate:'Plaka Durumu',vehicleSellerType:'Kimden',vehicleTrade:'Takas'};
+                    const detailLabels = {vehicleType:'Araç Türü',vehicleBrand:'Marka',vehicleSeries:'Seri',vehicleModel:'Model',vehicleEngineVariant:'Motor / Versiyon',vehicleTrim:'Paket / Donanım',vehicleYear:'Yıl',vehicleFuel:'Yakıt / Motor Tipi',vehicleGear:'Vites',vehicleKm:'Kilometre',vehicleBody:'Kasa Tipi',vehiclePower:'Motor Gücü (hp)',vehicleEngine:'Motor Hacmi (cc)',vehicleDrive:'Çekiş',vehicleColor:'Renk',vehicleCondition:'Araç Durumu',vehicleWarranty:'Servis Garantisi',vehicleDamage:'Ağır Hasar Kayıtlı',vehiclePlate:'Plaka Durumu',vehicleSellerType:'Kimden',vehicleTrade:'Takas'};
                     vehicleGrid.innerHTML = Object.entries(detailLabels).filter(([key]) => vehicleDetails[key]).map(([key,label]) => `<div class="rounded-lg bg-slate-50 border border-slate-200 p-2"><div class="text-slate-500">${label}</div><div class="font-bold text-slate-900 mt-1">${String(vehicleDetails[key])}</div></div>`).join('');
                     const paint=vehicleDetails.paint || {};
                     const painted=Object.keys(paint).filter(k=>paint[k]==='painted');
@@ -1735,7 +1740,7 @@
         const DEFAULT_POST_IMAGE = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80';
 
         const VEHICLE_FIELDS = [
-            ['vehicleBrand','Marka'],['vehicleSeries','Seri'],['vehicleModel','Model'],['vehicleYear','Yıl'],
+            ['vehicleType','Araç Türü'],['vehicleBrand','Marka'],['vehicleSeries','Seri'],['vehicleModel','Model'],['vehicleEngineVariant','Motor / Versiyon'],['vehicleTrim','Paket / Donanım'],['vehicleYear','Yıl'],
             ['vehicleFuel','Yakıt / Motor Tipi'],['vehicleGear','Vites'],['vehicleKm','Kilometre'],['vehicleBody','Kasa Tipi'],
             ['vehiclePower','Motor Gücü (hp)'],['vehicleEngine','Motor Hacmi (cc)'],['vehicleDrive','Çekiş'],['vehicleColor','Renk'],
             ['vehicleCondition','Araç Durumu'],['vehicleWarranty','Servis Garantisi'],['vehicleDamage','Ağır Hasar Kayıtlı'],
@@ -1754,7 +1759,23 @@
             return details;
         }
         function applyVehicleDetails(details = {}) {
-            VEHICLE_FIELDS.forEach(([id]) => { const el=document.getElementById(id); if(el) el.value=details[id] || ''; });
+            // Önce marka/tür/yıl yüklenir; ardından bunlara bağlı modeller ve motorlar hazırlanır.
+            ['vehicleType','vehicleYear','vehicleBrand','vehicleSeries'].forEach(id=>{const el=document.getElementById(id); if(el) el.value=details[id] || '';});
+            updateVehicleModels();
+            const model=document.getElementById('vehicleModel');
+            const savedModel=details.vehicleModel || '';
+            if(model && [...model.options].some(o=>o.value===savedModel)) model.value=savedModel;
+            updateVehicleVariants();
+            const variant=document.getElementById('vehicleEngineVariant');
+            const savedVariant=details.vehicleEngineVariant || '';
+            if(variant && [...variant.options].some(o=>o.value===savedVariant)) variant.value=savedVariant;
+            const trim=document.getElementById('vehicleTrim');
+            if(trim && [...trim.options].some(o=>o.value===details.vehicleTrim)) trim.value=details.vehicleTrim || '';
+            // Kullanıcının daha önce seçtiği diğer ayrıntılar otomatik seçenek yenilemesinden sonra geri yüklenir.
+            VEHICLE_FIELDS.forEach(([id])=>{
+                if(['vehicleType','vehicleYear','vehicleBrand','vehicleSeries','vehicleModel','vehicleEngineVariant','vehicleTrim'].includes(id)) return;
+                const el=document.getElementById(id); if(el) el.value=details[id] || '';
+            });
             vehiclePaintState = details.paint && typeof details.paint === 'object' ? { ...details.paint } : {};
             updatePaintDiagram();
         }
@@ -1798,71 +1819,175 @@
             const panel=document.getElementById('vehicleFields');
             if(panel) panel.classList.toggle('hidden', !isVehicleCategory(document.getElementById('postCategory').value));
         }
-        // Araç girişlerinde öneri ve model adına göre motor bilgisi otomatik doldurma.
-        const VEHICLE_ENGINE_SPECS = [
-            { re:/\b1[.,]0\s*tce\s*90\s*hp/i, cc:999, hp:90 },
-            { re:/\b1[.,]0\s*mpi\s*80\s*hp/i, cc:999, hp:80 },
-            { re:/\b1[.,]0\s*tsi\s*95\s*hp/i, cc:999, hp:95 },
-            { re:/\b1[.,]0\s*(?:tce|ecoboost|t-gdi)\s*100\s*hp/i, cc:999, hp:100 },
-            { re:/\b1[.,]3\s*(?:multijet|tce)\s*95\s*hp/i, cc:1332, hp:95 },
-            { re:/\b1[.,]3\s*tce\s*140\s*hp/i, cc:1332, hp:140 },
-            { re:/\b1[.,]4\s*(?:fire|mpi)\s*95\s*hp/i, cc:1368, hp:95 },
-            { re:/\b1[.,]4\s*(?:mpi|i-vtec)\s*100\s*hp/i, cc:1396, hp:100 },
-            { re:/\b1[.,]4\s*d-?4d\s*90\s*hp/i, cc:1364, hp:90 },
-            { re:/\b1[.,]5\s*(?:dci|ecoblue)\s*110\s*hp/i, cc:1461, hp:110 },
-            { re:/\b1[.,]5\s*dci\s*90\s*hp/i, cc:1461, hp:90 },
-            { re:/\b1[.,]5\s*(?:dci|ecoblue)\s*120\s*hp/i, cc:1499, hp:120 },
-            { re:/\b1[.,]5\s*(?:vtec turbo)\s*182\s*hp/i, cc:1498, hp:182 },
-            { re:/\b1[.,]5\s*125\s*hp/i, cc:1490, hp:125 },
-            { re:/\b1[.,]6\s*(?:multijet)\s*130\s*hp/i, cc:1598, hp:130 },
-            { re:/\b1[.,]6\s*(?:ti-vct|valvematic)\s*132\s*hp/i, cc:1596, hp:132 },
-            { re:/\b1[.,]6\s*(?:ti-vct)\s*125\s*hp/i, cc:1596, hp:125 },
-            { re:/\b1[.,]6\s*(?:i-vtec)\s*125\s*hp/i, cc:1597, hp:125 },
-            { re:/\b1[.,]6\s*cdti\s*136\s*hp/i, cc:1598, hp:136 },
-            { re:/\b1[.,]6\s*tdi\s*115\s*hp/i, cc:1598, hp:115 },
-            { re:/\b1[.,]6\s*tdi\s*120\s*hp/i, cc:1598, hp:120 },
-            { re:/\b2[.,]0\s*tdi\s*150\s*hp/i, cc:1968, hp:150 },
-            { re:/\b2[.,]0\s*184\s*hp/i, cc:1998, hp:184 },
-            { re:/\b1[.,]5\s*\d{2,3}\s*hp/i, cc:1498, hp:null },
-            { re:/\b1[.,]6\s*\d{2,3}\s*hp/i, cc:1598, hp:null },
-            { re:/\b1[.,]3\s*\d{2,3}\s*hp/i, cc:1332, hp:null },
-            { re:/\b1[.,]4\s*\d{2,3}\s*hp/i, cc:1396, hp:null },
-            { re:/\b2[.,]0\s*\d{2,3}\s*hp/i, cc:1998, hp:null }
-        ];
+        // Marka > model > motor/versiyon > yakıt, kasa, vites ve donanım önerileri.
+        // Model ve donanım listeleri yaygın seçenekleri içerir; yıl/pazar farklılıkları olabilir.
+        const VEHICLE_CATALOG = {
+          'Alfa Romeo':['Giulia','Stelvio','Tonale','Giulietta','MiTo','159','156','147'],
+          'Aston Martin':['DB11','DB12','DBX','Vantage','Vanquish','Rapide'],
+          'Audi':['A1','A3','A4','A5','A6','A7','A8','Q2','Q3','Q5','Q7','Q8','TT','e-tron'],
+          'Bentley':['Bentayga','Continental GT','Flying Spur','Mulsanne'],
+          'BMW':['1 Serisi','2 Serisi','3 Serisi','4 Serisi','5 Serisi','6 Serisi','7 Serisi','X1','X2','X3','X4','X5','X6','X7','Z4','i3','i4','iX','iX1'],
+          'Bugatti':['Chiron','Veyron','Divo','Bolide'],
+          'Cadillac':['ATS','CT4','CT5','Escalade','XT4','XT5','XT6'],
+          'Chevrolet':['Aveo','Cruze','Captiva','Spark','Kalos','Camaro','Corvette','Equinox','Trax'],
+          'Citroen':['C1','C3','C3 Aircross','C4','C4 X','C5 Aircross','Berlingo','Jumper','Jumpy'],
+          'Dacia':['Sandero','Logan','Duster','Lodgy','Dokker','Jogger','Spring'],
+          'Dodge':['Challenger','Charger','Durango','Journey','RAM'],
+          'DS Automobiles':['DS 3','DS 4','DS 7','DS 9'],
+          'Ferrari':['296 GTB','Roma','Portofino','F8 Tributo','812 Superfast','Purosangue','SF90'],
+          'Fiat':['Egea','Linea','Punto','Panda','500','500X','Tipo','Doblo','Fiorino','Scudo','Ducato'],
+          'Ford':['Fiesta','Focus','Mondeo','Puma','Kuga','EcoSport','Explorer','Mustang','Ranger','Tourneo Courier','Transit','Transit Custom'],
+          'Honda':['Jazz','Civic','Accord','City','HR-V','CR-V','ZR-V','e:Ny1','Prelude'],
+          'Hyundai':['i10','i20','i30','Accent Blue','Elantra','Bayon','Kona','Tucson','Santa Fe','Staria','IONIQ 5','IONIQ 6'],
+          'Infiniti':['Q30','Q50','QX30','QX50','QX60','QX80'],
+          'Jaguar':['XE','XF','XJ','E-Pace','F-Pace','I-Pace','F-Type'],
+          'Kia':['Picanto','Rio','Ceed','Cerato','Stonic','Niro','Sportage','Sorento','EV3','EV6','EV9'],
+          'Lamborghini':['Huracan','Urus','Revuelto','Aventador','Gallardo'],
+          'Lancia':['Ypsilon','Delta','Thema','Voyager'],
+          'Lexus':['CT','IS','ES','LS','UX','NX','RX','GX','LX','RZ'],
+          'Lotus':['Elise','Exige','Evora','Emira','Eletre','Emeya'],
+          'Maserati':['Ghibli','Quattroporte','Levante','Grecale','GranTurismo','MC20'],
+          'Maybach':['S Serisi Maybach','GLS Maybach','EQS SUV Maybach'],
+          'Mazda':['Mazda2','Mazda3','Mazda6','CX-3','CX-30','CX-5','CX-60','MX-5'],
+          'Mercedes-Benz':['A Serisi','B Serisi','C Serisi','CLA','CLS','E Serisi','S Serisi','GLA','GLB','GLC','GLE','GLS','G Serisi','Vito','Sprinter','EQA','EQB','EQE','EQS'],
+          'Mini':['Cooper','Cooper 5 Kapı','Clubman','Countryman','Paceman','Cabrio','Aceman'],
+          'Mitsubishi':['Space Star','Lancer','ASX','Eclipse Cross','Outlander','L200','Pajero'],
+          'Morgan':['Plus Four','Plus Six','Super 3'],
+          'Nissan':['Micra','Note','Juke','Qashqai','X-Trail','Navara','Pathfinder','Leaf','Townstar'],
+          'Opel':['Corsa','Astra','Insignia','Mokka','Crossland','Grandland','Combo','Vivaro','Movano','Zafira'],
+          'Peugeot':['107','208','2008','301','308','3008','408','508','5008','Partner','Expert','Boxer','Rifter'],
+          'Porsche':['911','718 Cayman','718 Boxster','Panamera','Macan','Cayenne','Taycan'],
+          'Proton':['Gen-2','Persona','Savvy','Waja','X70'],
+          'Renault':['Clio','Megane','Symbol','Fluence','Talisman','Captur','Kadjar','Koleos','Austral','Zoe','Kangoo','Trafic','Master'],
+          'Rolls-Royce':['Ghost','Phantom','Cullinan','Spectre','Wraith','Dawn'],
+          'Seat':['Ibiza','Leon','Toledo','Arona','Ateca','Tarraco','Alhambra'],
+          'Skoda':['Fabia','Octavia','Rapid','Superb','Scala','Kamiq','Karoq','Kodiaq','Yeti','Enyaq'],
+          'Smart':['fortwo','forfour','#1','#3'],
+          'Subaru':['Impreza','Legacy','Forester','Outback','XV','Crosstrek','BRZ','Solterra'],
+          'Suzuki':['Swift','Baleno','Vitara','S-Cross','Jimny','Ignis','SX4','Across'],
+          'Tata':['Indica','Indigo','Vista','Safari','Nexon','Tiago','Xenon'],
+          'Tesla':['Model S','Model 3','Model X','Model Y','Cybertruck'],
+          'Toyota':['Yaris','Corolla','Auris','Avensis','Camry','C-HR','RAV4','Land Cruiser','Hilux','Proace','Prius','bZ4X'],
+          'Volkswagen':['Polo','Golf','Jetta','Passat','Arteon','T-Roc','T-Cross','Tiguan','Touareg','ID.3','ID.4','Caddy','Transporter','Crafter'],
+          'Volvo':['S40','S60','S80','S90','V40','V60','V90','XC40','XC60','XC90','EX30','EX90']
+        };
+        const VEHICLE_VARIANTS = {
+          'Skoda': {
+            'Fabia':['1.0 MPI 75 HP','1.0 TSI 95 HP','1.0 TSI 110 HP','1.2 TSI 90 HP','1.4 TDI 90 HP'],
+            'Octavia':['1.0 TSI 115 HP','1.4 TSI 150 HP','1.5 TSI 150 HP','1.6 TDI 105 HP','1.6 TDI 115 HP','2.0 TDI 150 HP','2.0 TDI 184 HP'],
+            'Rapid':['1.0 TSI 110 HP','1.2 TSI 105 HP','1.4 TDI 90 HP','1.6 TDI 115 HP'],
+            'Superb':['1.4 TSI 150 HP','1.5 TSI 150 HP','1.6 TDI 120 HP','2.0 TDI 150 HP','2.0 TDI 190 HP','2.0 TSI 280 HP']
+          },
+          'Renault': {'Clio':['1.0 SCe 65 HP','1.0 TCe 90 HP','1.0 TCe 100 HP','1.5 dCi 75 HP','1.5 dCi 90 HP'],'Megane':['1.3 TCe 140 HP','1.3 TCe 160 HP','1.5 dCi 110 HP','1.5 Blue dCi 115 HP','1.6 16V 115 HP'],'Symbol':['1.2 16V 75 HP','1.5 dCi 75 HP','1.5 dCi 90 HP'],'Fluence':['1.6 110 HP','1.5 dCi 90 HP','1.5 dCi 110 HP']},
+          'Fiat': {'Egea':['1.4 Fire 95 HP','1.3 Multijet 95 HP','1.6 Multijet 120 HP','1.6 Multijet 130 HP','1.0 Firefly 100 HP'],'Linea':['1.4 Fire 77 HP','1.3 Multijet 95 HP'],'Doblo':['1.3 Multijet 90 HP','1.6 Multijet 105 HP','1.6 Multijet 120 HP']},
+          'Volkswagen': {'Polo':['1.0 MPI 80 HP','1.0 TSI 95 HP','1.0 TSI 110 HP','1.4 TDI 90 HP'],'Golf':['1.0 TSI 110 HP','1.5 TSI 130 HP','1.5 TSI 150 HP','1.6 TDI 115 HP','2.0 TDI 150 HP'],'Passat':['1.4 TSI 150 HP','1.5 TSI 150 HP','1.6 TDI 120 HP','2.0 TDI 150 HP','2.0 TDI 190 HP']},
+          'BMW': {'1 Serisi':['116i 1.5 109 HP','118i 1.5 136 HP','120i 2.0 184 HP','116d 1.5 116 HP'],'3 Serisi':['320i 2.0 184 HP','320d 2.0 190 HP','330i 2.0 258 HP'],'5 Serisi':['520i 2.0 184 HP','520d 2.0 190 HP','530i 2.0 252 HP']},
+          'Mercedes-Benz': {'A Serisi':['A 180 1.3 136 HP','A 200 1.3 163 HP','A 180 d 1.5 116 HP'],'C Serisi':['C 180 1.6 156 HP','C 200 1.5 184 HP','C 220 d 2.0 194 HP'],'E Serisi':['E 200 2.0 184 HP','E 220 d 2.0 194 HP']},
+          'Toyota': {'Corolla':['1.33 99 HP','1.6 Valvematic 132 HP','1.5 125 HP','1.8 Hybrid 122 HP'],'Yaris':['1.0 69 HP','1.5 111 HP','1.5 Hybrid 116 HP'],'Auris':['1.33 99 HP','1.6 132 HP','1.4 D-4D 90 HP','1.8 Hybrid 136 HP']},
+          'Ford': {'Focus':['1.0 EcoBoost 125 HP','1.5 EcoBlue 120 HP','1.6 Ti-VCT 125 HP','1.5 EcoBoost 182 HP'],'Fiesta':['1.0 EcoBoost 100 HP','1.1 Ti-VCT 75 HP','1.5 TDCi 85 HP']},
+          'Honda': {'Civic':['1.6 i-VTEC 125 HP','1.5 VTEC Turbo 182 HP','1.6 i-DTEC 120 HP','2.0 e:HEV 184 HP'],'CR-V':['1.5 VTEC Turbo 193 HP','2.0 Hybrid 184 HP']},
+          'Audi': {'A3':['1.0 TFSI 110 HP','1.5 TFSI 150 HP','1.6 TDI 116 HP','2.0 TDI 150 HP'],'A4':['1.4 TFSI 150 HP','2.0 TDI 150 HP','2.0 TFSI 190 HP'],'Q5':['2.0 TDI 190 HP','2.0 TFSI 252 HP']},
+          'Tesla': {'Model 3':['Elektrik 283 HP','Long Range Elektrik 498 HP','Performance Elektrik 510 HP'],'Model Y':['Elektrik 299 HP','Long Range Elektrik 384 HP','Performance Elektrik 534 HP'],'Model S':['Long Range Elektrik 670 HP','Plaid Elektrik 1020 HP'],'Model X':['Elektrik 670 HP','Plaid Elektrik 1020 HP']}
+        };
+        const VEHICLE_TRIMS = {
+          'Skoda':['Active','Ambiente','Ambition','Elegance','Elegance CR','Optimal','Style','Style CR','Sportline','L&K','Monte Carlo'],
+          'Volkswagen':['Trendline','Comfortline','Highline','Midline Plus','Life','Style','R-Line','Elegance','GTI','GTE'],
+          'Renault':['Joy','Touch','Icon','Icon Touch','Authentique','Expression','Privilege','Business','Evolution','Techno','Esprit Alpine'],
+          'Fiat':['Easy','Urban','Lounge','Pop','Street','Mirror','Cross','Limited','Easy Plus'],
+          'BMW':['Joy','Sport Line','Luxury Line','M Sport','M Performance','Executive'],
+          'Mercedes-Benz':['Style','Progressive','AMG','AMG Line','Avantgarde','Exclusive','Edition'],
+          'Toyota':['Life','Dream','Flame','Passion','Passion X-Pack','Vision','Advance','Premium'],
+          'Ford':['Trend','Titanium','ST-Line','Active','Vignale','Style'],
+          'Audi':['Attraction','Ambition','Design','Advanced','S line','Sport','Business'],
+          'Honda':['Dream','Elegance','Executive','Premium','Sport','Advance'],
+          'default':['Base','Comfort','Comfort Plus','Premium','Luxury','Sport','Limited','Style','Business','Active','Elegance']
+        };
+        function fillSelect(id, values, placeholder) {
+          const el=document.getElementById(id); if(!el) return;
+          const old=el.value;
+          el.innerHTML=`<option value="">${placeholder}</option>`+values.map(v=>`<option value="${String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}">${String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</option>`).join('');
+          if(values.includes(old)) el.value=old;
+        }
+        function getVehicleModels(brand) { return VEHICLE_CATALOG[brand] || []; }
+        function getVehicleVariants(brand, model) {
+          const specific=VEHICLE_VARIANTS[brand] && VEHICLE_VARIANTS[brand][model];
+          if(specific) return specific;
+          if(brand==='Tesla' || ['Elektrikli Araçlar'].includes(document.getElementById('vehicleType')?.value)) return ['Elektrik 150 HP','Elektrik 204 HP','Elektrik 250 HP','Elektrik 300 HP'];
+          return ['1.0 Benzin 70 HP','1.2 Benzin 80 HP','1.4 Benzin 100 HP','1.5 Dizel 90 HP','1.5 Dizel 110 HP','1.6 Dizel 120 HP','2.0 Dizel 150 HP'];
+        }
+        function updateVehicleModels(preserve=false) {
+          const brand=document.getElementById('vehicleBrand')?.value || '';
+          const model=document.getElementById('vehicleModel');
+          if(!model) return;
+          fillSelect('vehicleModel', brand ? getVehicleModels(brand) : [], brand ? 'Model seçin' : 'Önce marka seçin');
+          model.disabled=!brand;
+          if(preserve && model.dataset.savedValue && getVehicleModels(brand).includes(model.dataset.savedValue)) model.value=model.dataset.savedValue;
+          updateVehicleVariants();
+          fillSelect('vehicleTrim', VEHICLE_TRIMS[brand] || VEHICLE_TRIMS.default, 'Paket seçin');
+        }
+        function updateVehicleVariants(preserve=false) {
+          const brand=document.getElementById('vehicleBrand')?.value || '';
+          const model=document.getElementById('vehicleModel')?.value || '';
+          const variants=getVehicleVariants(brand,model);
+          fillSelect('vehicleEngineVariant', model ? variants : [], model ? 'Motor / versiyon seçin' : 'Önce model seçin');
+          const variant=document.getElementById('vehicleEngineVariant'); if(variant) variant.disabled=!model;
+          const fuel=document.getElementById('vehicleFuel');
+          if(fuel) { fuel.value=''; }
+          ['vehicleEngine','vehiclePower'].forEach(id=>{const el=document.getElementById(id); if(el){el.value=''; delete el.dataset.userEdited;}});
+          const body=document.getElementById('vehicleBody');
+          if(body) {
+            let bodyOptions=['Sedan','Hatchback 5 kapı','Station Wagon 5 kapı','SUV','Coupe','Cabrio','Pickup','Minivan','Motosiklet','Diğer'];
+            if(/SUV|X[1-7]|Q[2-8]|Tucson|Duster|Qashqai|Sportage|RAV4|Kodiaq|Karoq|Tiguan|Kuga|Duster|Urus|Cayenne|Macan/i.test(model)) bodyOptions=['SUV','Station Wagon 5 kapı','Pickup','Diğer'];
+            else if(/Tourneo|Transit|Vito|Sprinter|Doblo|Fiorino|Berlingo|Jumper|Partner|Expert|Boxer|Kangoo|Trafic|Master|Caddy|Transporter|Crafter|Proace|Jumpy|Vivaro|Movano/i.test(model)) bodyOptions=['Minivan','Panelvan','Van','Pickup','Diğer'];
+            else if(/ATV|UTV|Motosiklet/i.test(document.getElementById('vehicleType')?.value || '')) bodyOptions=['Motosiklet','ATV','UTV','Diğer'];
+            fillSelect('vehicleBody',bodyOptions,'Kasa tipi seçin');
+            if(bodyOptions.length===1) body.value=bodyOptions[0];
+          }
+          const gear=document.getElementById('vehicleGear');
+          if(gear) {
+            let gears=['Manuel','Otomatik','Yarı Otomatik'];
+            if(/Tesla|Elektrik|EQA|EQB|EQE|EQS|IONIQ|EV[369]|Taycan|e-tron|i4|iX|Zoe|Spring|bZ4X|Solterra/i.test(brand+' '+model)) gears=['Otomatik'];
+            fillSelect('vehicleGear',gears,'Vites seçin');
+          }
+          autoFillVehicleSpecs();
+        }
         function autoFillVehicleSpecs() {
-            const model = document.getElementById('vehicleModel');
-            const power = document.getElementById('vehiclePower');
-            const engine = document.getElementById('vehicleEngine');
-            if (!model || !power || !engine) return;
-            const text = model.value.trim().toLocaleLowerCase('tr-TR');
-            if (!text) return;
-            const spec = VEHICLE_ENGINE_SPECS.find(item => item.re.test(text));
-            if (spec) {
-                if (spec.cc && !engine.dataset.userEdited) engine.value = spec.cc;
-                if (spec.hp && !power.dataset.userEdited) power.value = spec.hp;
-                return;
-            }
-            // Model adında 1.5 / 1.6 gibi hacim ve 110 HP gibi güç yazıyorsa yaklaşık hacmi çıkar.
-            const displacement = text.match(/\b(0?[.,]?[89]|[1-8][.,][0-9])\b/);
-            const hpMatch = text.match(/\b(\d{2,3})\s*(?:hp|bg)\b/i);
-            if (displacement && !engine.dataset.userEdited) {
-                const litres = Number(displacement[1].replace(',', '.'));
-                if (litres > 0.5) engine.value = Math.round(litres * 1000);
-            }
-            if (hpMatch && !power.dataset.userEdited) power.value = hpMatch[1];
+          const variant=document.getElementById('vehicleEngineVariant');
+          const model=document.getElementById('vehicleModel');
+          const engine=document.getElementById('vehicleEngine');
+          const power=document.getElementById('vehiclePower');
+          const fuel=document.getElementById('vehicleFuel');
+          if(!variant || !engine || !power) return;
+          const text=(variant.value || '').toLocaleLowerCase('tr-TR');
+          if(!text) return;
+          const hp=text.match(/(\d{2,4})\s*hp/i);
+          const displacement=text.match(/\b(0?[.,]?[89]|[1-8][.,][0-9])\b/);
+          if(displacement && !engine.dataset.userEdited) engine.value=Math.round(Number(displacement[1].replace(',','.'))*1000);
+          if(/elektrik/.test(text)) { if(!engine.dataset.userEdited) engine.value=0; if(fuel) fuel.value='Elektrik'; }
+          else if(/dizel|tdi|dci|multijet|ecoblue|tdci|diesel|d-4d/.test(text)) { if(fuel) fuel.value='Dizel'; }
+          else if(/hibrit|hybrid|e:hev/.test(text)) { if(fuel) fuel.value='Hibrit'; }
+          else if(/benzin|tce|tsi|tfs i|tfs/i.test(text)) { if(fuel) fuel.value='Benzin'; }
+          if(hp && !power.dataset.userEdited) power.value=hp[1];
+        }
+        function setVehicleFieldsVisibility() {
+          const panel=document.getElementById('vehicleFields');
+          if(panel) panel.classList.toggle('hidden', !isVehicleCategory(document.getElementById('postCategory').value));
         }
         document.addEventListener('DOMContentLoaded', () => {
-            const category=document.getElementById('postCategory');
-            if(category) category.addEventListener('change', setVehicleFieldsVisibility);
-            const model=document.getElementById('vehicleModel');
-            const brand=document.getElementById('vehicleBrand');
-            const engine=document.getElementById('vehicleEngine');
-            const power=document.getElementById('vehiclePower');
-            if(model) { model.addEventListener('change', autoFillVehicleSpecs); model.addEventListener('input', autoFillVehicleSpecs); }
-            if(brand) brand.addEventListener('change', () => { if(model && model.value) autoFillVehicleSpecs(); });
-            [engine,power].forEach(el => { if(el) el.addEventListener('input', () => { el.dataset.userEdited='1'; }); });
-            [engine,power].forEach(el => { if(el) el.addEventListener('change', () => { el.dataset.userEdited='1'; }); });
-            setVehicleFieldsVisibility();
+          const category=document.getElementById('postCategory'); if(category) category.addEventListener('change',setVehicleFieldsVisibility);
+          const brand=document.getElementById('vehicleBrand'); const model=document.getElementById('vehicleModel'); const variant=document.getElementById('vehicleEngineVariant');
+          if(brand) brand.addEventListener('change',()=>updateVehicleModels());
+          if(model) model.addEventListener('change',()=>updateVehicleVariants());
+          if(variant) variant.addEventListener('change',autoFillVehicleSpecs);
+          ['vehicleEngine','vehiclePower'].forEach(id=>{const el=document.getElementById(id); if(el) {el.addEventListener('input',()=>el.dataset.userEdited='1'); el.addEventListener('change',()=>el.dataset.userEdited='1');}});
+          const type=document.getElementById('vehicleType');
+          if(type) type.addEventListener('change',()=>{
+            const body=document.getElementById('vehicleBody');
+            if(body && type.value==='Motosiklet') body.value='Motosiklet';
+            else if(body && type.value==='Arazi, SUV & Pickup') body.value='SUV';
+            else if(body && type.value==='Minivan & Panelvan') body.value='Minivan';
+          });
+          setVehicleFieldsVisibility(); updateVehicleModels();
         });
         function encodeVehicleDescription(description, vehicleDetails) {
             const clean = String(description || '').replace(/\n?\[\[VEHICLE_META:[\s\S]*?\]\]\s*$/,'').trim();
