@@ -2155,19 +2155,30 @@
                 container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Henüz favori ilanınız bulunmuyor.</p>';
             } else {
                 container.innerHTML = favItems.map(item => `
-                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                        <div class="flex items-center space-x-3 truncate">
-                            <img src="${item.images[0]}" class="w-12 h-10 object-cover rounded">
+                    <div onclick="openFavoriteListing('${String(item.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openFavoriteListing('${String(item.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')}" class="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-amber-50 transition">
+                        <div class="flex items-center space-x-3 truncate min-w-0">
+                            <img src="${item.images && item.images[0] ? item.images[0] : ''}" alt="${item.title}" class="w-12 h-10 object-cover rounded shrink-0">
                             <div class="truncate">
-                                <h5 class="font-bold text-xs text-slate-900 truncate">${item.title}</h5>
-                                <div class="text-[10px] text-amber-600 font-bold">${item.price.toLocaleString('tr-TR')} TL</div>
+                                <h5 class="font-bold text-xs text-slate-900 truncate hover:text-amber-700">${item.title}</h5>
+                                <div class="text-[10px] text-amber-600 font-bold">${Number(item.price || 0).toLocaleString('tr-TR')} TL</div>
                             </div>
                         </div>
-                        <button onclick="toggleFavorite(${item.id}).then(() => openFavoritesModal());" class="text-red-500 text-xs px-2 py-1 font-bold">Kaldır</button>
+                        <button onclick="event.stopPropagation(); toggleFavorite(${item.id}).then(() => openFavoritesModal());" class="text-red-500 text-xs px-2 py-1 font-bold shrink-0">Kaldır</button>
                     </div>
                 `).join('');
             }
             document.getElementById('favoritesModal').classList.remove('hidden');
+        }
+
+        function openFavoriteListing(id) {
+            // Favori penceresini kapatıp seçilen ilanın detayını aç.
+            closeFavoritesModal();
+            const item = listingsState.find(x => String(x.id) === String(id));
+            if (item) {
+                openDetailModal(item.id);
+            } else {
+                alert('Bu ilan artık yayında olmayabilir veya ilan listesine yüklenemedi.');
+            }
         }
 
         function closeFavoritesModal() {
