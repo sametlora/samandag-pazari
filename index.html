@@ -583,16 +583,19 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <label class="text-xs font-bold text-slate-700">Marka
-                                <input id="vehicleBrand" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: BMW">
+                                <input id="vehicleBrand" list="vehicleBrandSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Marka seçin veya yazın" autocomplete="off">
+                                <datalist id="vehicleBrandSuggestions"><option value="Audi"><option value="BMW"><option value="Citroën"><option value="Dacia"><option value="Fiat"><option value="Ford"><option value="Honda"><option value="Hyundai"><option value="Kia"><option value="Mercedes-Benz"><option value="Nissan"><option value="Opel"><option value="Peugeot"><option value="Renault"><option value="Seat"><option value="Skoda"><option value="Toyota"><option value="Volkswagen"><option value="Volvo"><option value="Togg"><option value="Yamaha"><option value="Honda Motosiklet"><option value="Mondial"><option value="Kuba"><option value="Arora"></datalist>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Seri
                                 <input id="vehicleSeries" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: 5 Serisi">
                             </label>
                             <label class="text-xs font-bold text-slate-700">Model
-                                <input id="vehicleModel" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: 520i Prestige">
+                                <input id="vehicleModel" list="vehicleModelSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Model / motor seçin" autocomplete="off">
+                                <datalist id="vehicleModelSuggestions"><option value="Clio 1.0 TCe 90 HP"><option value="Clio 1.5 dCi 90 HP"><option value="Megane 1.3 TCe 140 HP"><option value="Megane 1.5 dCi 110 HP"><option value="Symbol 1.5 dCi 90 HP"><option value="Fluence 1.5 dCi 110 HP"><option value="Egea 1.4 Fire 95 HP"><option value="Egea 1.3 Multijet 95 HP"><option value="Egea 1.6 Multijet 130 HP"><option value="Linea 1.3 Multijet 95 HP"><option value="Focus 1.5 EcoBlue 120 HP"><option value="Focus 1.6 Ti-VCT 125 HP"><option value="Fiesta 1.0 EcoBoost 100 HP"><option value="Civic 1.6 i-VTEC 125 HP"><option value="Civic 1.5 VTEC Turbo 182 HP"><option value="Corolla 1.6 Valvematic 132 HP"><option value="Corolla 1.5 125 HP"><option value="Auris 1.4 D-4D 90 HP"><option value="Passat 1.6 TDI 120 HP"><option value="Passat 2.0 TDI 150 HP"><option value="Golf 1.6 TDI 115 HP"><option value="Golf 1.0 TSI 110 HP"><option value="Polo 1.0 MPI 80 HP"><option value="Polo 1.0 TSI 95 HP"><option value="Astra 1.6 CDTI 136 HP"><option value="Corsa 1.2 75 HP"><option value="i20 1.4 MPI 100 HP"><option value="i20 1.0 T-GDI 100 HP"><option value="Tucson 1.6 T-GDI 177 HP"><option value="Duster 1.5 dCi 110 HP"><option value="Qashqai 1.5 dCi 110 HP"><option value="320i 2.0 184 HP"><option value="520i 2.0 184 HP"><option value="C 200 1.5 184 HP"><option value="Model Y Elektrik 300 HP"></datalist>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Yıl
-                                <input id="vehicleYear" type="number" min="1900" max="2100" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="2017">
+                                <input id="vehicleYear" type="number" min="1900" max="2027" list="vehicleYearSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Yıl seçin veya yazın">
+                                <datalist id="vehicleYearSuggestions"><option value="2026"><option value="2025"><option value="2024"><option value="2023"><option value="2022"><option value="2021"><option value="2020"><option value="2019"><option value="2018"><option value="2017"><option value="2016"><option value="2015"><option value="2014"><option value="2013"><option value="2012"><option value="2011"><option value="2010"><option value="2009"><option value="2008"><option value="2007"><option value="2006"><option value="2005"><option value="2000"><option value="1995"><option value="1990"></datalist>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Yakıt / Motor Tipi
                                 <select id="vehicleFuel" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Benzin</option><option>Dizel</option><option>LPG</option><option>Hibrit</option><option>Elektrik</option></select>
@@ -607,16 +610,18 @@
                                 <select id="vehicleBody" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Sedan</option><option>Hatchback</option><option>Station Wagon</option><option>SUV</option><option>Coupe</option><option>Cabrio</option><option>Pickup</option><option>Minivan</option><option>Motosiklet</option><option>Diğer</option></select>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Motor Gücü (hp)
-                                <input id="vehiclePower" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="170">
+                                <input id="vehiclePower" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Modelden otomatik doldurulur">
                             </label>
                             <label class="text-xs font-bold text-slate-700">Motor Hacmi (cc)
-                                <input id="vehicleEngine" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="1597">
+                                <input id="vehicleEngine" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Modelden otomatik doldurulur">
                             </label>
+                            <p class="sm:col-span-2 text-[11px] text-slate-500 -mt-1">Marka ve motor bilgisi bilinen bir model seçtiğinizde motor hacmi ve gücü otomatik doldurulur. Donanım/yıla göre farklılık varsa kontrol edip düzeltebilirsiniz.</p>
                             <label class="text-xs font-bold text-slate-700">Çekiş
                                 <select id="vehicleDrive" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Önden Çekiş</option><option>Arkadan İtiş</option><option>4x4</option><option>AWD</option></select>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Renk
-                                <input id="vehicleColor" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Gri">
+                                <input id="vehicleColor" list="vehicleColorSuggestions" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Renk seçin veya yazın" autocomplete="off">
+                                <datalist id="vehicleColorSuggestions"><option value="Beyaz"><option value="Siyah"><option value="Gri"><option value="Gümüş Gri"><option value="Füme"><option value="Lacivert"><option value="Mavi"><option value="Kırmızı"><option value="Bordo"><option value="Yeşil"><option value="Kahverengi"><option value="Bej"><option value="Sarı"><option value="Turuncu"><option value="Mor"><option value="İnci Beyazı"><option value="Metalik Gri"></datalist>
                             </label>
                             <label class="text-xs font-bold text-slate-700">Araç Durumu
                                 <select id="vehicleCondition" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>İkinci El</option><option>Sıfır</option></select>
@@ -1793,9 +1798,71 @@
             const panel=document.getElementById('vehicleFields');
             if(panel) panel.classList.toggle('hidden', !isVehicleCategory(document.getElementById('postCategory').value));
         }
+        // Araç girişlerinde öneri ve model adına göre motor bilgisi otomatik doldurma.
+        const VEHICLE_ENGINE_SPECS = [
+            { re:/\b1[.,]0\s*tce\s*90\s*hp/i, cc:999, hp:90 },
+            { re:/\b1[.,]0\s*mpi\s*80\s*hp/i, cc:999, hp:80 },
+            { re:/\b1[.,]0\s*tsi\s*95\s*hp/i, cc:999, hp:95 },
+            { re:/\b1[.,]0\s*(?:tce|ecoboost|t-gdi)\s*100\s*hp/i, cc:999, hp:100 },
+            { re:/\b1[.,]3\s*(?:multijet|tce)\s*95\s*hp/i, cc:1332, hp:95 },
+            { re:/\b1[.,]3\s*tce\s*140\s*hp/i, cc:1332, hp:140 },
+            { re:/\b1[.,]4\s*(?:fire|mpi)\s*95\s*hp/i, cc:1368, hp:95 },
+            { re:/\b1[.,]4\s*(?:mpi|i-vtec)\s*100\s*hp/i, cc:1396, hp:100 },
+            { re:/\b1[.,]4\s*d-?4d\s*90\s*hp/i, cc:1364, hp:90 },
+            { re:/\b1[.,]5\s*(?:dci|ecoblue)\s*110\s*hp/i, cc:1461, hp:110 },
+            { re:/\b1[.,]5\s*dci\s*90\s*hp/i, cc:1461, hp:90 },
+            { re:/\b1[.,]5\s*(?:dci|ecoblue)\s*120\s*hp/i, cc:1499, hp:120 },
+            { re:/\b1[.,]5\s*(?:vtec turbo)\s*182\s*hp/i, cc:1498, hp:182 },
+            { re:/\b1[.,]5\s*125\s*hp/i, cc:1490, hp:125 },
+            { re:/\b1[.,]6\s*(?:multijet)\s*130\s*hp/i, cc:1598, hp:130 },
+            { re:/\b1[.,]6\s*(?:ti-vct|valvematic)\s*132\s*hp/i, cc:1596, hp:132 },
+            { re:/\b1[.,]6\s*(?:ti-vct)\s*125\s*hp/i, cc:1596, hp:125 },
+            { re:/\b1[.,]6\s*(?:i-vtec)\s*125\s*hp/i, cc:1597, hp:125 },
+            { re:/\b1[.,]6\s*cdti\s*136\s*hp/i, cc:1598, hp:136 },
+            { re:/\b1[.,]6\s*tdi\s*115\s*hp/i, cc:1598, hp:115 },
+            { re:/\b1[.,]6\s*tdi\s*120\s*hp/i, cc:1598, hp:120 },
+            { re:/\b2[.,]0\s*tdi\s*150\s*hp/i, cc:1968, hp:150 },
+            { re:/\b2[.,]0\s*184\s*hp/i, cc:1998, hp:184 },
+            { re:/\b1[.,]5\s*\d{2,3}\s*hp/i, cc:1498, hp:null },
+            { re:/\b1[.,]6\s*\d{2,3}\s*hp/i, cc:1598, hp:null },
+            { re:/\b1[.,]3\s*\d{2,3}\s*hp/i, cc:1332, hp:null },
+            { re:/\b1[.,]4\s*\d{2,3}\s*hp/i, cc:1396, hp:null },
+            { re:/\b2[.,]0\s*\d{2,3}\s*hp/i, cc:1998, hp:null }
+        ];
+        function autoFillVehicleSpecs() {
+            const model = document.getElementById('vehicleModel');
+            const power = document.getElementById('vehiclePower');
+            const engine = document.getElementById('vehicleEngine');
+            if (!model || !power || !engine) return;
+            const text = model.value.trim().toLocaleLowerCase('tr-TR');
+            if (!text) return;
+            const spec = VEHICLE_ENGINE_SPECS.find(item => item.re.test(text));
+            if (spec) {
+                if (spec.cc && !engine.dataset.userEdited) engine.value = spec.cc;
+                if (spec.hp && !power.dataset.userEdited) power.value = spec.hp;
+                return;
+            }
+            // Model adında 1.5 / 1.6 gibi hacim ve 110 HP gibi güç yazıyorsa yaklaşık hacmi çıkar.
+            const displacement = text.match(/\b(0?[.,]?[89]|[1-8][.,][0-9])\b/);
+            const hpMatch = text.match(/\b(\d{2,3})\s*(?:hp|bg)\b/i);
+            if (displacement && !engine.dataset.userEdited) {
+                const litres = Number(displacement[1].replace(',', '.'));
+                if (litres > 0.5) engine.value = Math.round(litres * 1000);
+            }
+            if (hpMatch && !power.dataset.userEdited) power.value = hpMatch[1];
+        }
         document.addEventListener('DOMContentLoaded', () => {
             const category=document.getElementById('postCategory');
             if(category) category.addEventListener('change', setVehicleFieldsVisibility);
+            const model=document.getElementById('vehicleModel');
+            const brand=document.getElementById('vehicleBrand');
+            const engine=document.getElementById('vehicleEngine');
+            const power=document.getElementById('vehiclePower');
+            if(model) { model.addEventListener('change', autoFillVehicleSpecs); model.addEventListener('input', autoFillVehicleSpecs); }
+            if(brand) brand.addEventListener('change', () => { if(model && model.value) autoFillVehicleSpecs(); });
+            [engine,power].forEach(el => { if(el) el.addEventListener('input', () => { el.dataset.userEdited='1'; }); });
+            [engine,power].forEach(el => { if(el) el.addEventListener('change', () => { el.dataset.userEdited='1'; }); });
+            setVehicleFieldsVisibility();
         });
         function encodeVehicleDescription(description, vehicleDetails) {
             const clean = String(description || '').replace(/\n?\[\[VEHICLE_META:[\s\S]*?\]\]\s*$/,'').trim();
