@@ -98,6 +98,9 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        .paint-part { border:1px solid #cbd5e1; background:#e2e8f0; color:#334155; border-radius:8px; padding:10px 8px; font-size:11px; font-weight:800; transition:all .15s; }
+        .paint-part[data-state="painted"] { background:#facc15; border-color:#ca8a04; color:#422006; }
+        .paint-part[data-state="replaced"] { background:#dc2626; border-color:#991b1b; color:#fff; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
@@ -449,6 +452,11 @@
                         İlan açıklaması burada yer alır...
                     </p>
                 </div>
+                <div id="modalVehicleDetails" class="hidden bg-white rounded-xl p-5 border border-amber-200 space-y-3">
+                    <h3 class="font-extrabold text-sm text-slate-900 border-b border-amber-200 pb-2"><i class="fa-solid fa-car-side text-amber-500 mr-2"></i>Araç Teknik Bilgileri</h3>
+                    <div id="modalVehicleDetailsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs"></div>
+                    <div id="modalVehiclePaint" class="text-xs"></div>
+                </div>
 
             </div>
         </div>
@@ -565,6 +573,142 @@
                             <option value="İkinci El">İkinci El</option>
                             <option value="Sıfır">Sıfır</option>
                         </select>
+                    </div>
+
+                    <!-- VASITA DETAYLARI: yalnızca Vasıta kategorisinde gösterilir -->
+                    <div id="vehicleFields" class="sm:col-span-2 hidden rounded-xl border border-amber-300 bg-amber-50/50 p-4 space-y-4">
+                        <div class="flex items-center gap-2 border-b border-amber-200 pb-2">
+                            <i class="fa-solid fa-car-side text-amber-600"></i>
+                            <h4 class="font-extrabold text-sm text-slate-900">Araç Bilgileri</h4>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="text-xs font-bold text-slate-700">Marka
+                                <input id="vehicleBrand" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: BMW">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Seri
+                                <input id="vehicleSeries" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: 5 Serisi">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Model
+                                <input id="vehicleModel" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Örn: 520i Prestige">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Yıl
+                                <input id="vehicleYear" type="number" min="1900" max="2100" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="2017">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Yakıt / Motor Tipi
+                                <select id="vehicleFuel" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Benzin</option><option>Dizel</option><option>LPG</option><option>Hibrit</option><option>Elektrik</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Vites
+                                <select id="vehicleGear" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Manuel</option><option>Otomatik</option><option>Yarı Otomatik</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Kilometre
+                                <input id="vehicleKm" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="229000">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Kasa Tipi
+                                <select id="vehicleBody" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Sedan</option><option>Hatchback</option><option>Station Wagon</option><option>SUV</option><option>Coupe</option><option>Cabrio</option><option>Pickup</option><option>Minivan</option><option>Motosiklet</option><option>Diğer</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Motor Gücü (hp)
+                                <input id="vehiclePower" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="170">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Motor Hacmi (cc)
+                                <input id="vehicleEngine" type="number" min="0" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="1597">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Çekiş
+                                <select id="vehicleDrive" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Önden Çekiş</option><option>Arkadan İtiş</option><option>4x4</option><option>AWD</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Renk
+                                <input id="vehicleColor" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs" placeholder="Gri">
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Araç Durumu
+                                <select id="vehicleCondition" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>İkinci El</option><option>Sıfır</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Servis Garantisi
+                                <select id="vehicleWarranty" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Var</option><option>Yok</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Ağır Hasar Kayıtlı
+                                <select id="vehicleDamage" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Hayır</option><option>Evet</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Plaka Durumu
+                                <select id="vehiclePlate" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Türkiye (TR) Plakalı</option><option>Yabancı Plakalı</option><option>Plakasız</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Kimden
+                                <select id="vehicleSellerType" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Sahibinden</option><option>Galeriden</option></select>
+                            </label>
+                            <label class="text-xs font-bold text-slate-700">Takas
+                                <select id="vehicleTrade" class="vehicle-input mt-1 w-full rounded-lg border border-slate-300 bg-white p-2 text-xs"><option value="">Seçiniz</option><option>Hayır</option><option>Evet</option></select>
+                            </label>
+                        </div>
+                        <div class="border-t border-amber-200 pt-3">
+                            <div class="font-extrabold text-xs text-slate-800 mb-1">Boya ve Değişen Durumu</div>
+                            <p class="text-[11px] text-slate-600 mb-3">Araç üzerindeki parçaya dokunun, sonra durumunu seçin. Sarı = Boyalı, kırmızı = Değişen, gri = Temiz / işaret yok.</p>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <button type="button" onclick="setPaintMode('painted')" id="paintModePainted" class="rounded-lg bg-amber-400 text-slate-950 px-3 py-2 text-xs font-extrabold ring-2 ring-amber-600">Boyalı</button>
+                                <button type="button" onclick="setPaintMode('replaced')" id="paintModeReplaced" class="rounded-lg bg-red-600 text-white px-3 py-2 text-xs font-extrabold">Değişen</button>
+                                <button type="button" onclick="setPaintMode('clean')" id="paintModeClean" class="rounded-lg bg-slate-200 text-slate-800 px-3 py-2 text-xs font-extrabold">Temizle</button>
+                            </div>
+                            <div class="mx-auto max-w-xs rounded-xl border border-slate-200 bg-white p-2">
+                                <svg viewBox="0 0 260 460" role="img" aria-label="Üstten araç boya ve değişen şablonu" class="w-full">
+                                    <path d="M78 18 Q130 3 182 18 L202 55 L218 115 L218 345 L202 405 L182 442 Q130 457 78 442 L58 405 L42 345 L42 115 L58 55 Z" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>
+                                    <g class="paint-svg-part" data-part="Ön Tampon" onclick="togglePaintPart('Ön Tampon')" tabindex="0" role="button" aria-label="Ön Tampon" style="cursor:pointer">
+                                        <rect x="78" y="18" width="104" height="25" rx="7" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/><text x="130" y="34" font-size="9" text-anchor="middle" fill="#334155">Ön Tampon</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Kaput" onclick="togglePaintPart('Kaput')" tabindex="0" role="button" aria-label="Kaput" style="cursor:pointer">
+                                        <path d="M80 48 Q130 38 180 48 L190 103 L70 103 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><text x="130" y="79" font-size="12" text-anchor="middle" fill="#334155">Kaput</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sol Ön Çamurluk" onclick="togglePaintPart('Sol Ön Çamurluk')" tabindex="0" role="button" aria-label="Sol Ön Çamurluk" style="cursor:pointer">
+                                        <path d="M45 95 L67 88 L72 142 L47 150 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sağ Ön Çamurluk" onclick="togglePaintPart('Sağ Ön Çamurluk')" tabindex="0" role="button" aria-label="Sağ Ön Çamurluk" style="cursor:pointer">
+                                        <path d="M215 95 L193 88 L188 142 L213 150 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+                                    </g>
+                                    <path d="M78 108 L182 108 L194 151 L66 151 Z" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/>
+                                    <g class="paint-svg-part" data-part="Sol Ön Kapı" onclick="togglePaintPart('Sol Ön Kapı')" tabindex="0" role="button" aria-label="Sol Ön Kapı" style="cursor:pointer">
+                                        <path d="M48 155 L68 151 L68 224 L48 224 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><text x="58" y="193" font-size="7" text-anchor="middle" transform="rotate(-90 58 193)" fill="#334155">Ön kapı</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sağ Ön Kapı" onclick="togglePaintPart('Sağ Ön Kapı')" tabindex="0" role="button" aria-label="Sağ Ön Kapı" style="cursor:pointer">
+                                        <path d="M212 155 L192 151 L192 224 L212 224 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><text x="202" y="193" font-size="7" text-anchor="middle" transform="rotate(90 202 193)" fill="#334155">Ön kapı</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sol Arka Kapı" onclick="togglePaintPart('Sol Arka Kapı')" tabindex="0" role="button" aria-label="Sol Arka Kapı" style="cursor:pointer">
+                                        <path d="M48 230 L68 230 L68 294 L48 294 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><text x="58" y="263" font-size="7" text-anchor="middle" transform="rotate(-90 58 263)" fill="#334155">Arka kapı</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sağ Arka Kapı" onclick="togglePaintPart('Sağ Arka Kapı')" tabindex="0" role="button" aria-label="Sağ Arka Kapı" style="cursor:pointer">
+                                        <path d="M212 230 L192 230 L192 294 L212 294 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><text x="202" y="263" font-size="7" text-anchor="middle" transform="rotate(90 202 263)" fill="#334155">Arka kapı</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Tavan" onclick="togglePaintPart('Tavan')" tabindex="0" role="button" aria-label="Tavan" style="cursor:pointer">
+                                        <path d="M79 155 L181 155 L181 294 L79 294 Z" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/><text x="130" y="225" font-size="13" text-anchor="middle" fill="#334155">Tavan</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sol Arka Çamurluk" onclick="togglePaintPart('Sol Arka Çamurluk')" tabindex="0" role="button" aria-label="Sol Arka Çamurluk" style="cursor:pointer">
+                                        <path d="M47 300 L70 300 L72 359 L48 366 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Sağ Arka Çamurluk" onclick="togglePaintPart('Sağ Arka Çamurluk')" tabindex="0" role="button" aria-label="Sağ Arka Çamurluk" style="cursor:pointer">
+                                        <path d="M213 300 L190 300 L188 359 L212 366 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Bagaj Kapağı" onclick="togglePaintPart('Bagaj Kapağı')" tabindex="0" role="button" aria-label="Bagaj Kapağı" style="cursor:pointer">
+                                        <path d="M70 350 L190 350 L180 408 Q130 418 80 408 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><text x="130" y="385" font-size="11" text-anchor="middle" fill="#334155">Bagaj</text>
+                                    </g>
+                                    <g class="paint-svg-part" data-part="Arka Tampon" onclick="togglePaintPart('Arka Tampon')" tabindex="0" role="button" aria-label="Arka Tampon" style="cursor:pointer">
+                                        <rect x="78" y="415" width="104" height="25" rx="7" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/><text x="130" y="431" font-size="9" text-anchor="middle" fill="#334155">Arka Tampon</text>
+                                    </g>
+                                    <text x="12" y="454" font-size="8" fill="#64748b">Sol</text><text x="226" y="454" font-size="8" fill="#64748b">Sağ</text>
+                                </svg>
+                                <p class="text-center text-[10px] text-slate-500">Aracın üstten görünümü — parçaya dokunarak işaretleyin.</p>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="vehiclePaintDiagram">
+                                <button type="button" data-part="Ön Tampon" onclick="togglePaintPart('Ön Tampon')" class="paint-part">Ön Tampon</button>
+                                <button type="button" data-part="Kaput" onclick="togglePaintPart('Kaput')" class="paint-part">Kaput</button>
+                                <button type="button" data-part="Sol Ön Çamurluk" onclick="togglePaintPart('Sol Ön Çamurluk')" class="paint-part">Sol Ön Çamurluk</button>
+                                <button type="button" data-part="Sağ Ön Çamurluk" onclick="togglePaintPart('Sağ Ön Çamurluk')" class="paint-part">Sağ Ön Çamurluk</button>
+                                <button type="button" data-part="Sol Ön Kapı" onclick="togglePaintPart('Sol Ön Kapı')" class="paint-part">Sol Ön Kapı</button>
+                                <button type="button" data-part="Sağ Ön Kapı" onclick="togglePaintPart('Sağ Ön Kapı')" class="paint-part">Sağ Ön Kapı</button>
+                                <button type="button" data-part="Sol Arka Kapı" onclick="togglePaintPart('Sol Arka Kapı')" class="paint-part">Sol Arka Kapı</button>
+                                <button type="button" data-part="Sağ Arka Kapı" onclick="togglePaintPart('Sağ Arka Kapı')" class="paint-part">Sağ Arka Kapı</button>
+                                <button type="button" data-part="Sol Arka Çamurluk" onclick="togglePaintPart('Sol Arka Çamurluk')" class="paint-part">Sol Arka Çamurluk</button>
+                                <button type="button" data-part="Sağ Arka Çamurluk" onclick="togglePaintPart('Sağ Arka Çamurluk')" class="paint-part">Sağ Arka Çamurluk</button>
+                                <button type="button" data-part="Tavan" onclick="togglePaintPart('Tavan')" class="paint-part">Tavan</button>
+                                <button type="button" data-part="Bagaj Kapağı" onclick="togglePaintPart('Bagaj Kapağı')" class="paint-part">Bagaj Kapağı</button>
+                                <button type="button" data-part="Arka Tampon" onclick="togglePaintPart('Arka Tampon')" class="paint-part">Arka Tampon</button>
+                            </div>
+                            <div id="vehiclePaintSummary" class="mt-3 rounded-lg bg-white border border-slate-200 p-3 text-xs text-slate-600">Henüz boya/değişen parçası işaretlenmedi.</div>
+                        </div>
                     </div>
 
                     <div>
@@ -1420,6 +1564,23 @@
             document.getElementById('modalListingCondition').innerText = item.condition;
             document.getElementById('modalListingAddress').innerText = `Hatay / Samandağ / ${item.location}`;
             document.getElementById('modalDescription').innerText = item.description;
+            const vehiclePanel = document.getElementById('modalVehicleDetails');
+            const vehicleGrid = document.getElementById('modalVehicleDetailsGrid');
+            const vehiclePaint = document.getElementById('modalVehiclePaint');
+            const vehicleDetails = item.vehicleDetails || decodeVehicleDescription(item.description || '').vehicleDetails;
+            if (vehiclePanel && vehicleGrid && vehiclePaint) {
+                if (vehicleDetails && isVehicleCategory(item.category)) {
+                    const detailLabels = {vehicleBrand:'Marka',vehicleSeries:'Seri',vehicleModel:'Model',vehicleYear:'Yıl',vehicleFuel:'Yakıt / Motor Tipi',vehicleGear:'Vites',vehicleKm:'Kilometre',vehicleBody:'Kasa Tipi',vehiclePower:'Motor Gücü (hp)',vehicleEngine:'Motor Hacmi (cc)',vehicleDrive:'Çekiş',vehicleColor:'Renk',vehicleCondition:'Araç Durumu',vehicleWarranty:'Servis Garantisi',vehicleDamage:'Ağır Hasar Kayıtlı',vehiclePlate:'Plaka Durumu',vehicleSellerType:'Kimden',vehicleTrade:'Takas'};
+                    vehicleGrid.innerHTML = Object.entries(detailLabels).filter(([key]) => vehicleDetails[key]).map(([key,label]) => `<div class="rounded-lg bg-slate-50 border border-slate-200 p-2"><div class="text-slate-500">${label}</div><div class="font-bold text-slate-900 mt-1">${String(vehicleDetails[key])}</div></div>`).join('');
+                    const paint=vehicleDetails.paint || {};
+                    const painted=Object.keys(paint).filter(k=>paint[k]==='painted');
+                    const replaced=Object.keys(paint).filter(k=>paint[k]==='replaced');
+                    vehiclePaint.innerHTML = `<div class="font-extrabold text-slate-800 mb-1">Boya / Değişen Durumu</div><div><b class="text-amber-700">Boyalı:</b> ${painted.length ? painted.join(', ') : 'Yok / belirtilmemiş'}</div><div class="mt-1"><b class="text-red-700">Değişen:</b> ${replaced.length ? replaced.join(', ') : 'Yok / belirtilmemiş'}</div>`;
+                    vehiclePanel.classList.remove('hidden');
+                } else {
+                    vehiclePanel.classList.add('hidden'); vehicleGrid.innerHTML=''; vehiclePaint.innerHTML='';
+                }
+            }
             document.getElementById('modalSellerName').innerText = item.seller;
             document.getElementById('modalSellerAvatar').innerText = item.seller.charAt(0);
             
@@ -1568,6 +1729,87 @@
         const MAX_POST_IMAGES = 8;
         const DEFAULT_POST_IMAGE = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80';
 
+        const VEHICLE_FIELDS = [
+            ['vehicleBrand','Marka'],['vehicleSeries','Seri'],['vehicleModel','Model'],['vehicleYear','Yıl'],
+            ['vehicleFuel','Yakıt / Motor Tipi'],['vehicleGear','Vites'],['vehicleKm','Kilometre'],['vehicleBody','Kasa Tipi'],
+            ['vehiclePower','Motor Gücü (hp)'],['vehicleEngine','Motor Hacmi (cc)'],['vehicleDrive','Çekiş'],['vehicleColor','Renk'],
+            ['vehicleCondition','Araç Durumu'],['vehicleWarranty','Servis Garantisi'],['vehicleDamage','Ağır Hasar Kayıtlı'],
+            ['vehiclePlate','Plaka Durumu'],['vehicleSellerType','Kimden'],['vehicleTrade','Takas']
+        ];
+        let paintMode = 'painted';
+        let vehiclePaintState = {};
+        function isVehicleCategory(category) {
+            const value=String(category || '').toLocaleLowerCase('tr-TR');
+            return value.includes('vasıta') || value.includes('araba') || value.includes('otomobil');
+        }
+        function collectVehicleDetails() {
+            const details = {};
+            VEHICLE_FIELDS.forEach(([id]) => { const el=document.getElementById(id); if(el && el.value.trim()) details[id]=el.value.trim(); });
+            details.paint = { ...vehiclePaintState };
+            return details;
+        }
+        function applyVehicleDetails(details = {}) {
+            VEHICLE_FIELDS.forEach(([id]) => { const el=document.getElementById(id); if(el) el.value=details[id] || ''; });
+            vehiclePaintState = details.paint && typeof details.paint === 'object' ? { ...details.paint } : {};
+            updatePaintDiagram();
+        }
+        function setPaintMode(mode) {
+            paintMode = mode;
+            const configs = { painted:['paintModePainted','bg-amber-400','text-slate-950'], replaced:['paintModeReplaced','bg-red-600','text-white'], clean:['paintModeClean','bg-slate-200','text-slate-800'] };
+            Object.entries(configs).forEach(([key,[id,bg,fg]]) => {
+                const el=document.getElementById(id); if(!el) return;
+                el.className=`rounded-lg ${bg} ${fg} px-3 py-2 text-xs font-extrabold` + (key===mode ? ' ring-2 ring-offset-1 ring-slate-500' : '');
+            });
+        }
+        function togglePaintPart(part) {
+            if (paintMode === 'clean') delete vehiclePaintState[part];
+            else vehiclePaintState[part] = paintMode;
+            updatePaintDiagram();
+        }
+        function updatePaintDiagram() {
+            document.querySelectorAll('.paint-part').forEach(btn => {
+                const state=vehiclePaintState[btn.dataset.part] || '';
+                if(state) btn.dataset.state=state; else delete btn.dataset.state;
+                const base=btn.dataset.part;
+                btn.textContent=state==='painted' ? base+' • Boyalı' : state==='replaced' ? base+' • Değişen' : base;
+            });
+            document.querySelectorAll('.paint-svg-part').forEach(part => {
+                const state=vehiclePaintState[part.dataset.part] || '';
+                const fill=state==='painted' ? '#facc15' : state==='replaced' ? '#dc2626' : null;
+                part.querySelectorAll('path,rect').forEach(shape => {
+                    if(!shape.dataset.originalFill) shape.dataset.originalFill=shape.getAttribute('fill') || '#e2e8f0';
+                    shape.setAttribute('fill',fill || shape.dataset.originalFill);
+                });
+                part.querySelectorAll('text').forEach(label => label.setAttribute('fill',state==='replaced' ? '#ffffff' : state==='painted' ? '#422006' : '#334155'));
+            });
+            const painted=Object.keys(vehiclePaintState).filter(k=>vehiclePaintState[k]==='painted');
+            const replaced=Object.keys(vehiclePaintState).filter(k=>vehiclePaintState[k]==='replaced');
+            const summary=document.getElementById('vehiclePaintSummary');
+            if(summary) summary.innerHTML = (painted.length || replaced.length)
+                ? `<div><b class="text-amber-700">Boyalı:</b> ${painted.length ? painted.join(', ') : 'Yok'}</div><div class="mt-1"><b class="text-red-700">Değişen:</b> ${replaced.length ? replaced.join(', ') : 'Yok'}</div>`
+                : 'Henüz boya/değişen parçası işaretlenmedi.';
+        }
+        function setVehicleFieldsVisibility() {
+            const panel=document.getElementById('vehicleFields');
+            if(panel) panel.classList.toggle('hidden', !isVehicleCategory(document.getElementById('postCategory').value));
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const category=document.getElementById('postCategory');
+            if(category) category.addEventListener('change', setVehicleFieldsVisibility);
+        });
+        function encodeVehicleDescription(description, vehicleDetails) {
+            const clean = String(description || '').replace(/\n?\[\[VEHICLE_META:[\s\S]*?\]\]\s*$/,'').trim();
+            const hasDetails = vehicleDetails && Object.entries(vehicleDetails).some(([k,v]) => k === 'paint' ? Object.keys(v || {}).length > 0 : !!v);
+            return hasDetails ? clean + '\n\n[[VEHICLE_META:' + JSON.stringify(vehicleDetails) + ']]' : clean;
+        }
+        function decodeVehicleDescription(raw) {
+            const value=String(raw || '');
+            const match=value.match(/\[\[VEHICLE_META:([\s\S]*?)\]\]\s*$/);
+            if(!match) return { description:value, vehicleDetails:null };
+            try { return { description:value.slice(0,match.index).trim(), vehicleDetails:JSON.parse(match[1]) }; }
+            catch(_) { return { description:value, vehicleDetails:null }; }
+        }
+
         async function loadSupabaseListings() {
             if (!supabaseClient) return;
             const { data, error } = await supabaseClient.from('ilantable')
@@ -1581,6 +1823,7 @@
                     try { const parsed = JSON.parse(row.resimurl); images = Array.isArray(parsed) ? parsed : [row.resimurl]; }
                     catch (_) { images = [row.resimurl]; }
                 }
+                const decodedDescription = decodeVehicleDescription(row.aciklama || '');
                 return {
                     id: row.id, user_id: row.user_id, title: row.baslik || 'İlan',
                     category: row.kategori || 'Diğer', price: Number(row.fiyat || 0),
@@ -1588,7 +1831,8 @@
                     phone: row.telefon || '', seller: row.user_id === currentUser?.id ? (currentUser.fullName || 'Üyem') : 'Samandağ Pazarı üyesi',
                     date: row.created_at ? new Date(row.created_at).toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric' }) : '',
                     images: images.filter(Boolean).slice(0, 8).length ? images.filter(Boolean).slice(0, 8) : [DEFAULT_POST_IMAGE],
-                    description: row.aciklama || '', is_param_guvende: false, is_acil: false, is_vip: false,
+                    description: decodedDescription.description, vehicleDetails: decodedDescription.vehicleDetails,
+                    is_param_guvende: false, is_acil: false, is_vip: false,
                     _supabase: true, durum: row.durum, onay_durumu: row.onay_durumu
                 };
             });
@@ -1646,13 +1890,16 @@
                 selectedPostImages = Array.isArray(editItem.images) ? [...editItem.images] : [];
                 document.getElementById('postParamGuvende').checked = !!editItem.is_param_guvende;
                 document.getElementById('postAcil').checked = !!editItem.is_acil;
+                applyVehicleDetails(editItem.vehicleDetails || decodeVehicleDescription(editItem.description || '').vehicleDetails || {});
             } else {
                 document.getElementById('postFormTitle').innerText = 'Ücretsiz İlan Oluştur';
                 document.getElementById('postSubmitBtnText').innerText = 'İlanı Yayınla';
                 form.reset();
                 document.getElementById('editPostId').value = '';
                 if (currentUser) document.getElementById('postSeller').value = currentUser.fullName || '';
+                applyVehicleDetails({});
             }
+            setVehicleFieldsVisibility();
             renderPostImagePreviews();
             modal.classList.remove('hidden');
         }
@@ -1767,6 +2014,8 @@
             const phone = document.getElementById('postPhone').value.trim();
             const seller = document.getElementById('postSeller').value.trim();
             const description = document.getElementById('postDescription').value.trim();
+            const vehicleDetails = isVehicleCategory(category) ? collectVehicleDetails() : null;
+            const storedDescription = encodeVehicleDescription(description, vehicleDetails);
             const urlsInput = document.getElementById('postImageUrls').value;
             const paramGuvende = document.getElementById('postParamGuvende').checked;
             const acil = document.getElementById('postAcil').checked;
@@ -1781,6 +2030,7 @@
 
             const listingData = {
                 title, category, price, location, condition, phone, seller, description,
+                vehicleDetails,
                 images: imgArray,
                 is_param_guvende: paramGuvende,
                 is_acil: acil
@@ -1793,11 +2043,11 @@
                 const existingItem = idx >= 0 ? listingsState[idx] : null;
                 if (supabaseClient && existingItem && existingItem._supabase) {
                     const { error } = await supabaseClient.from('ilantable').update({
-                        baslik: title, fiyat: price, aciklama: description, kategori: category,
+                        baslik: title, fiyat: price, aciklama: storedDescription, kategori: category,
                         mahalle: location, telefon: phone, resimurl: dbImages
                     }).eq('id', editId).eq('user_id', currentUser.id);
                     if (error) { alert('İlan güncellenemedi: ' + error.message); return; }
-                    if (idx !== -1) listingsState[idx] = { ...listingsState[idx], ...listingData, _supabase: true };
+                    if (idx !== -1) listingsState[idx] = { ...listingsState[idx], ...listingData, description, vehicleDetails, _supabase: true };
                     await loadListingNotifications();
                     alert('İlanınız güncellendi. Favorileyen üyelere bildirim oluşturuldu.');
                 } else {
@@ -1807,7 +2057,7 @@
             } else {
                 if (supabaseClient) {
                     const { data, error } = await supabaseClient.rpc('ilan_ekle', {
-                        p_baslik: title, p_fiyat: price, p_aciklama: description, p_kategori: category,
+                        p_baslik: title, p_fiyat: price, p_aciklama: storedDescription, p_kategori: category,
                         p_mahalle: location, p_telefon: phone, p_resimurl: dbImages
                     });
                     if (error) { alert('İlan yayınlanamadı: ' + error.message); return; }
