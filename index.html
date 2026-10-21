@@ -109,11 +109,11 @@
                 
                 <!-- Logo & Slogan -->
                 <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="resetAllFilters()">
-                    <div class="bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded text-xl tracking-wider">
+                    <div class="bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded text-xl tracking-wider" role="button" tabindex="0" aria-label="Sayfayı yenile" style="cursor:pointer" onclick="event.stopPropagation(); window.location.reload()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();window.location.reload();}">
                         S2E
                     </div>
                     <div class="hidden sm:block">
-                        <div class="font-extrabold text-lg text-white leading-tight flex items-center gap-1.5">
+                        <div class="font-extrabold text-lg text-white leading-tight flex items-center gap-1.5" role="button" tabindex="0" aria-label="Samandağ 2. El Pazarı sayfasını yenile" style="cursor:pointer" onclick="event.stopPropagation(); window.location.reload()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();window.location.reload();}">
                             Samandağ 2. El Pazarı
                             <span class="text-[10px] bg-amber-400/20 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-400/30">Pro Pazaryeri</span>
                         </div>
