@@ -1881,7 +1881,7 @@
             if (value === 'Lokal Boyalı') return { fill: '#fb923c', stroke: '#f97316', text: '#9a3412' };
             if (value === 'Boyalı') return { fill: '#3b82f6', stroke: '#2563eb', text: '#1d4ed8' };
             if (value === 'Değişen') return { fill: '#ff503b', stroke: '#ef4444', text: '#b91c1c' };
-            return { fill: 'rgba(255,255,255,0)', stroke: 'rgba(255,255,255,0)', text: '#334155' };
+            return { fill: '#cbd5e1', stroke: '#94a3b8', text: '#334155' };
         }
         function syncDamageMapPart(select) {
             if (!select) return;
@@ -1889,11 +1889,14 @@
             if (!group) return;
             const colors = damageStatusColor(select.value);
             group.querySelectorAll('rect, path, polygon').forEach(shape => {
-                shape.setAttribute('fill', select.value ? colors.fill : 'rgba(255,255,255,0)');
-                shape.setAttribute('fill-opacity', select.value ? '0.88' : '0');
-                shape.setAttribute('stroke', select.value ? colors.stroke : 'rgba(255,255,255,0)');
+                shape.setAttribute('fill', colors.fill);
+                shape.setAttribute('fill-opacity', '0.96');
+                shape.setAttribute('stroke', colors.stroke);
                 shape.setAttribute('stroke-width', '2');
+                shape.setAttribute('pointer-events', 'all');
             });
+            group.style.pointerEvents = 'all';
+            group.style.cursor = 'pointer';
             group.setAttribute('data-status', select.value || '');
             group.classList.toggle('damage-map-selected', document.activeElement === select || group.classList.contains('damage-map-selected'));
             group.setAttribute('aria-label', `${select.dataset.damagePart}: ${select.value || 'Durum seçilmedi'}. Tıklayarak seç`);
@@ -1916,7 +1919,11 @@
             });
             document.querySelectorAll('.damage-map-part').forEach(group => {
                 const activate = (event) => { event.preventDefault(); event.stopPropagation(); selectDamageMapPart(group.dataset.partTarget); };
+                group.style.pointerEvents = 'all';
+                group.style.cursor = 'pointer';
+                group.querySelectorAll('path,rect,polygon').forEach(shape => { shape.style.pointerEvents = 'all'; });
                 group.addEventListener('click', activate);
+                group.addEventListener('pointerup', event => { if (event.pointerType === 'touch') activate(event); });
                 group.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } });
             });
         }
