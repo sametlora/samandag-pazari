@@ -836,16 +836,27 @@
         // Kullanıcı Durumu (Auth State)
         let currentUser = null; // { id, email, fullName }
 
-        // Kategoriler
+        // Kategori ağacı: ana kategoriler ve alt kategoriler
         const categoriesData = [
-            { id: 'all', name: 'Tüm İlanlar', icon: 'fa-layer-group', count: 6 },
-            { id: 'Vasıta', name: 'Vasıta', icon: 'fa-car', count: 2 },
-            { id: 'Emlak', name: 'Emlak', icon: 'fa-house', count: 2 },
-            { id: 'İkinci El ve Sıfır Alışveriş', name: 'İkinci El & Alışveriş', icon: 'fa-bag-shopping', count: 2 },
-            { id: 'Yedek Parça & Aksesuar', name: 'Yedek Parça & Aksesuar', icon: 'fa-gears', count: 0 },
-            { id: 'İş İlanları', name: 'İş İlanları', icon: 'fa-briefcase', count: 0 },
-            { id: 'Hizmetler', name: 'Hizmetler & Ustalık', icon: 'fa-wrench', count: 0 }
+            { id: 'all', name: 'Tüm İlanlar', icon: 'fa-layer-group', count: 0, children: [] },
+            { id: 'Emlak', name: 'Emlak', icon: 'fa-house', children: ['Konut','İş Yeri','Arsa','Konut Projeleri','Bina','Devre Mülk','Turistik Tesis'] },
+            { id: 'Vasıta', name: 'Vasıta', icon: 'fa-car', children: ['Otomobil','Arazi, SUV & Pickup','Elektrikli Araçlar','Motosiklet','Minivan & Panelvan','Ticari Araçlar','Kiralık Araçlar','Deniz Araçları','Hasarlı Araçlar','Karavan','Klasik Araçlar','Hava Araçları','ATV','UTV','Engelli Plakalı Araçlar'] },
+            { id: 'Yedek Parça & Aksesuar', name: 'Yedek Parça, Aksesuar, Donanım & Tuning', icon: 'fa-gears', children: ['Otomotiv Ekipmanları','Motosiklet Ekipmanları','Deniz Aracı Ekipmanları'] },
+            { id: 'İkinci El ve Sıfır Alışveriş', name: 'İkinci El ve Sıfır Alışveriş', icon: 'fa-bag-shopping', children: ['Bilgisayar','Cep Telefonu & Aksesuar','Fotoğraf & Kamera','Ev Dekorasyon','Ev Elektroniği','Elektrikli Ev Aletleri','Giyim & Aksesuar','Saat','Anne & Bebek','Kişisel Bakım & Kozmetik','Hobi & Oyuncak','Oyunculara Özel','Kitap, Dergi & Film','Müzik','Spor','Takı & Mücevher','Koleksiyon','Antika','Bahçe & Yapı Market','Teknik Elektronik','Ofis & Kırtasiye','Yiyecek & İçecek','Diğer Her Şey','Yepyeni Teknolojik Cihazlar'] },
+            { id: 'İş Makineleri & Sanayi', name: 'İş Makineleri & Sanayi', icon: 'fa-tractor', children: ['İş Makineleri','Tarım Makineleri','Sanayi','Elektrik & Enerji'] },
+            { id: 'Hizmetler', name: 'Ustalar ve Hizmetler', icon: 'fa-wrench', children: ['Ev Tadilat & Dekorasyon','Nakliye','Araç Servis & Bakım','Boyacı','Mantolama','Su Tesisatı','Doğal Gaz Tesisatı','Oto Ekspertiz','Elektrikçi','Çilingir','Parke','Mutfak Yenileme','Evden Eve Nakliye','Periyodik Bakım'] },
+            { id: 'Özel Ders Verenler', name: 'Özel Ders Verenler', icon: 'fa-graduation-cap', children: ['Lise & Üniversite','İlkokul & Ortaokul','Yabancı Dil'] },
+            { id: 'İş İlanları', name: 'İş İlanları', icon: 'fa-briefcase', children: ['Avukatlık & Hukuki Danışmanlık','Eğitim','Eğlence & Aktivite','Güzellik & Bakım','IT & Yazılım Geliştirme','İnsan Kaynakları','Restoran ve Konaklama','Mağaza ve Perakendecilik','Tekstil ve Konfeksiyon','Ofis Elemanı','Satış','Müşteri Hizmetleri'] },
+            { id: 'Hayvanlar Alemi', name: 'Hayvanlar Alemi', icon: 'fa-paw', children: ['Aksesuar & Ekipman','Yem & Mama','Evcil Hayvanlar','Akvaryum Balıkları','Kümes Hayvanları','Büyükbaş Hayvanlar','Küçükbaş Hayvanlar','Deniz Canlıları'] },
+            { id: 'Yardımcı Arayanlar', name: 'Yardımcı Arayanlar', icon: 'fa-hands-helping', children: ['Bebek & Çocuk Bakıcısı','Yaşlı & Hasta Bakıcısı','Temizlikçi & Ev İşlerine Yardımcı'] }
         ];
+        const categoryParentByChild = {};
+        categoriesData.forEach(cat => (cat.children || []).forEach(child => { categoryParentByChild[child] = cat.id; }));
+        function getCategoryCount(categoryId) {
+            return listingsState.filter(item => item.category === categoryId ||
+                (categoriesData.find(c => c.id === categoryId)?.children || []).includes(item.category)).length;
+        }
+
 
         // Zengin Mock İlan Verileri
         let listingsState = [
@@ -972,6 +983,7 @@
             loadListingNotifications();
             loadSavedUserListings();
             loadSupabaseListings();
+            populatePostCategories();
             renderCategoryTree();
             applyFilters();
             updateFavBadge();
@@ -1203,24 +1215,53 @@
         // --- 2. KATEGORİ & FİLTRELEME ---
         function renderCategoryTree() {
             const container = document.getElementById('categoryTreeContainer');
-            container.innerHTML = categoriesData.map(cat => `
-                <div onclick="selectCategory('${cat.id}')" class="flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${selectedCategory === cat.id ? 'bg-amber-400 text-slate-950 font-bold' : 'hover:bg-slate-100 text-slate-700'}">
-                    <div class="flex items-center space-x-2.5 truncate">
-                        <i class="fa-solid ${cat.icon} w-4 text-center"></i>
-                        <span class="truncate">${cat.name}</span>
+            container.innerHTML = categoriesData.map(cat => {
+                const active = selectedCategory === cat.id;
+                const parentRow = `
+                    <div class="flex items-center gap-1">
+                        <button type="button" onclick="selectCategory(${JSON.stringify(cat.id).replace(/"/g, '&quot;')})"
+                            class="flex-1 min-w-0 flex items-center justify-between p-2 rounded-lg cursor-pointer transition ${active ? 'bg-amber-400 text-slate-950 font-bold' : 'hover:bg-slate-100 text-slate-700'}">
+                            <span class="flex items-center space-x-2.5 min-w-0"><i class="fa-solid ${cat.icon} w-4 text-center"></i><span class="text-left">${cat.name}</span></span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded ${active ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-500'} font-semibold">${cat.id === 'all' ? listingsState.length : getCategoryCount(cat.id)}</span>
+                        </button>
+                        ${cat.children?.length ? `<button type="button" aria-label="${cat.name} alt kategorilerini aç" onclick="toggleCategoryChildren('${cat.id.replace(/'/g, "\\'")}')" class="px-2 py-2 text-slate-500 hover:text-amber-600" title="Alt kategoriler"><i class="fa-solid fa-chevron-down"></i></button>` : ''}
                     </div>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded ${selectedCategory === cat.id ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-500'} font-semibold">${cat.count}</span>
-                </div>
-            `).join('');
+                    ${cat.children?.length ? `<div id="children-${cat.id.replace(/[^a-zA-Z0-9]/g, '-')}" class="hidden ml-4 pl-2 border-l border-slate-200 space-y-0.5 py-1">${cat.children.map(child => `<button type="button" onclick="selectCategory(${JSON.stringify(child).replace(/"/g, '&quot;')})" class="w-full text-left px-2 py-1.5 rounded-md ${selectedCategory === child ? 'bg-amber-100 text-amber-900 font-bold' : 'text-slate-600 hover:bg-slate-100'}">${child}</button>`).join('')}</div>` : ''}`;
+                return parentRow;
+            }).join('');
         }
-
+        function toggleCategoryChildren(categoryId) {
+            const id = 'children-' + categoryId.replace(/[^a-zA-Z0-9]/g, '-');
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden');
+        }
         function selectCategory(catId) {
             selectedCategory = catId;
             const catObj = categoriesData.find(c => c.id === catId);
-            document.getElementById('currentCategoryTitle').innerText = catObj ? catObj.name : 'Tüm İlanlar';
+            const parentId = categoryParentByChild[catId];
+            document.getElementById('currentCategoryTitle').innerText = catObj ? catObj.name : (parentId || catId);
+            if (parentId) {
+                const parentEl = document.getElementById('children-' + parentId.replace(/[^a-zA-Z0-9]/g, '-'));
+                if (parentEl) parentEl.classList.remove('hidden');
+            }
             renderCategoryTree();
             applyFilters();
         }
+
+        function populatePostCategories() {
+            const select = document.getElementById('postCategory');
+            if (!select) return;
+            const previous = select.value;
+            select.innerHTML = '<option value="">Kategori Seçiniz</option>' +
+                categoriesData.filter(cat => cat.id !== 'all').map(cat =>
+                    `<optgroup label="${cat.name.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">` +
+                    `<option value="${cat.id}">${cat.name}</option>` +
+                    (cat.children || []).map(child => `<option value="${child}">— ${child}</option>`).join('') +
+                    '</optgroup>'
+                ).join('');
+            if ([...select.options].some(option => option.value === previous)) select.value = previous;
+        }
+
 
         // Türkçe harf farklarını ve küçük yazım hatalarını tolere eden arama.
         function normalizeSearchText(value) {
@@ -1290,7 +1331,11 @@
             const sortBy = document.getElementById('sortBy').value;
 
             let filtered = listingsState.filter(item => {
-                const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
+                const selectedParent = categoryParentByChild[selectedCategory];
+                const selectedCatObj = categoriesData.find(c => c.id === selectedCategory);
+                const matchCategory = selectedCategory === 'all' ||
+                    item.category === selectedCategory ||
+                    (!selectedParent && selectedCatObj && (selectedCatObj.children || []).includes(item.category));
                 const matchSearch = matchesSearch(item, searchQuery);
                 const matchLocation = location === 'all' || item.location === location;
                 const matchPrice = item.price >= minPrice && item.price <= maxPrice;
@@ -2205,6 +2250,7 @@
             document.getElementById('filterParamGuvende').checked = false;
             document.getElementById('filterAcil').checked = false;
             document.getElementById('currentCategoryTitle').innerText = 'Tüm İlanlar';
+            populatePostCategories();
             renderCategoryTree();
             applyFilters();
         }
