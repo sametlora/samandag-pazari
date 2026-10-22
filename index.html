@@ -569,40 +569,43 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="rounded-lg border border-slate-200 bg-white p-3">
                                 <div class="text-[11px] font-extrabold text-slate-700 mb-2"><i class="fa-solid fa-car mr-1 text-amber-600"></i> Araç şablonu</div>
-                                <div class="text-[10px] text-slate-500 mb-2">Kapılar yanlardaki uzun parçalardır. Camlar sabittir ve seçilemez. Bir parçaya tıklayarak durum rengini değiştirin.</div>
-                                <svg id="vehicleDamageMap" viewBox="0 0 427 524" role="img" aria-label="Tıklayarak boya ve değişen durumu seçilen otomobil şablonu" class="w-full mx-auto" style="max-height:620px;touch-action:manipulation;display:block;background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px">
+                                <div class="text-[10px] text-slate-500 mb-2">Aracın yandan görünüşü. Kaporta parçalarına tıklayın; camlar ve tekerlekler sabittir.</div>
+                                <svg id="vehicleDamageMap" viewBox="0 0 540 280" role="img" aria-label="Yandan görünüşlü otomobil boya ve değişen şablonu; gövde parçalarına tıklayın" class="w-full mx-auto" style="max-height:420px;touch-action:manipulation;display:block;background:#f8fafc;border:1px solid #cbd5e1;border-radius:14px">
 <g id="vehicleMapBase" pointer-events="none">
-  <!-- Tekerlekler: sabit, tıklanamaz -->
-  <rect x="62" y="118" width="31" height="66" rx="12" fill="#334155"/>
-  <rect x="334" y="118" width="31" height="66" rx="12" fill="#334155"/>
-  <rect x="62" y="350" width="31" height="66" rx="12" fill="#334155"/>
-  <rect x="334" y="350" width="31" height="66" rx="12" fill="#334155"/>
-  <!-- Araç gövdesi -->
-  <path d="M143 75 Q205 58 264 75 L292 112 L314 184 L314 382 L292 448 Q205 468 115 448 L93 382 L93 184 L115 112Z"
-        fill="#f8fafc" stroke="#475569" stroke-width="3"/>
-  <!-- Camlar sabit ve boyanabilir parça değildir -->
-  <path d="M157 132 Q205 117 250 132 L265 190 L142 190Z" fill="#bae6fd" stroke="#64748b" stroke-width="2"/>
-  <path d="M151 199 L259 199 L259 270 L151 270Z" fill="#dbeafe" stroke="#64748b" stroke-width="2"/>
-  <path d="M151 279 L259 279 L259 349 L151 349Z" fill="#dbeafe" stroke="#64748b" stroke-width="2"/>
-  <path d="M142 358 L265 358 L250 410 Q205 423 157 410Z" fill="#bae6fd" stroke="#64748b" stroke-width="2"/>
-  <!-- Ön ve arka cam çizgileri -->
-  <path d="M142 194 L265 194 M142 354 L265 354" stroke="#64748b" stroke-width="2"/>
-  <!-- Sabit aynalar -->
-  <path d="M91 190 L109 190 L109 215 L94 211Z M318 190 L336 190 L333 211 L318 215Z" fill="#94a3b8" stroke="#475569" stroke-width="2"/>
+  <!-- Gölgeler ve tekerlekler sabittir -->
+  <ellipse cx="270" cy="218" rx="215" ry="12" fill="#cbd5e1" opacity=".55"/>
+  <circle cx="142" cy="192" r="39" fill="#1e293b" stroke="#0f172a" stroke-width="3"/>
+  <circle cx="142" cy="192" r="22" fill="#cbd5e1" stroke="#64748b" stroke-width="3"/>
+  <circle cx="142" cy="192" r="7" fill="#64748b"/>
+  <circle cx="390" cy="192" r="39" fill="#1e293b" stroke="#0f172a" stroke-width="3"/>
+  <circle cx="390" cy="192" r="22" fill="#cbd5e1" stroke="#64748b" stroke-width="3"/>
+  <circle cx="390" cy="192" r="7" fill="#64748b"/>
+  <!-- Araç silüeti: hatchback yandan görünüş -->
+  <path d="M48 177 L57 150 Q65 139 91 133 L139 125 L184 78 Q195 65 219 64 L321 64 Q344 66 359 87 L397 130 L443 143 Q464 151 476 169 L480 190 L459 198 L431 198 Q427 157 390 157 Q353 157 350 198 L181 198 Q178 157 142 157 Q105 157 102 198 L66 196 Q49 193 48 177Z"
+        fill="#e2e8f0" stroke="#475569" stroke-width="3" stroke-linejoin="round"/>
+  <!-- Camlar sabit, tıklanamaz -->
+  <path d="M194 83 Q201 74 219 73 L255 73 L255 121 L157 121Z" fill="#bae6fd" stroke="#64748b" stroke-width="2"/>
+  <path d="M265 73 L319 73 Q336 75 348 94 L369 121 L265 121Z" fill="#bae6fd" stroke="#64748b" stroke-width="2"/>
+  <path d="M260 72 L260 125" stroke="#64748b" stroke-width="2"/>
+  <!-- Sabit detaylar -->
+  <path d="M58 157 L81 157 L87 165 L57 166Z" fill="#fef3c7" stroke="#64748b" stroke-width="1.5"/>
+  <path d="M449 157 L466 164 L470 174 L451 172Z" fill="#fca5a5" stroke="#64748b" stroke-width="1.5"/>
+  <path d="M54 179 L480 179" stroke="#64748b" stroke-width="1.5" opacity=".65"/>
 </g>
-<g class="damage-map-part" data-part-target="Ön tampon" tabindex="0" role="button" aria-label="Ön tampon" data-zone="bumper-front"><rect x="142" y="76" width="122" height="30" rx="7"/></g>
-<g class="damage-map-part" data-part-target="Kaput" tabindex="0" role="button" aria-label="Kaput"><path d="M145 119 Q205 105 262 120 L267 205 Q205 187 140 205Z"/></g>
-<g class="damage-map-part" data-part-target="Sol ön çamurluk" tabindex="0" role="button" aria-label="Sol ön çamurluk"><path d="M96 145 L121 155 L143 192 L143 269 L119 269 L108 220 L96 190Z"/></g>
-<g class="damage-map-part" data-part-target="Sağ ön çamurluk" tabindex="0" role="button" aria-label="Sağ ön çamurluk"><path d="M331 145 L306 155 L284 192 L284 269 L308 269 L319 220 L331 190Z"/></g>
-<g class="damage-map-part" data-part-target="Tavan" tabindex="0" role="button" aria-label="Tavan"><path d="M151 205 L259 205 L259 348 L151 348Z"/></g>
-<g class="damage-map-part" data-part-target="Sol ön kapı" tabindex="0" role="button" aria-label="Sol ön kapı"><path d="M96 220 L143 220 L143 282 L101 282Z"/></g>
-<g class="damage-map-part" data-part-target="Sağ ön kapı" tabindex="0" role="button" aria-label="Sağ ön kapı"><path d="M284 220 L331 220 L326 282 L284 282Z"/></g>
-<g class="damage-map-part" data-part-target="Sol arka kapı" tabindex="0" role="button" aria-label="Sol arka kapı"><path d="M101 291 L143 291 L143 350 L96 350Z"/></g>
-<g class="damage-map-part" data-part-target="Sağ arka kapı" tabindex="0" role="button" aria-label="Sağ arka kapı"><path d="M284 291 L326 291 L331 350 L284 350Z"/></g>
-<g class="damage-map-part" data-part-target="Sol arka çamurluk" tabindex="0" role="button" aria-label="Sol arka çamurluk"><path d="M96 359 L119 359 L143 397 L121 425 L96 408Z"/></g>
-<g class="damage-map-part" data-part-target="Sağ arka çamurluk" tabindex="0" role="button" aria-label="Sağ arka çamurluk"><path d="M331 359 L308 359 L284 397 L306 425 L331 408Z"/></g>
-<g class="damage-map-part" data-part-target="Bagaj kapağı" tabindex="0" role="button" aria-label="Bagaj kapağı"><path d="M145 416 Q205 430 265 416 L259 441 Q205 455 151 441Z"/></g>
-<g class="damage-map-part" data-part-target="Arka tampon" tabindex="0" role="button" aria-label="Arka tampon"><rect x="142" y="455" width="122" height="30" rx="7"/></g>
+<!-- Tıklanabilir kaporta parçaları; camlar ve tekerlekler bu grupların dışındadır -->
+<g class="damage-map-part" data-part-target="Ön tampon" tabindex="0" role="button" aria-label="Ön tampon"><path d="M48 171 L62 171 L65 194 L53 191 Q47 184 48 171Z"/></g>
+<g class="damage-map-part" data-part-target="Sol ön çamurluk" tabindex="0" role="button" aria-label="Ön çamurluk"><path d="M82 139 L126 130 L112 157 Q102 169 102 190 L66 190 L58 166 L65 150Z"/></g>
+<g class="damage-map-part" data-part-target="Kaput" tabindex="0" role="button" aria-label="Kaput"><path d="M397 130 L443 143 Q464 151 476 169 L451 171 L421 157 L390 145Z"/></g>
+<g class="damage-map-part" data-part-target="Sol ön kapı" tabindex="0" role="button" aria-label="Ön kapı"><path d="M157 125 L255 125 L255 178 L183 178 L176 151Z"/></g>
+<g class="damage-map-part" data-part-target="Sol arka kapı" tabindex="0" role="button" aria-label="Arka kapı"><path d="M265 125 L371 125 L391 145 L402 178 L265 178Z"/></g>
+<g class="damage-map-part" data-part-target="Tavan" tabindex="0" role="button" aria-label="Tavan"><path d="M184 78 Q195 65 219 64 L321 64 Q344 66 359 87 L369 121 L157 121Z"/></g>
+<g class="damage-map-part" data-part-target="Sağ ön kapı" tabindex="0" role="button" aria-label="Ön kapı (diğer taraf)"><path d="M157 125 L255 125 L255 178 L183 178 L176 151Z"/></g>
+<g class="damage-map-part" data-part-target="Sağ arka kapı" tabindex="0" role="button" aria-label="Arka kapı (diğer taraf)"><path d="M265 125 L371 125 L391 145 L402 178 L265 178Z"/></g>
+<g class="damage-map-part" data-part-target="Sağ ön çamurluk" tabindex="0" role="button" aria-label="Arka çamurluk"><path d="M397 130 L443 143 Q464 151 476 169 L451 171 L421 157 L390 145Z"/></g>
+<g class="damage-map-part" data-part-target="Sol arka çamurluk" tabindex="0" role="button" aria-label="Arka yan çamurluk"><path d="M402 178 L451 171 L459 190 L428 190 Q421 163 390 157 L390 145 L397 130 L421 157Z"/></g>
+<g class="damage-map-part" data-part-target="Sağ arka çamurluk" tabindex="0" role="button" aria-label="Arka yan çamurluk (diğer taraf)"><path d="M402 178 L451 171 L459 190 L428 190 Q421 163 390 157 L390 145 L397 130 L421 157Z"/></g>
+<g class="damage-map-part" data-part-target="Bagaj kapağı" tabindex="0" role="button" aria-label="Bagaj kapağı"><path d="M82 139 L126 130 L157 125 L157 178 L112 178 L102 190 L66 190 L58 166 L65 150Z"/></g>
+<g class="damage-map-part" data-part-target="Arka tampon" tabindex="0" role="button" aria-label="Arka tampon"><path d="M458 169 L476 169 L480 190 L459 198 L451 190Z"/></g>
 </svg>
                                 <div class="flex flex-wrap gap-2 mt-2 text-[10px] font-bold"><span class="px-2 py-1 rounded bg-gray-100 text-gray-700">■ Orijinal</span><span class="px-2 py-1 rounded bg-orange-100 text-orange-700">■ Lokal Boyalı</span><span class="px-2 py-1 rounded bg-blue-100 text-blue-700">■ Boyalı</span><span class="px-2 py-1 rounded bg-red-100 text-red-700">■ Değişen</span></div>
                                 <p id="damageMapHint" class="text-[10px] text-slate-600 mt-2">Bir parçaya tıklayın; ilgili seçim alanı açılır. Her parça için isteğe bağlı açıklama yazabilirsiniz.</p>
