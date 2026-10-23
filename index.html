@@ -1878,9 +1878,9 @@
         }
         function damageStatusColor(value) {
             if (value === 'Orijinal') return { fill: '#9ca3af', stroke: '#6b7280', text: '#374151' };
-            if (value === 'Lokal Boyalı') return { fill: '#fb923c', stroke: '#f97316', text: '#9a3412' };
-            if (value === 'Boyalı') return { fill: '#3b82f6', stroke: '#2563eb', text: '#1d4ed8' };
-            if (value === 'Değişen') return { fill: '#ff503b', stroke: '#ef4444', text: '#b91c1c' };
+            if (value === 'Lokal Boyalı') return { fill: '#f97316', stroke: '#c2410c', text: '#9a3412' };
+            if (value === 'Boyalı') return { fill: '#3b82f6', stroke: '#1d4ed8', text: '#1d4ed8' };
+            if (value === 'Değişen') return { fill: '#ef4444', stroke: '#b91c1c', text: '#b91c1c' };
             return { fill: '#cbd5e1', stroke: '#94a3b8', text: '#334155' };
         }
         function syncDamageMapPart(select) {
@@ -1891,7 +1891,7 @@
             group.querySelectorAll('rect, path, polygon').forEach(shape => {
                 shape.setAttribute('fill', colors.fill);
                 // Durum seçilmediyse şablonun orijinal görünümünü aynen bırak.
-                shape.setAttribute('fill-opacity', select.value ? '0.78' : '0.001');
+                shape.setAttribute('fill-opacity', select.value ? '0.95' : '0.001');
                 shape.setAttribute('fill-rule', 'evenodd');
                 shape.setAttribute('stroke', select.value ? colors.stroke : 'transparent');
                 shape.setAttribute('stroke-width', '2');
