@@ -458,19 +458,19 @@
                     </div>
                 </div>
 
-                <!-- İlan detayında: solda yalnız araç şablonu, sağda parça durumları/açıklamalar -->
-                <section id="modalVehicleDamageSection" class="hidden rounded-xl border border-slate-200 bg-white p-3 sm:p-4">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-start">
-                        <div id="modalVehicleDamageMapHost" class="min-w-0 flex items-center justify-center bg-white rounded-lg p-1 overflow-hidden"></div>
-                        <div class="min-w-0 space-y-2">
-                            <h3 class="font-extrabold text-sm text-slate-900 border-b border-slate-200 pb-2">Boya / Değişen Açıklaması</h3>
+                <!-- İlan detayında: küçük şablon mevcut yerinde, açıklamalar hemen altında -->
+                <section id="modalVehicleDamageSection" class="hidden rounded-xl border border-slate-200 bg-white p-2 sm:p-3">
+                    <div class="flex flex-col items-start gap-2">
+                        <div id="modalVehicleDamageMapHost" class="w-[110px] max-w-full flex items-center justify-center bg-white rounded-lg p-0.5 overflow-hidden"></div>
+                        <div class="w-full min-w-0 space-y-2">
+                            <h3 class="font-extrabold text-xs text-slate-900 border-b border-slate-200 pb-1.5">Boya / Değişen Açıklaması</h3>
                             <div class="flex flex-wrap gap-2 text-[10px] font-bold pb-1">
                                 <span class="flex items-center gap-1"><i class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#3b82f6"></i>Boyalı</span>
                                 <span class="flex items-center gap-1"><i class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#f97316"></i>Lokal Boyalı</span>
                                 <span class="flex items-center gap-1"><i class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#ef4444"></i>Değişen</span>
                                 <span class="flex items-center gap-1"><i class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#9ca3af"></i>Orijinal</span>
                             </div>
-                            <div id="modalVehicleDamageSummary" class="space-y-2"></div>
+                            <div id="modalVehicleDamageSummary" class="space-y-1.5"></div>
                         </div>
                     </div>
                 </section>
@@ -1655,9 +1655,10 @@
                 const map = sourceMap.cloneNode(true);
                 map.id = 'modalVehicleDamageMap';
                 map.removeAttribute('aria-label');
-                map.style.maxHeight = '620px';
-                map.style.width = '100%';
+                map.style.maxHeight = '145px';
+                map.style.width = '110px';
                 map.style.height = 'auto';
+                map.style.display = 'block';
                 map.style.objectFit = 'contain';
                 map.style.pointerEvents = 'none';
                 map.querySelectorAll('.damage-map-part').forEach(group => {
@@ -1681,7 +1682,7 @@
             rows.forEach(row => {
                 const color = damageStatusColor(row.value);
                 const card = document.createElement('div');
-                card.className = 'rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs';
+                card.className = 'rounded-lg border border-slate-200 bg-slate-50 p-2 text-xs';
                 const heading = document.createElement('div');
                 heading.className = 'flex items-center justify-between gap-2 font-bold text-slate-800';
                 const part = document.createElement('span'); part.textContent = row.part;
