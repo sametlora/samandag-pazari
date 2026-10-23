@@ -1484,8 +1484,8 @@
                 group.querySelectorAll('path,rect,polygon').forEach(shape => {
                     shape.setAttribute('fill', color.fill);
                     shape.setAttribute('fill-opacity', row ? '0.95' : '0.001');
-                    shape.setAttribute('stroke', row ? color.stroke : 'transparent');
-                    shape.setAttribute('stroke-width', '2');
+                    shape.setAttribute('stroke', row ? '#263445' : 'transparent');
+                    shape.setAttribute('stroke-width', '1.6');
                 });
             });
             map.style.width = '100%';
@@ -1677,9 +1677,9 @@
                     group.setAttribute('aria-label', `${partName}: ${row?.value || 'Durum belirtilmemiş'}`);
                     group.querySelectorAll('path,rect,polygon').forEach(shape => {
                         shape.style.fill = color.fill;
-                        shape.style.fillOpacity = '0.78';
-                        shape.style.stroke = color.stroke;
-                        shape.style.strokeWidth = '2';
+                        shape.style.fillOpacity = row ? '0.95' : '0.001';
+                        shape.style.stroke = '#263445';
+                        shape.style.strokeWidth = '1.6';
                         shape.style.pointerEvents = 'none';
                     });
                 });
@@ -2080,10 +2080,10 @@
             return category === 'Vasıta' || categoryParentByChild[category] === 'Vasıta';
         }
         function damageStatusColor(value) {
-            if (value === 'Orijinal') return { fill: '#9ca3af', stroke: '#6b7280', text: '#374151' };
-            if (value === 'Lokal Boyalı') return { fill: '#f97316', stroke: '#c2410c', text: '#9a3412' };
-            if (value === 'Boyalı') return { fill: '#3b82f6', stroke: '#1d4ed8', text: '#1d4ed8' };
-            if (value === 'Değişen') return { fill: '#ef4444', stroke: '#b91c1c', text: '#b91c1c' };
+            if (value === 'Orijinal') return { fill: '#aeb8c4', stroke: '#263445', text: '#263445' };
+            if (value === 'Lokal Boyalı') return { fill: '#ff8a00', stroke: '#263445', text: '#8a3b00' };
+            if (value === 'Boyalı') return { fill: '#1688ff', stroke: '#263445', text: '#0753a6' };
+            if (value === 'Değişen') return { fill: '#ff3038', stroke: '#263445', text: '#a10f17' };
             return { fill: '#cbd5e1', stroke: '#94a3b8', text: '#334155' };
         }
         function syncDamageMapPart(select) {
@@ -2096,13 +2096,13 @@
                 // Inline style + attributes: SVG parçaları hem masaüstü hem dokunmatik ekranda boyansın.
                 shape.style.fill = colors.fill;
                 shape.style.fillOpacity = select.value ? '0.95' : '0.001';
-                shape.style.stroke = select.value ? colors.stroke : 'transparent';
-                shape.style.strokeWidth = '3';
+                shape.style.stroke = select.value ? '#263445' : 'transparent';
+                shape.style.strokeWidth = '1.6';
                 shape.style.pointerEvents = 'all';
                 shape.setAttribute('fill', colors.fill);
                 shape.setAttribute('fill-opacity', select.value ? '0.95' : '0.001');
-                shape.setAttribute('stroke', select.value ? colors.stroke : 'transparent');
-                shape.setAttribute('stroke-width', '3');
+                shape.setAttribute('stroke', select.value ? '#263445' : 'transparent');
+                shape.setAttribute('stroke-width', '1.6');
             });
             group.style.pointerEvents = 'all';
             group.style.cursor = 'pointer';
