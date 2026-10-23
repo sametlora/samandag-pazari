@@ -109,7 +109,7 @@
 
 <style>
 #vehicleDamageMap .damage-map-part { cursor:pointer; outline:none; }
-#vehicleDamageMap .damage-map-part path { fill:rgba(255,255,255,0.001); stroke:rgba(255,255,255,0); stroke-width:2; pointer-events:all; transition:fill .15s,stroke .15s; }
+#vehicleDamageMap .damage-map-part path { stroke-width:2; pointer-events:all; transition:fill .15s,fill-opacity .15s,stroke .15s; }
 #vehicleDamageMap .damage-map-part { pointer-events:all; }
 #vehicleDamageMap .damage-map-part:hover rect,#vehicleDamageMap .damage-map-part:hover path,#vehicleDamageMap .damage-map-part:focus rect,#vehicleDamageMap .damage-map-part:focus path { stroke:#111827; stroke-width:2; }
 .vehicle-damage-select, .vehicle-damage-note { display:none !important; }
@@ -1891,7 +1891,7 @@
             group.querySelectorAll('rect, path, polygon').forEach(shape => {
                 shape.setAttribute('fill', colors.fill);
                 // Durum seçilmediyse şablonun orijinal görünümünü aynen bırak.
-                shape.setAttribute('fill-opacity', select.value ? '0.62' : '0.001');
+                shape.setAttribute('fill-opacity', select.value ? '0.78' : '0.001');
                 shape.setAttribute('fill-rule', 'evenodd');
                 shape.setAttribute('stroke', select.value ? colors.stroke : 'transparent');
                 shape.setAttribute('stroke-width', '2');
