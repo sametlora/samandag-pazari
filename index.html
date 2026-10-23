@@ -1406,7 +1406,12 @@
         function matchesSearch(item, query) { return !query || searchScore(item, query) > 0; }
 
         function applyFilters() {
-            const rawSearch = document.getElementById('headerSearchInput')?.value || document.getElementById('headerSearchInputMobile')?.value || '';
+            // Mobil ve masaüstü arama kutuları aynı değeri paylaşır; gizli kutudaki eski değer ilanları filtrelemesin.
+            const desktopSearch = document.getElementById('headerSearchInput');
+            const mobileSearch = document.getElementById('headerSearchInputMobile');
+            const rawSearch = (window.matchMedia('(max-width: 767px)').matches
+                ? mobileSearch?.value
+                : desktopSearch?.value) ?? '';
             const searchQuery = normalizeSearchText(rawSearch);
             const location = document.getElementById('filterLocation').value;
             const minPrice = parseFloat(document.getElementById('filterMinPrice').value) || 0;
@@ -2554,6 +2559,8 @@
         function resetAllFilters() {
             selectedCategory = 'all';
             document.getElementById('headerSearchInput').value = '';
+            const mobileSearchInput = document.getElementById('headerSearchInputMobile');
+            if (mobileSearchInput) mobileSearchInput.value = '';
             document.getElementById('filterLocation').value = 'all';
             document.getElementById('filterMinPrice').value = '';
             document.getElementById('filterMaxPrice').value = '';
