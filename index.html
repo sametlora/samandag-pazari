@@ -1406,12 +1406,7 @@
         function matchesSearch(item, query) { return !query || searchScore(item, query) > 0; }
 
         function applyFilters() {
-            // Mobil ve masaüstü arama kutuları aynı değeri paylaşır; gizli kutudaki eski değer ilanları filtrelemesin.
-            const desktopSearch = document.getElementById('headerSearchInput');
-            const mobileSearch = document.getElementById('headerSearchInputMobile');
-            const rawSearch = (window.matchMedia('(max-width: 767px)').matches
-                ? mobileSearch?.value
-                : desktopSearch?.value) ?? '';
+            const rawSearch = document.getElementById('headerSearchInput')?.value || document.getElementById('headerSearchInputMobile')?.value || '';
             const searchQuery = normalizeSearchText(rawSearch);
             const location = document.getElementById('filterLocation').value;
             const minPrice = parseFloat(document.getElementById('filterMinPrice').value) || 0;
@@ -1828,25 +1823,11 @@
 
         async function loadSupabaseListings() {
             if (!supabaseClient) return;
-            // Tek sorguda 500 ilan sınırına takılmamak için Supabase'den sayfalı yükle.
-            const pageSize = 500;
-            let data = [];
-            let from = 0;
-            while (true) {
-                const { data: page, error } = await supabaseClient.from('ilantable')
-                    .select('id,user_id,baslik,fiyat,aciklama,kategori,mahalle,telefon,resimurl,created_at,durum,onay_durumu')
-                    .order('created_at', { ascending: false })
-                    .range(from, from + pageSize - 1);
-                if (error) {
-                    console.error('İlanlar Supabase’den okunamadı:', error.message);
-                    return;
-                }
-                const rows = page || [];
-                data.push(...rows);
-                if (rows.length < pageSize) break;
-                from += pageSize;
-            }
-            const remoteItems = data.map(row => {
+            const { data, error } = await supabaseClient.from('ilantable')
+                .select('id,user_id,baslik,fiyat,aciklama,kategori,mahalle,telefon,resimurl,created_at,durum,onay_durumu')
+                .order('created_at', { ascending: false }).limit(500);
+            if (error) { console.error('İlanlar Supabase’den okunamadı:', error.message); return; }
+            const remoteItems = (data || []).map(row => {
                 let images = [];
                 if (Array.isArray(row.resimurl)) images = row.resimurl;
                 else if (typeof row.resimurl === 'string' && row.resimurl.trim()) {
@@ -2573,8 +2554,6 @@
         function resetAllFilters() {
             selectedCategory = 'all';
             document.getElementById('headerSearchInput').value = '';
-            const mobileSearchInput = document.getElementById('headerSearchInputMobile');
-            if (mobileSearchInput) mobileSearchInput.value = '';
             document.getElementById('filterLocation').value = 'all';
             document.getElementById('filterMinPrice').value = '';
             document.getElementById('filterMaxPrice').value = '';
