@@ -1443,6 +1443,53 @@
             renderListings(filtered);
         }
 
+        // Ana sayfadaki araç ilanları için küçük, tıklanabilir boya şablonu.
+        function getVehicleDamagePreviewHtml(item) {
+            const description = String(item?.description || '');
+            const markerAt = description.indexOf(VEHICLE_DAMAGE_MARKER);
+            if (!isVehicleCategory(item?.category) || markerAt < 0) return '';
+            const rows = [];
+            description.slice(markerAt + VEHICLE_DAMAGE_MARKER.length).split('\n').forEach(line => {
+                const match = line.match(/^(.+?):\s*(Lokal Boyalı|Orijinal|Boyalı|Değişen)(?:\s*\|\s*Not:\s*(.*))?$/);
+                if (match) rows.push({ part: match[1].trim(), value: match[2] });
+            });
+            if (!rows.length) return '';
+            const sourceMap = document.getElementById('vehicleDamageMap');
+            if (!sourceMap) return '';
+            // Aracın ana görselini CSS'e yalnızca bir kez koy; her ilan kartında dev base64 kopyalanmasın.
+            if (!document.getElementById('vehicleDamageMiniBackgroundStyle')) {
+                const baseImage = sourceMap.querySelector('image');
+                if (baseImage) {
+                    const style = document.createElement('style');
+                    style.id = 'vehicleDamageMiniBackgroundStyle';
+                    style.textContent = `.vehicle-damage-mini-bg{background-image:url("${baseImage.getAttribute('href') || baseImage.getAttributeNS('http://www.w3.org/1999/xlink','href')}");background-size:100% 100%;background-repeat:no-repeat;background-color:#fffbed}`;
+                    document.head.appendChild(style);
+                }
+            }
+            const map = sourceMap.cloneNode(true);
+            map.removeAttribute('id');
+            map.querySelectorAll('image').forEach(image => image.remove());
+            map.querySelectorAll('.damage-map-part').forEach(group => {
+                const row = rows.find(entry => entry.part === group.dataset.partTarget);
+                const color = damageStatusColor(row?.value || 'Orijinal');
+                group.classList.remove('damage-map-selected');
+                group.removeAttribute('tabindex');
+                group.removeAttribute('role');
+                group.querySelectorAll('path,rect,polygon').forEach(shape => {
+                    shape.setAttribute('fill', color.fill);
+                    shape.setAttribute('fill-opacity', row ? '0.95' : '0.001');
+                    shape.setAttribute('stroke', row ? color.stroke : 'transparent');
+                    shape.setAttribute('stroke-width', '2');
+                });
+            });
+            map.style.width = '100%';
+            map.style.height = '100%';
+            map.style.maxHeight = 'none';
+            map.style.background = 'transparent';
+            map.style.pointerEvents = 'none';
+            return `<button type="button" onclick="event.stopPropagation();openDetailModal(${JSON.stringify(item.id)})" class="mt-2 w-full rounded-lg border border-amber-200 p-1.5 flex items-center gap-2 text-left hover:border-amber-500" title="Boya şablonunu büyütmek için tıklayın"><span class="vehicle-damage-mini-bg block shrink-0" style="width:42px;height:54px;overflow:hidden">${map.outerHTML}</span><span class="min-w-0"><span class="block text-[10px] font-extrabold text-slate-700">Araç boya şablonu</span><span class="block text-[9px] text-slate-500">Detayları görmek için tıklayın</span></span></button>`;
+        }
+
         // --- 3. İLAN LİSTELEME ---
         function renderListings(items) {
             const container = document.getElementById('listingsContainer');
@@ -1476,6 +1523,7 @@
                             <div>
                                 <div class="text-[10px] text-slate-400 uppercase font-bold mb-0.5">${item.category} • ${item.location}</div>
                                 <h4 onclick="openDetailModal(${item.id})" class="font-bold text-xs text-slate-900 line-clamp-2 hover:text-amber-600 cursor-pointer mb-2">${item.title}</h4>
+                                ${getVehicleDamagePreviewHtml(item)}
                             </div>
                             <div class="flex justify-between items-center pt-2 border-t border-slate-100">
                                 <span class="font-black text-amber-600 text-sm">${item.price.toLocaleString('tr-TR')} TL</span>
@@ -1505,6 +1553,7 @@
                                 <span class="text-[10px] text-slate-400 font-semibold">${item.category}</span>
                             </div>
                             <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate group-hover:text-amber-600 transition">${item.title}</h4>
+                            ${getVehicleDamagePreviewHtml(item)}
                             <div class="text-[11px] text-slate-500 flex items-center space-x-2">
                                 <span><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i>${item.location}</span>
                                 <span>•</span>
