@@ -224,6 +224,14 @@
 
                 <!-- Detaylı Filtreleme Paneli -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-4">
+                <!-- Otomobil marka filtresi: yalnızca yayında otomobil ilanı bulunan markalar gösterilir -->
+                <div id="vehicleBrandFilterBox" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-4 space-y-2">
+                    <label for="filterVehicleBrand" class="block text-[11px] font-bold text-slate-700">Otomobil Markası</label>
+                    <select id="filterVehicleBrand" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs outline-none focus:ring-1 focus:ring-amber-400">
+                        <option value="">Tüm Markalar</option>
+                    </select>
+                </div>
+
                     <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 pb-2 border-b border-slate-100 flex items-center justify-between">
                         <span><i class="fa-solid fa-filter text-amber-500 mr-1.5"></i> Detaylı Filtrele</span>
                         <i class="fa-solid fa-sliders text-slate-400"></i>
@@ -415,6 +423,10 @@
                                 <span class="text-slate-500 font-medium">Kategori</span>
                                 <span id="modalListingCategory" class="font-bold text-slate-800">Vasıta</span>
                             </div>
+                            <div id="modalListingVehicleInfoRow" class="hidden justify-between p-2.5 bg-white border-b border-slate-100">
+                                <span class="text-slate-500 font-medium">Marka / Model / Yıl</span>
+                                <span id="modalListingVehicleInfo" class="font-bold text-slate-800 text-right"></span>
+                            </div>
                             <div class="flex justify-between p-2.5 bg-white border-b border-slate-100">
                                 <span class="text-slate-500 font-medium">Durumu</span>
                                 <span id="modalListingCondition" class="font-bold text-slate-800">İkinci El</span>
@@ -573,6 +585,29 @@
                             <option value="İş İlanları">İş İlanları</option>
                             <option value="Hizmetler">Hizmetler & Ustalık</option>
                         </select>
+                    </div>
+
+                    <div id="vehicleInfoSection" class="sm:col-span-2 hidden rounded-xl border border-amber-200 bg-amber-50 p-4">
+                        <h4 class="font-extrabold text-sm text-slate-900 mb-3"><i class="fa-solid fa-car-side text-amber-600 mr-1"></i> Otomobil Bilgileri</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label for="postVehicleBrand" class="block text-xs font-bold text-slate-700 mb-1">Marka *</label>
+                                <select id="postVehicleBrand" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs" onchange="updateVehicleModelHint()">
+                                    <option value="">Marka seçiniz</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="postVehicleModel" class="block text-xs font-bold text-slate-700 mb-1">Model *</label>
+                                <input id="postVehicleModel" type="text" placeholder="Örn: 3 Serisi, Corolla, Megane" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs">
+                            </div>
+                            <div>
+                                <label for="postVehicleYear" class="block text-xs font-bold text-slate-700 mb-1">Model Yılı</label>
+                                <select id="postVehicleYear" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs">
+                                    <option value="">Yıl seçiniz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p id="vehicleModelHint" class="text-[10px] text-slate-500 mt-2">Önce marka seçin, ardından modelini yazın.</p>
                     </div>
 
                     <div id="vehicleDamageSection" class="sm:col-span-2 hidden rounded-xl border-2 border-amber-300 bg-amber-50 p-4">
@@ -921,6 +956,9 @@
 
         // Kullanıcı Durumu (Auth State)
         let currentUser = null; // { id, email, fullName }
+
+        // Ana marka havuzu: kullanıcının gönderdiği tüm markalar; ilan adetleri özellikle tutulmaz.
+        const VEHICLE_BRANDS = ['Abarth', 'Acura', 'Aion', 'Alfa Romeo', 'Alpine', 'Anadol', 'Arora', 'Aston Martin', 'Audi', 'Bajaj', 'Bentley', 'BMW', 'Buick', 'BYD', 'Cadillac', 'Chery', 'Chevrolet', 'Chrysler', 'Citroen', 'Cupra', 'Dacia', 'Daewoo', 'Daihatsu', 'Dodge', 'DS Automobiles', 'Ferrari', 'Fiat', 'Ford', 'Geely', 'Honda', 'Hyundai', 'I-GO', 'Ikco', 'Infiniti', 'Jaguar', 'Joyce', 'Kia', 'Kuba', 'Lada', 'Lamborghini', 'Lancia', 'Leapmotor', 'Lexus', 'Lincoln', 'Lotus', 'Luqi', 'Marcos', 'Maserati', 'Mazda', 'McLaren', 'Mercedes-Benz', 'MG', 'Micro', 'Mini', 'Mitsubishi', 'Morgan', 'Motolux', 'Nieve', 'Nissan', 'Opel', 'Ortimobil', 'Peugeot', 'Plymouth', 'Polestar', 'Pontiac', 'Porsche', 'Proton', 'Rainwoll', 'Rebat Motor', 'Reeder', 'Regal Raptor', 'Relive', 'Renault', 'RKS', 'Rolls-Royce', 'Rover', 'Saab', 'Saipa', 'Seat', 'Skoda', 'Smart', 'Subaru', 'Suzuki', 'Tata', 'Tesla', 'The London Taxi', 'Tofaş', 'TOGG', 'Toyota', 'Vanderhall', 'Volkswagen', 'Volta', 'Volvo', 'XEV', 'Xpeng'];
 
         // Kategori ağacı: ana kategoriler ve alt kategoriler
         const categoriesData = [
@@ -1421,6 +1459,8 @@
             const paramGuvende = document.getElementById('filterParamGuvende').checked;
             const acil = document.getElementById('filterAcil').checked;
             const sortBy = document.getElementById('sortBy').value;
+            const selectedVehicleBrand = selectedCategory === 'Otomobil' ? (document.getElementById('filterVehicleBrand')?.value || '') : '';
+            updateVehicleBrandFilter();
 
             let filtered = listingsState.filter(item => {
                 const selectedParent = categoryParentByChild[selectedCategory];
@@ -1435,8 +1475,9 @@
                 const matchMy = !myOnly || (currentUser && item.user_id === currentUser.id);
                 const matchParam = !paramGuvende || item.is_param_guvende;
                 const matchAcil = !acil || item.is_acil;
+                const matchVehicleBrand = !selectedVehicleBrand || getVehicleBrandForListing(item) === selectedVehicleBrand;
 
-                return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchMy && matchParam && matchAcil;
+                return matchCategory && matchSearch && matchLocation && matchPrice && matchCondition && matchMy && matchParam && matchAcil && matchVehicleBrand;
             });
 
             if (searchQuery && sortBy !== 'priceAsc' && sortBy !== 'priceDesc') {
@@ -1606,10 +1647,18 @@
             document.getElementById('modalListingCondition').innerText = item.condition;
             document.getElementById('modalListingAddress').innerText = `Hatay / Samandağ / ${item.location}`;
             const fullDescription = String(item.description || '');
-            const damageMarkerAt = fullDescription.indexOf(VEHICLE_DAMAGE_MARKER);
+            const vehicleInfo = getVehicleInfo(fullDescription);
+            const damageMarkerAt = vehicleInfo.base.indexOf(VEHICLE_DAMAGE_MARKER);
             document.getElementById('modalDescription').innerText = damageMarkerAt >= 0
-                ? fullDescription.slice(0, damageMarkerAt).trim()
-                : fullDescription;
+                ? vehicleInfo.base.slice(0, damageMarkerAt).trim()
+                : vehicleInfo.base.trim();
+            const vehicleInfoRow = document.getElementById('modalListingVehicleInfoRow');
+            if (vehicleInfoRow) {
+                const hasVehicleInfo = !!(vehicleInfo.brand || vehicleInfo.model || vehicleInfo.year);
+                vehicleInfoRow.classList.toggle('hidden', !hasVehicleInfo);
+                vehicleInfoRow.classList.toggle('flex', hasVehicleInfo);
+                document.getElementById('modalListingVehicleInfo').innerText = [vehicleInfo.brand, vehicleInfo.model, vehicleInfo.year].filter(Boolean).join(' / ');
+            }
             renderListingVehicleDamage(item, fullDescription);
             document.getElementById('modalSellerName').innerText = item.seller;
             document.getElementById('modalSellerAvatar').innerText = item.seller.charAt(0);
@@ -1960,6 +2009,11 @@
                 document.getElementById('postCondition').value = editItem.condition || 'İkinci El';
                 document.getElementById('postPhone').value = editItem.phone || '';
                 document.getElementById('postSeller').value = editItem.seller || '';
+                const savedVehicleInfo = getVehicleInfo(editItem.description || '');
+                document.getElementById('postVehicleBrand').value = savedVehicleInfo.brand || '';
+                document.getElementById('postVehicleModel').value = savedVehicleInfo.model || '';
+                document.getElementById('postVehicleYear').value = savedVehicleInfo.year || '';
+                updateVehicleModelHint();
                 setVehicleDamageFromDescription(editItem.description || '');
                 toggleVehicleDamageFields();
                 selectedPostImages = Array.isArray(editItem.images) ? [...editItem.images] : [];
@@ -2074,6 +2128,60 @@
             }
         }
 
+        const VEHICLE_INFO_MARKER = '\n\n--- Otomobil Bilgileri ---\n';
+        function escapeVehicleHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+        function populateVehicleBrandSelects() {
+            const postSelect = document.getElementById('postVehicleBrand');
+            if (postSelect) {
+                const previous = postSelect.value;
+                postSelect.innerHTML = '<option value="">Marka seçiniz</option>' + VEHICLE_BRANDS.map(brand => `<option value="${escapeVehicleHtml(brand)}">${escapeVehicleHtml(brand)}</option>`).join('');
+                if (VEHICLE_BRANDS.includes(previous)) postSelect.value = previous;
+            }
+            const yearSelect = document.getElementById('postVehicleYear');
+            if (yearSelect && yearSelect.options.length <= 1) {
+                for (let year = 2027; year >= 1970; year--) yearSelect.add(new Option(String(year), String(year)));
+            }
+        }
+        function getVehicleInfo(description) {
+            const text = String(description || '');
+            const markerAt = text.indexOf(VEHICLE_INFO_MARKER);
+            if (markerAt < 0) return { brand: '', model: '', year: '', base: text };
+            const after = text.slice(markerAt + VEHICLE_INFO_MARKER.length);
+            const endDamage = after.indexOf(VEHICLE_DAMAGE_MARKER);
+            const block = endDamage >= 0 ? after.slice(0, endDamage) : after;
+            const read = key => (block.match(new RegExp('^' + key + ':\\s*(.*)$', 'mi')) || [,''])[1].trim();
+            return { brand: read('Marka'), model: read('Model'), year: read('Yıl'), base: text.slice(0, markerAt) + (endDamage >= 0 ? after.slice(endDamage) : '') };
+        }
+        function getVehicleBrandForListing(item) {
+            const savedBrand = getVehicleInfo(item?.description).brand;
+            if (savedBrand) return savedBrand;
+            // Eski ilanlarda marka alanı henüz yoksa başlık/açıklama içinden güvenli kelime eşleşmesi yap.
+            const haystack = ' ' + normalizeSearchText([item?.title || '', item?.description || ''].join(' ')) + ' ';
+            return VEHICLE_BRANDS.slice().sort((a,b) => normalizeSearchText(b).length - normalizeSearchText(a).length)
+                .find(brand => haystack.includes(' ' + normalizeSearchText(brand) + ' ')) || '';
+        }
+        function updateVehicleModelHint() {
+            const brand = document.getElementById('postVehicleBrand')?.value || '';
+            const hint = document.getElementById('vehicleModelHint');
+            if (hint) hint.textContent = brand ? `${brand} için model adını yazın. Model/paket seçeneklerini sonraki aşamada marka bazında genişletebiliriz.` : 'Önce marka seçin, ardından modelini yazın.';
+        }
+        function updateVehicleBrandFilter() {
+            const box = document.getElementById('vehicleBrandFilterBox');
+            const select = document.getElementById('filterVehicleBrand');
+            if (!box || !select) return;
+            const isAuto = selectedCategory === 'Otomobil';
+            box.classList.toggle('hidden', !isAuto);
+            if (!isAuto) { select.value = ''; return; }
+            const current = select.value;
+            const activeBrands = [...new Set(listingsState
+                .filter(item => item.category === 'Otomobil')
+                .map(item => getVehicleBrandForListing(item))
+                .filter(Boolean))].sort((a,b) => a.localeCompare(b, 'tr'));
+            select.innerHTML = '<option value="">Tüm Markalar</option>' + activeBrands.map(brand => `<option value="${escapeVehicleHtml(brand)}">${escapeVehicleHtml(brand)}</option>`).join('');
+            if (activeBrands.includes(current)) select.value = current;
+        }
         const VEHICLE_DAMAGE_MARKER = '\n\n--- Araç Boya ve Değişen Durumu ---\n';
         const VEHICLE_NOTE_PREFIX = 'Not: ';
         function isVehicleCategory(category) {
@@ -2153,7 +2261,14 @@
         }
         function toggleVehicleDamageFields() {
             const section = document.getElementById('vehicleDamageSection');
-            const active = isVehicleCategory(document.getElementById('postCategory')?.value || '');
+            const selectedPostCategory = document.getElementById('postCategory')?.value || '';
+            const active = isVehicleCategory(selectedPostCategory);
+            const isAutomobile = selectedPostCategory === 'Otomobil';
+            const infoSection = document.getElementById('vehicleInfoSection');
+            if (infoSection) infoSection.classList.toggle('hidden', !isAutomobile);
+            ['postVehicleBrand','postVehicleModel'].forEach(id => { const field = document.getElementById(id); if (field) { field.required = isAutomobile; field.disabled = !isAutomobile; if (!isAutomobile) field.value = ''; } });
+            const yearField = document.getElementById('postVehicleYear');
+            if (yearField) { yearField.disabled = !isAutomobile; if (!isAutomobile) yearField.value = ''; }
             if (section) section.classList.toggle('hidden', !active);
             document.querySelectorAll('.vehicle-damage-select').forEach(select => {
                 select.required = false;
@@ -2165,8 +2280,10 @@
         function setVehicleDamageFromDescription(description) {
             const text = String(description || '');
             const markerAt = text.indexOf(VEHICLE_DAMAGE_MARKER);
-            const base = markerAt >= 0 ? text.slice(0, markerAt) : text;
+            const baseWithInfo = markerAt >= 0 ? text.slice(0, markerAt) : text;
             const section = markerAt >= 0 ? text.slice(markerAt + VEHICLE_DAMAGE_MARKER.length) : '';
+            const infoMarkerAt = baseWithInfo.indexOf(VEHICLE_INFO_MARKER);
+            const base = infoMarkerAt >= 0 ? baseWithInfo.slice(0, infoMarkerAt) : baseWithInfo;
             document.getElementById('postDescription').value = base;
             document.querySelectorAll('.vehicle-damage-select').forEach(select => { select.value = ''; });
             document.querySelectorAll('.vehicle-damage-note').forEach(input => { input.value = ''; });
@@ -2207,7 +2324,12 @@
             const phone = document.getElementById('postPhone').value.trim();
             const seller = document.getElementById('postSeller').value.trim();
             const rawDescription = document.getElementById('postDescription').value.trim();
-            const description = getVehicleDamageDescription(rawDescription, category);
+            const vehicleBrand = category === 'Otomobil' ? document.getElementById('postVehicleBrand').value : '';
+            const vehicleModel = category === 'Otomobil' ? document.getElementById('postVehicleModel').value.trim() : '';
+            const vehicleYear = category === 'Otomobil' ? document.getElementById('postVehicleYear').value : '';
+            if (category === 'Otomobil' && (!vehicleBrand || !vehicleModel)) { alert('Lütfen otomobil markasını ve modelini seçin/yazın.'); return; }
+            const vehicleInfoText = category === 'Otomobil' ? VEHICLE_INFO_MARKER + `Marka: ${vehicleBrand}\nModel: ${vehicleModel}\nYıl: ${vehicleYear}` : '';
+            const description = getVehicleDamageDescription(rawDescription + vehicleInfoText, category);
             if (description === null) return;
             const urlsInput = document.getElementById('postImageUrls').value;
             const paramGuvende = document.getElementById('postParamGuvende').checked;
@@ -2665,6 +2787,7 @@
 
 <script>
         document.addEventListener('DOMContentLoaded', () => {
+            populateVehicleBrandSelects();
             setupVehicleDamageMap();
             toggleVehicleDamageFields();
         });
