@@ -783,10 +783,10 @@
                 </div>
                 
                 <div class="space-y-1 pt-1">
-                    <div class="text-slate-300"><b>Banka:</b> Ziraat Bankası - Samandağ Şubesi</div>
-                    <div class="text-slate-300"><b>Alıcı Unvanı:</b> Gümüş Elektronik / Sumit Pazaryeri</div>
+                    <div class="text-slate-300"><b>Banka:</b> Enpara</div>
+                    <div class="text-slate-300"><b>Alıcı Unvanı:</b> Samet Gümüş</div>
                     <div class="flex items-center justify-between bg-slate-950 p-2 rounded border border-slate-800">
-                        <span class="font-mono font-bold text-amber-400 select-all" id="ibanText">TR88 0001 0002 0003 0004 0005 01</span>
+                        <span class="font-mono font-bold text-amber-400 select-all" id="ibanText">TR47 0015 7000 0000 0069 5885 27</span>
                         <button onclick="copyIban()" class="bg-amber-400 text-slate-950 text-[10px] font-bold px-2 py-1 rounded hover:bg-amber-300 transition">
                             <i class="fa-regular fa-copy mr-1"></i> Kopyala
                         </button>
@@ -1258,7 +1258,12 @@
                 const { data, error } = await supabaseClient.auth.signUp({
                     email,
                     password,
-                    options: { data: { full_name: fullName } }
+                    options: {
+                        data: { full_name: fullName },
+                        // E-posta onay bağlantısı yerel bilgisayara (localhost) değil,
+                        // yayınlanan Samandağ Pazarı sitesine geri döner.
+                        emailRedirectTo: 'https://samandag-pazari.vercel.app/'
+                    }
                 });
                 if (error) throw error;
                 if (data.session && data.user) {
